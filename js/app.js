@@ -196,11 +196,18 @@ async function renderTopic(topicId, myToken) {
     content = await loadTopic(navMeta.file);
   } catch (err) {
     if (myToken !== renderToken) return; // navigated away while loading
+    const offline = 'onLine' in navigator && !navigator.onLine;
     mainEl.innerHTML = `
       <div class="crumb"><a href="#/">Home</a></div>
       <h1 class="topic-title">Couldn't load this topic</h1>
-      <p class="topic-tagline">There was a problem loading "${navMeta.title}". Check your connection and try again.</p>
+      <p class="topic-tagline">${
+        offline
+          ? `You appear to be offline, and "${navMeta.title}" hasn't been loaded on this device before, so there's nothing cached to show.`
+          : `There was a problem loading "${navMeta.title}". Check your connection and try again.`
+      }</p>
+      <button type="button" class="run-btn" id="retryTopicBtn"><span class="play">&#9654;</span> Retry</button>
     `;
+    document.getElementById('retryTopicBtn').addEventListener('click', () => route());
     console.error('Failed to load topic', topicId, err);
     return;
   }

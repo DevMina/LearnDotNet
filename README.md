@@ -94,6 +94,12 @@ full content of a topic (explanation, code, output) is fetched with a dynamic
 `manifest.js`. This keeps the initial page load light no matter how many
 topics you add, and means adding one topic never risks breaking another.
 
+One trade-off: if someone is offline and opens a topic they've never loaded
+on that device before, there's nothing cached for it yet, so it can't load —
+the site shows a clear message and a Retry button rather than failing
+silently. Topics they've already visited (online, at least once) keep working
+offline via the service worker's cache, same as before.
+
 ## Adding more topics
 
 1. Create a new file at `js/topics/<category>/<topic-id>.js`:

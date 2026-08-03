@@ -299,10 +299,19 @@ h1.topic-title {
   border-bottom: 2px solid transparent;
 }
 
-.workbench-tab.file-tab { color: var(--text); border-bottom-color: var(--amber); }
+.workbench-tab.file-tab {
+  color: var(--text);
+  border-bottom-color: var(--amber);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .copy-btn {
   margin-left: auto;
+  flex-shrink: 0;
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
@@ -321,6 +330,7 @@ h1.topic-title {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
   background: var(--green);
   color: #08210F;
   border: none;
@@ -424,6 +434,7 @@ pre.code-block {
 .topic-nav {
   display: flex;
   justify-content: space-between;
+  gap: 16px;
   margin-top: 48px;
   padding-top: 24px;
   border-top: 1px solid var(--border);
@@ -436,6 +447,7 @@ pre.code-block {
   padding: 10px 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
+  max-width: 48%;
 }
 .topic-nav a:hover { border-color: var(--amber); text-decoration: none; color: var(--heading); }
 .topic-nav .dir { color: var(--muted); font-size: 11px; display: block; margin-bottom: 2px; }
@@ -613,6 +625,9 @@ pre.code-block {
   }
   .main { padding: 70px 20px 60px; max-width: 100%; }
   .landing-hero h1 { font-size: 30px; }
+
+  .topic-nav { flex-direction: column; gap: 12px; }
+  .topic-nav a { max-width: 100%; }
 
   .backdrop.visible {
     display: block;

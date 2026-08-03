@@ -20,7 +20,7 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;');
 }
 
-function highlightCSharp(code) {
+export function highlightCSharp(code) {
   const lines = code.split('\n');
   const out = lines.map(line => highlightLine(line));
   return out.join('\n');

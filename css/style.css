@@ -68,6 +68,10 @@ a:hover { text-decoration: underline; }
   z-index: 2;
 }
 
+.sidebar-close {
+  display: none;
+}
+
 .sidebar-header .logo {
   font-family: var(--font-mono);
   font-weight: 700;
@@ -76,7 +80,15 @@ a:hover { text-decoration: underline; }
   display: flex;
   align-items: center;
   gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
 }
+
+.sidebar-header .logo:hover { color: var(--amber); }
 
 .sidebar-header .logo .dot { color: var(--amber); }
 
@@ -388,6 +400,26 @@ pre.code-block {
   margin-bottom: 8px;
 }
 
+/* ---------- Loading skeleton (topic content loads on demand) ---------- */
+.topic-skeleton { margin-top: 8px; }
+
+.skel {
+  background: linear-gradient(90deg, var(--panel) 25%, var(--panel-2) 37%, var(--panel) 63%);
+  background-size: 400% 100%;
+  animation: skel-shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+.skel-title { height: 30px; width: 55%; margin-bottom: 20px; }
+.skel-line { height: 14px; width: 90%; margin-bottom: 10px; }
+.skel-line.short { width: 60%; margin-bottom: 24px; }
+.skel-block { height: 220px; width: 100%; border-radius: 10px; }
+
+@keyframes skel-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
 /* ---------- Prev/Next nav ---------- */
 .topic-nav {
   display: flex;
@@ -411,13 +443,6 @@ pre.code-block {
 /* ---------- Landing ---------- */
 .landing-hero {
   padding-top: 24px;
-}
-
-.landing-hero .eyebrow {
-  font-family: var(--font-mono);
-  color: var(--amber);
-  font-size: 13px;
-  margin-bottom: 14px;
 }
 
 .landing-hero h1 {
@@ -561,6 +586,7 @@ pre.code-block {
 
 @media (max-width: 860px) {
   .mobile-toggle { display: block; }
+  .mobile-toggle.is-hidden { display: none; }
   .sidebar {
     position: fixed;
     left: -300px;
@@ -569,6 +595,22 @@ pre.code-block {
     box-shadow: 8px 0 24px rgba(0,0,0,0.4);
   }
   .sidebar.open { left: 0; }
+  .sidebar-header { padding-right: 44px; }
+  .sidebar-close {
+    display: block;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--heading);
+    border-radius: 6px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
   .main { padding: 70px 20px 60px; max-width: 100%; }
   .landing-hero h1 { font-size: 30px; }
 

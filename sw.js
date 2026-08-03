@@ -9,10 +9,13 @@ const PRECACHE_URLS = [
   './manifest.json',
   './css/style.css',
   './js/highlight.js',
-  './js/topics.js',
   './js/app.js',
+  './js/topics/manifest.js',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './icons/maskable-192.png',
+  './icons/maskable-512.png',
+  './icons/apple-touch-icon-180.png'
 ];
 
 self.addEventListener('install', (event) => {

@@ -1,0 +1,26 @@
+export default {
+  tagline: "Shared state needs coordination.",
+  explanation: `
+          <p>When multiple threads write to shared state, you need synchronization to avoid race conditions — two threads reading-then-writing the same variable can lose an update. The <strong>lock</strong> keyword ensures only one thread executes a block at a time.</p>
+          <p>For simple counters, <strong>Interlocked</strong> operations are faster than a full lock, performing the increment atomically at the hardware level.</p>
+        `,
+  keyPoints: [
+  "lock prevents two threads from entering the same block simultaneously",
+  "Interlocked.Increment is a lightweight atomic alternative for simple counters",
+  "Unsynchronized shared state is a common source of subtle, hard-to-reproduce bugs"
+],
+  code: `int counter = 0;
+object gate = new();
+
+void Increment()
+{
+    lock (gate)
+    {
+        counter++;
+    }
+}
+
+Parallel.For(0, 1000, _ => Increment());
+Console.WriteLine($"Final count: {counter}");`,
+  output: `Final count: 1000`
+};

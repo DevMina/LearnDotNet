@@ -1,3 +1,6 @@
+import { CATEGORIES, TOPIC_INDEX, ALL_TOPICS_FLAT, loadTopic } from './topics/manifest.js';
+import { highlightCSharp } from './highlight.js';
+
 const sidebarEl = document.getElementById('sidebar');
 const mainEl = document.getElementById('main');
 const mobileToggle = document.getElementById('mobileToggle');
@@ -45,7 +48,8 @@ function renderSidebar(activeTopicId) {
 
   sidebarEl.innerHTML = `
     <div class="sidebar-header">
-      <div class="logo"><span class="dot">&bull;</span> Solution Explorer</div>
+      <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close navigation">&times;</button>
+      <button type="button" class="logo" id="homeLink" aria-label="Go to home page"><span class="dot">&bull;</span> Solution Explorer</button>
       <div class="subtitle">CSharpConcepts.sln</div>
       <div class="search-box">
         <input type="search" id="searchInput" placeholder="Search topics..." aria-label="Search topics" autocomplete="off">
@@ -53,6 +57,17 @@ function renderSidebar(activeTopicId) {
     </div>
   `;
   sidebarEl.appendChild(tree);
+
+  document.getElementById('sidebarClose').addEventListener('click', closeMobileSidebar);
+
+  document.getElementById('homeLink').addEventListener('click', () => {
+    if (location.hash === '' || location.hash === '#/' || location.hash === '#') {
+      route();
+    } else {
+      location.hash = '#/';
+    }
+    closeMobileSidebar();
+  });
 
   const noResults = document.createElement('div');
   noResults.className = 'search-no-results';
@@ -105,12 +120,14 @@ function closeMobileSidebar() {
   sidebarEl.classList.remove('open');
   backdropEl.classList.remove('visible');
   mobileToggle.setAttribute('aria-expanded', 'false');
+  mobileToggle.classList.remove('is-hidden');
 }
 
 mobileToggle.addEventListener('click', () => {
   const isOpen = sidebarEl.classList.toggle('open');
   backdropEl.classList.toggle('visible', isOpen);
   mobileToggle.setAttribute('aria-expanded', String(isOpen));
+  mobileToggle.classList.toggle('is-hidden', isOpen);
 });
 
 backdropEl.addEventListener('click', closeMobileSidebar);
@@ -121,7 +138,6 @@ function renderLanding() {
 
   mainEl.innerHTML = `
     <div class="landing-hero">
-      <div class="eyebrow">// a tour of the language, one file at a time</div>
       <h1>C# &amp; .NET,<br>explained through running code.</h1>
       <p class="lead">${totalTopics} concepts from fundamentals to design patterns &mdash; each with a short explanation,
       a real code sample, and a console you can run to see the output. Pick a folder in Solution Explorer to start,
@@ -148,17 +164,51 @@ function renderLanding() {
   document.title = 'C# & .NET Concepts — Interactive Guide';
 }
 
-// Flat ordered list of every topic across all categories, for continuous prev/next.
-const ALL_TOPICS_FLAT = CATEGORIES.flatMap(cat => cat.topics);
+// ---------- Loading state ----------
+function renderTopicSkeleton() {
+  mainEl.innerHTML = `
+    <div class="crumb">Loading&hellip;</div>
+    <div class="topic-skeleton" aria-hidden="true">
+      <div class="skel skel-title"></div>
+      <div class="skel skel-line"></div>
+      <div class="skel skel-line short"></div>
+      <div class="skel skel-block"></div>
+    </div>
+  `;
+}
 
 // ---------- Topic page ----------
-function renderTopic(topicId) {
-  const entry = TOPIC_INDEX[topicId];
-  if (!entry) {
+// renderToken guards against a slower-loading topic finishing after the
+// person has already navigated elsewhere (e.g. clicking two topics quickly).
+let renderToken = 0;
+
+async function renderTopic(topicId, myToken) {
+  const navMeta = TOPIC_INDEX[topicId];
+  if (!navMeta) {
     renderLanding();
     return;
   }
-  const { topic, category } = entry;
+
+  renderTopicSkeleton();
+
+  let content;
+  try {
+    content = await loadTopic(navMeta.file);
+  } catch (err) {
+    if (myToken !== renderToken) return; // navigated away while loading
+    mainEl.innerHTML = `
+      <div class="crumb"><a href="#/">Home</a></div>
+      <h1 class="topic-title">Couldn't load this topic</h1>
+      <p class="topic-tagline">There was a problem loading "${navMeta.title}". Check your connection and try again.</p>
+    `;
+    console.error('Failed to load topic', topicId, err);
+    return;
+  }
+
+  if (myToken !== renderToken) return; // a newer navigation has since started
+
+  const topic = { ...navMeta, ...content };
+  const category = navMeta.category;
 
   const flatIndex = ALL_TOPICS_FLAT.findIndex(t => t.id === topicId);
   const prev = flatIndex > 0 ? ALL_TOPICS_FLAT[flatIndex - 1] : null;
@@ -167,7 +217,7 @@ function renderTopic(topicId) {
   document.title = `${topic.title} — C# & .NET Concepts`;
 
   mainEl.innerHTML = `
-    <div class="crumb">${category.name}<span class="sep">/</span>${topic.title}.cs</div>
+    <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>${category.name}<span class="sep">/</span>${topic.title}.cs</div>
     <h1 class="topic-title">${topic.title}</h1>
     <div class="topic-tagline">${topic.tagline}</div>
 
@@ -252,7 +302,7 @@ function renderContact() {
   document.title = 'Contact — C# & .NET Concepts';
 
   mainEl.innerHTML = `
-    <div class="crumb">Contact</div>
+    <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>Contact</div>
     <h1 class="topic-title">Contact us</h1>
     <div class="topic-tagline">Spotted an error, have a suggestion, or want a topic added? Send a note.</div>
 
@@ -291,8 +341,10 @@ function renderContact() {
 }
 
 // ---------- Router ----------
-function route() {
+async function route() {
+  const myToken = ++renderToken;
   const hash = location.hash.replace(/^#\/?/, '');
+
   if (!hash) {
     renderLanding();
     renderSidebar(null);
@@ -305,7 +357,9 @@ function route() {
     window.scrollTo(0, 0);
     return;
   }
-  renderTopic(hash);
+
+  await renderTopic(hash, myToken);
+  if (myToken !== renderToken) return; // superseded by a newer navigation
   renderSidebar(hash);
   window.scrollTo(0, 0);
 }

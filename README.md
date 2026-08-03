@@ -1,7 +1,10 @@
 # C# & .NET Concepts — Interactive Guide
 
-A static, dependency-free site (plain HTML/CSS/JS) covering 27 C#/.NET concepts,
-from fundamentals through design patterns. Each topic has an explanation, a
+A static, dependency-free site (plain HTML/CSS/JS) covering 56 C#/.NET concepts,
+from fundamentals through design patterns — including a dedicated section on
+C# 12–14 features (primary constructors, collection expressions, required
+members, params collections, the `field` keyword, extension members, the
+Lock type, and null-conditional assignment). Each topic has an explanation, a
 syntax-highlighted code sample, and a "Run" button that simulates build output
 in a console panel. It's also an installable PWA with offline support, and the
 sidebar has a live search box to jump straight to a topic.
@@ -33,15 +36,20 @@ lives in `renderContact()` in `js/app.js`.
 
 ## Preview locally
 
-No build step needed — just serve the folder over HTTP (opening `index.html`
-directly with `file://` will work too, but a local server avoids any browser
-quirks with relative paths):
+No build step needed — but the site now uses real ES modules (`import`/
+`export`) so each topic can load on demand, and **browsers block ES module
+loading over `file://`**. You must serve it over HTTP, even locally:
 
 ```bash
 cd dotnet-site
 python3 -m http.server 8080
 # then open http://localhost:8080
 ```
+
+Double-clicking `index.html` directly will not work anymore — the page will
+load but the sidebar and topics won't render, since the module script gets
+blocked. This is a browser security restriction on `file://` + modules, not a
+bug in the site.
 
 ## Deploy to GitHub Pages
 
@@ -56,12 +64,66 @@ python3 -m http.server 8080
 No `.nojekyll` file or build config is required since there's no build step —
 it's already static files.
 
+## File structure
+
+```
+dotnet-site/
+  index.html               ← the only HTML file
+  css/style.css
+  js/
+    app.js                 ← routing, rendering, sidebar, search (ES module)
+    highlight.js            ← the custom C# syntax highlighter
+    topics/
+      manifest.js           ← lightweight nav index: id/title/file per topic,
+                               loaded eagerly so the sidebar renders instantly
+      fundamentals/
+        variables-types.js  ← one small file per topic, loaded on demand
+        operators.js
+        ...
+      oop/
+        inheritance.js
+        ...
+      patterns/
+        singleton.js
+        ...
+```
+
+Only `manifest.js` (small — just id/title/file per topic) loads upfront. The
+full content of a topic (explanation, code, output) is fetched with a dynamic
+`import()` the moment someone opens that topic, via `loadTopic()` in
+`manifest.js`. This keeps the initial page load light no matter how many
+topics you add, and means adding one topic never risks breaking another.
+
 ## Adding more topics
 
-All content lives in `js/topics.js` as a single `CATEGORIES` array. Add a new
-object to a category's `topics` array (or a new category) with `id`, `title`,
-`tagline`, `explanation`, `keyPoints`, `code`, and `output` fields, and it will
-automatically appear in the sidebar and become routable at `#/<id>`.
+1. Create a new file at `js/topics/<category>/<topic-id>.js`:
+
+```js
+export default {
+  tagline: "One-line summary shown under the title.",
+  explanation: `
+    <p>HTML explanation paragraphs go here.</p>
+  `,
+  keyPoints: [
+    "First key point",
+    "Second key point"
+  ],
+  code: `Console.WriteLine("Hello");`,
+  output: `Hello`
+};
+```
+
+2. Add one entry to that category's `topics` array in `js/topics/manifest.js`:
+
+```js
+{ id: 'topic-id', title: 'Topic Title', file: './category/topic-id.js' }
+```
+
+That's it — it automatically appears in the sidebar, becomes searchable, gets
+wired into prev/next navigation, and is routable at `#/topic-id`. To add a
+whole new category, add a new `{ id, name, topics: [] }` object to the
+`CATEGORIES` array in `manifest.js` and start adding topic files under a
+matching new folder in `js/topics/`.
 
 ## Notes on "Run"
 

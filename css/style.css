@@ -155,6 +155,12 @@ a:hover { text-decoration: underline; }
 
 .tree-category-label:hover { color: var(--text); }
 
+/* The version baked into generated static pages (topics/<id>/index.html and
+   the root index.html before JS hydrates) has no click handler — it can't
+   collapse anything without JS — so it shouldn't visually invite a click. */
+.tree-category-label.static { cursor: default; }
+.tree-category-label.static:hover { color: var(--muted); }
+
 .tree-category-label .chevron {
   display: inline-block;
   transition: transform 0.15s ease;

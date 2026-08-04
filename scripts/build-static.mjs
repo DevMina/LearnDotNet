@@ -58,7 +58,7 @@ function buildSidebarHTML({ activeId, topicHrefFor, homeHref }) {
     }).join('\n');
 
     return `<div class="tree-category">
-  <div class="tree-category-label" aria-expanded="true"><span class="chevron">&#9662;</span><span>${escapeHtml(cat.name)}</span><span class="tree-category-progress">${cat.topics.length} topic${cat.topics.length === 1 ? '' : 's'}</span></div>
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>${escapeHtml(cat.name)}</span><span class="tree-category-progress">${cat.topics.length} topic${cat.topics.length === 1 ? '' : 's'}</span></div>
   <div class="tree-items">
 ${itemsHTML}
   </div>
@@ -294,17 +294,21 @@ async function updateRootIndex() {
 }
 
 // ---------- Regenerate sitemap.xml / robots.txt with real per-topic URLs ----------
+// Deliberately no <lastmod> here. It's optional in the sitemap spec, and the
+// only value available at generation time (today's date) isn't a real
+// "last modified" date — it would make the file change every single day
+// even when nothing in the site actually changed, which would make CI's
+// rebuild-and-diff staleness check (see .github/workflows/validate.yml)
+// fail constantly for no real reason. Omitting it keeps generation fully
+// deterministic: the file only changes when the actual set of topics does.
 async function updateSitemap() {
-  const LASTMOD = new Date().toISOString().slice(0, 10);
   const urls = [
     BASE_URL,
     `${BASE_URL}#/contact`,
     ...ALL_TOPICS_FLAT.map(t => `${BASE_URL}topics/${t.id}/`)
   ];
 
-  const entries = urls.map(u =>
-    `  <url>\n    <loc>${u}</loc>\n    <lastmod>${LASTMOD}</lastmod>\n  </url>`
-  ).join('\n');
+  const entries = urls.map(u => `  <url>\n    <loc>${u}</loc>\n  </url>`).join('\n');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
   await writeFile(path.join(root, 'sitemap.xml'), sitemap, 'utf-8');

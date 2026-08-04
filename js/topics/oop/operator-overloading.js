@@ -20,5 +20,6 @@ export default {
 
 var total = new Money(10.50m) + new Money(4.25m);
 Console.WriteLine(total);`,
-  output: `$14.75`
+  output: `$14.75`,
+  related: ["method-overloading"]
 };

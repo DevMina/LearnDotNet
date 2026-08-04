@@ -63,6 +63,16 @@ export const CATEGORIES = [
         "id": "string-interpolation",
         "title": "String Interpolation & Formatting",
         "file": "./fundamentals/string-interpolation.js"
+      },
+      {
+        "id": "nullable-value-types",
+        "title": "Nullable Value Types",
+        "file": "./fundamentals/nullable-value-types.js"
+      },
+      {
+        "id": "boxing-unboxing",
+        "title": "Boxing & Unboxing",
+        "file": "./fundamentals/boxing-unboxing.js"
       }
     ]
   },
@@ -124,6 +134,16 @@ export const CATEGORIES = [
         "id": "sealed",
         "title": "Sealed Classes & Members",
         "file": "./oop/sealed.js"
+      },
+      {
+        "id": "object-initializers",
+        "title": "Object Initializers",
+        "file": "./oop/object-initializers.js"
+      },
+      {
+        "id": "method-overloading",
+        "title": "Method Overloading",
+        "file": "./oop/method-overloading.js"
       }
     ]
   },
@@ -170,6 +190,26 @@ export const CATEGORIES = [
         "id": "attributes",
         "title": "Attributes",
         "file": "./intermediate/attributes.js"
+      },
+      {
+        "id": "reflection",
+        "title": "Reflection",
+        "file": "./intermediate/reflection.js"
+      },
+      {
+        "id": "dependency-injection",
+        "title": "Dependency Injection",
+        "file": "./intermediate/dependency-injection.js"
+      },
+      {
+        "id": "regular-expressions",
+        "title": "Regular Expressions",
+        "file": "./intermediate/regular-expressions.js"
+      },
+      {
+        "id": "json-serialization",
+        "title": "JSON Serialization",
+        "file": "./intermediate/json-serialization.js"
       }
     ]
   },
@@ -201,6 +241,16 @@ export const CATEGORIES = [
         "id": "async-streams",
         "title": "IAsyncEnumerable & Async Streams",
         "file": "./async/async-streams.js"
+      },
+      {
+        "id": "semaphore-slim",
+        "title": "SemaphoreSlim",
+        "file": "./async/semaphore-slim.js"
+      },
+      {
+        "id": "channels",
+        "title": "Channels",
+        "file": "./async/channels.js"
       }
     ]
   },
@@ -237,6 +287,16 @@ export const CATEGORIES = [
         "id": "generic-math",
         "title": "Generic Math",
         "file": "./modern-dotnet/generic-math.js"
+      },
+      {
+        "id": "init-only-properties",
+        "title": "Init-Only Properties",
+        "file": "./modern-dotnet/init-only-properties.js"
+      },
+      {
+        "id": "top-level-statements",
+        "title": "Top-Level Statements",
+        "file": "./modern-dotnet/top-level-statements.js"
       }
     ]
   },
@@ -324,6 +384,16 @@ export const CATEGORIES = [
         "id": "decorator",
         "title": "Decorator",
         "file": "./patterns/decorator.js"
+      },
+      {
+        "id": "adapter",
+        "title": "Adapter",
+        "file": "./patterns/adapter.js"
+      },
+      {
+        "id": "command",
+        "title": "Command",
+        "file": "./patterns/command.js"
       }
     ]
   }

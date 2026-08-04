@@ -1,0 +1,50 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No npm install step on purpose — this project has zero dependencies,
+      # and both scripts only use Node's built-in ESM/fs modules.
+      - name: Validate topic content, manifest, search index, sitemap, and static pages
+        run: node scripts/validate-topics.mjs
+
+      - name: Rebuild static pages and fail if the committed output is stale
+        run: |
+          node scripts/build-static.mjs
+          if ! git diff --quiet -- topics/ index.html sitemap.xml robots.txt; then
+            echo "::error::Generated output is stale. Run 'node scripts/build-static.mjs' locally and commit the result."
+            git diff --stat -- topics/ index.html sitemap.xml robots.txt
+            exit 1
+          fi
+
+      - name: Check sitemap.xml is well-formed
+        run: |
+          node -e "
+            const { readFileSync } = require('node:fs');
+            const xml = readFileSync('sitemap.xml', 'utf-8');
+            if (!xml.trimStart().startsWith('<?xml')) {
+              console.error('sitemap.xml is missing its XML declaration');
+              process.exit(1);
+            }
+            const openTags = (xml.match(/<url>/g) || []).length;
+            const closeTags = (xml.match(/<\/url>/g) || []).length;
+            if (openTags === 0 || openTags !== closeTags) {
+              console.error('sitemap.xml has mismatched <url>/</url> tags (' + openTags + ' open, ' + closeTags + ' close)');
+              process.exit(1);
+            }
+            console.log('sitemap.xml: ' + openTags + ' <url> entries, tags balanced');
+          "

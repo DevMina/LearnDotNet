@@ -21,5 +21,6 @@ var attr = typeof(ObsoleteExample)
     .FirstOrDefault() as ObsoleteAttribute;
 
 Console.WriteLine(attr?.Message);`,
-  output: `Use NewMethod instead`
+  output: `Use NewMethod instead`,
+  related: ["reflection"]
 };

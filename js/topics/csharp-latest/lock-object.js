@@ -22,5 +22,6 @@ void Increment()
 
 Parallel.For(0, 500, _ => Increment());
 Console.WriteLine(counter);`,
-  output: `500`
+  output: `500`,
+  related: ["semaphore-slim"]
 };

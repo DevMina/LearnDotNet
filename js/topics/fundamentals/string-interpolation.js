@@ -16,5 +16,6 @@ var date = new DateTime(2026, 8, 3);
 Console.WriteLine($"{quantity} items at {price:C} each = {price * quantity:C}");
 Console.WriteLine($"Date: {date:yyyy-MM-dd}");`,
   output: `3 items at $1,234.50 each = $3,703.50
-Date: 2026-08-03`
+Date: 2026-08-03`,
+  related: ["regular-expressions"]
 };

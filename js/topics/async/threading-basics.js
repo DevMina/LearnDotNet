@@ -22,5 +22,6 @@ void Increment()
 
 Parallel.For(0, 1000, _ => Increment());
 Console.WriteLine($"Final count: {counter}");`,
-  output: `Final count: 1000`
+  output: `Final count: 1000`,
+  related: ["semaphore-slim"]
 };

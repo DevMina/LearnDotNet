@@ -19,5 +19,6 @@ var tasks = new[] { SquareAfterDelay(2), SquareAfterDelay(3), SquareAfterDelay(4
 var results = await Task.WhenAll(tasks);
 
 Console.WriteLine(string.Join(", ", results));`,
-  output: `4, 9, 16`
+  output: `4, 9, 16`,
+  related: ["channels"]
 };

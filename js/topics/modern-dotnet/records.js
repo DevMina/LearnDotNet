@@ -19,5 +19,6 @@ Console.WriteLine(p2);
 Console.WriteLine(p1 == new Point(1, 2));`,
   output: `Point { X = 1, Y = 2 }
 Point { X = 1, Y = 9 }
-True`
+True`,
+  related: ["init-only-properties", "object-initializers", "json-serialization"]
 };

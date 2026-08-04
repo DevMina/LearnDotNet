@@ -19,5 +19,6 @@ decimal Checkout(decimal total, IDiscountStrategy strategy)
     => strategy.Apply(total);
 
 Console.WriteLine(Checkout(200m, new TenPercentOff()));`,
-  output: `180.0`
+  output: `180.0`,
+  related: ["command"]
 };

@@ -20,5 +20,6 @@ string GetGreeting(string? name)
 Console.WriteLine(GetGreeting(null));
 Console.WriteLine(GetGreeting("Priya"));`,
   output: `Hello, stranger
-Hello, Priya`
+Hello, Priya`,
+  related: ["nullable-value-types"]
 };

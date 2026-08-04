@@ -31,5 +31,6 @@ public class LoggingDecorator : INotifier
 INotifier notifier = new LoggingDecorator(new BaseNotifier());
 notifier.Send("Order shipped");`,
   output: `Log: about to send
-Sending: Order shipped`
+Sending: Order shipped`,
+  related: ["adapter"]
 };

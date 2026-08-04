@@ -22,5 +22,6 @@ using ShippingApp.Models;
 
 var package = new Package { TrackingNumber = "1Z999AA1" };
 Console.WriteLine(package.TrackingNumber);`,
-  output: `1Z999AA1`
+  output: `1Z999AA1`,
+  related: ["top-level-statements"]
 };

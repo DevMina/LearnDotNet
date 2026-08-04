@@ -15,5 +15,6 @@ export default {
 Console.WriteLine(Max(3, 7));
 Console.WriteLine(Max("pear", "kiwi"));`,
   output: `7
-pear`
+pear`,
+  related: ["boxing-unboxing"]
 };

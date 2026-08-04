@@ -25,5 +25,6 @@ Console.WriteLine(x);
 if (TryDivide(10, 2, out int quotient))
     Console.WriteLine(quotient);`,
   output: `6
-5`
+5`,
+  related: ["method-overloading"]
 };

@@ -1,13 +1,16 @@
 # C# & .NET Concepts — Interactive Guide
 
-A static, dependency-free site (plain HTML/CSS/JS) covering 56 C#/.NET concepts,
+A static, dependency-free site (plain HTML/CSS/JS) covering 70 C#/.NET concepts,
 from fundamentals through design patterns — including a dedicated section on
 C# 12–14 features (primary constructors, collection expressions, required
 members, params collections, the `field` keyword, extension members, the
 Lock type, and null-conditional assignment). Each topic has an explanation, a
 syntax-highlighted code sample, and a "Run" button that simulates build output
-in a console panel. It's also an installable PWA with offline support, and the
-sidebar has a live search box to jump straight to a topic.
+in a console panel. It's also an installable PWA with offline support, has a
+live search box (matching titles *and* explanation text) to jump straight to
+a topic, per-topic "mark as learned" progress tracking, related-topic links,
+a print-friendly view, and keyboard shortcuts (`/` to search, `←`/`→` to move
+between topics).
 
 ## PWA notes
 
@@ -25,6 +28,16 @@ sidebar has a live search box to jump straight to a topic.
   workers on `file://` for security), everything else still works normally.
 - **GitHub Pages serves over https automatically**, so installability and
   offline support work out of the box once deployed there.
+
+## Progress tracking ("mark as learned")
+
+Each topic page has a "Mark as learned" toggle. State is stored client-side
+only, in `localStorage` under the key `csharp-concepts-progress`, as an array
+of topic ids — there's no backend or account system involved. The sidebar
+shows a checkmark next to learned topics and an `x/y` count per category; the
+landing page shows an overall progress bar once at least one topic is marked.
+Clearing site data/localStorage resets progress, and it doesn't sync across
+devices or browsers since nothing is sent anywhere.
 
 ## Contact form
 
@@ -68,14 +81,33 @@ it's already static files.
 
 ```
 dotnet-site/
-  index.html               ← the only HTML file
+  index.html               ← app shell; sidebar/#main content baked in by
+                               build-static.mjs, then re-rendered by app.js
+                               on load for JS-enabled visitors
+  sitemap.xml               ← generated: real URL per topic, for crawlers
+  robots.txt                ← allows crawling, points to sitemap.xml
+  topics/                   ← generated: one real static page per topic
+    semaphore-slim/
+      index.html             ← full readable content, no JS required
+    ...
+  scripts/
+    validate-topics.mjs      ← CI check: manifest/content/related-id/
+                                 generated-output integrity
+    build-static.mjs         ← generates topics/, index.html's baked
+                                 sections, sitemap.xml, and robots.txt
+  .github/workflows/
+    validate.yml             ← runs both scripts above on every push/PR
   css/style.css
   js/
     app.js                 ← routing, rendering, sidebar, search (ES module)
-    highlight.js            ← the custom C# syntax highlighter
+    highlight.js            ← the custom C# syntax highlighter, reused
+                               as-is by build-static.mjs at build time
     topics/
       manifest.js           ← lightweight nav index: id/title/file per topic,
                                loaded eagerly so the sidebar renders instantly
+      search-index.js       ← generated: id/tagline/keywords per topic, for
+                               full-text sidebar search without eager-loading
+                               every topic's full content
       fundamentals/
         variables-types.js  ← one small file per topic, loaded on demand
         operators.js
@@ -92,7 +124,10 @@ Only `manifest.js` (small — just id/title/file per topic) loads upfront. The
 full content of a topic (explanation, code, output) is fetched with a dynamic
 `import()` the moment someone opens that topic, via `loadTopic()` in
 `manifest.js`. This keeps the initial page load light no matter how many
-topics you add, and means adding one topic never risks breaking another.
+topics you add, and means adding one topic never risks breaking another. This
+is unrelated to (and unaffected by) the static `topics/<id>/index.html` pages
+described in "Static pages & SEO" below — those are pre-built once, not
+fetched dynamically.
 
 One trade-off: if someone is offline and opens a topic they've never loaded
 on that device before, there's nothing cached for it yet, so it can't load —
@@ -115,7 +150,8 @@ export default {
     "Second key point"
   ],
   code: `Console.WriteLine("Hello");`,
-  output: `Hello`
+  output: `Hello`,
+  related: ["some-other-topic-id"] // optional — renders as "Related topics" chips
 };
 ```
 
@@ -130,6 +166,104 @@ wired into prev/next navigation, and is routable at `#/topic-id`. To add a
 whole new category, add a new `{ id, name, topics: [] }` object to the
 `CATEGORIES` array in `manifest.js` and start adding topic files under a
 matching new folder in `js/topics/`.
+
+### After adding topics: regenerate the generated files
+
+Three things are generated, not hand-maintained, and need regenerating
+whenever topics are added, removed, or renamed:
+
+- **`js/topics/search-index.js`** — a flat array of `{ id, tagline, keywords }`
+  used by the sidebar search so it can match on tagline/key-points/explanation
+  text, not just the title. Kept separate from `manifest.js` so search doesn't
+  force loading every topic's full content (code/output included) on first
+  paint.
+- **`topics/<id>/index.html`** — one real, static, fully-readable HTML page
+  per topic (see "Static pages & SEO" below), plus the sidebar/landing content
+  baked into the root `index.html`, plus `sitemap.xml`/`robots.txt`.
+
+Regenerate the static pages with:
+
+```
+node scripts/build-static.mjs
+```
+
+`search-index.js` was generated the same way this project's search index was
+first built — ask an AI assistant to "regenerate search-index.js from the
+current manifest" and point it at this README if you need to redo it, or
+extend `build-static.mjs` to also emit it.
+
+**Commit the generated output.** GitHub Pages serves static files with no
+build step, so `topics/`, the regenerated parts of `index.html`, and
+`sitemap.xml`/`robots.txt` all have to be committed, not just generated
+locally and left uncommitted. CI (below) fails the build if they're out of
+sync with the source topic files, specifically to catch this.
+
+## CI
+
+`.github/workflows/validate.yml` runs on every push/PR to `main`:
+
+1. **`node scripts/validate-topics.mjs`** — loads every topic listed in
+   `manifest.js` and checks it has the required fields (`tagline`,
+   `explanation`, `keyPoints`, `code`, `output`); checks for duplicate
+   topic/category ids; checks every `related` id points to a real topic
+   (catches typos before they ship as a dead link); checks `search-index.js`,
+   `sitemap.xml`, and `topics/<id>/` all mention/contain every topic in the
+   manifest, so it's obvious in a PR if any of them were forgotten after
+   adding, removing, or renaming a topic.
+2. **Rebuild-and-diff** — runs `node scripts/build-static.mjs` fresh, then
+   fails if that produces any changes to the already-committed `topics/`,
+   `index.html`, `sitemap.xml`, or `robots.txt`. This is what actually
+   enforces "commit the generated output" above — it doesn't just check that
+   the files exist, it checks their *content* is current.
+3. A quick structural sanity check that `sitemap.xml` is well-formed.
+
+No npm dependencies — matching the rest of the project, both scripts only use
+Node's built-in modules — so there's no `npm install` step. Run the same
+checks locally before pushing:
+
+```
+node scripts/validate-topics.mjs
+node scripts/build-static.mjs && git status --short
+```
+
+(if the second command prints any changed files, commit them.)
+
+## Static pages & SEO
+
+Every topic has a real, static HTML page at `topics/<topic-id>/index.html`,
+generated by `scripts/build-static.mjs`. Each one has its own `<title>`,
+meta description, canonical URL, and Open Graph/Twitter tags, and contains
+the topic's full explanation, key points, syntax-highlighted code, and output
+as plain readable HTML — no JavaScript required to read it or to navigate to
+another topic (the sidebar, prev/next, and related-topic links are all real
+`<a href>` links to other real pages). The root `index.html`'s sidebar and
+landing content are generated the same way, so the whole site's link graph is
+crawlable without executing JS. `sitemap.xml` lists every one of these real
+URLs for search engines.
+
+For visitors with JavaScript enabled, a small inline script at the top of
+each generated page sets `location.hash` to that topic's id via
+`history.replaceState` before anything else runs. `js/app.js`'s existing
+router (unchanged) picks that up on load and renders the same topic through
+the normal interactive SPA path — Run/Copy/Print/Mark-as-learned all become
+live immediately, and further in-app navigation goes back to being
+hash-based, exactly as it already worked before these pages existed. In
+short: crawlers and no-JS visitors get real static content and real links;
+JS visitors get hydrated into the same interactive app as always, just
+arriving through a real URL instead of `#/topic-id`.
+
+This means `#/topic-id` (via the root page) and `/topics/topic-id/` (the
+static page) both exist and show the same content — that's intentional, not
+duplicate-content risk in practice, since crawlers generally don't index hash
+fragments as separate URLs at all; the canonical URL for each topic is always
+the real `/topics/topic-id/` path.
+
+The canonical/OG URLs baked into `index.html` and `build-static.mjs`'s
+`BASE_URL` are set to `https://devmina.github.io/LearnDotNet/`, the site's
+actual GitHub Pages URL. If the repo is ever renamed or moved, update
+`BASE_URL` in `scripts/build-static.mjs` and rerun it — everything else
+(`index.html`, every `topics/<id>/index.html`, `sitemap.xml`, `robots.txt`)
+regenerates from that one constant.
 
 ## Notes on "Run"
 

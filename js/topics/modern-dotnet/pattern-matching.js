@@ -22,5 +22,6 @@ string Describe(Shape s) => s switch
 Console.WriteLine(Describe(new Shape("circle", 4)));
 Console.WriteLine(Describe(new Shape("circle", 9)));`,
   output: `Circle
-Large circle`
+Large circle`,
+  related: ["regular-expressions"]
 };

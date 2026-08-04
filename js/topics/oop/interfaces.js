@@ -22,5 +22,6 @@ public class Circle : IShape
 
 IShape shape = new Circle { Radius = 2 };
 Console.WriteLine($"Area: {shape.Area():F2}");`,
-  output: `Area: 12.57`
+  output: `Area: 12.57`,
+  related: ["dependency-injection"]
 };

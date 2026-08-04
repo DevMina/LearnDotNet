@@ -21,5 +21,6 @@ ticker.PriceChanged += p => Console.WriteLine($"Alert service sees: {p:C}");
 
 ticker.UpdatePrice(142.50m);`,
   output: `Dashboard sees: $142.50
-Alert service sees: $142.50`
+Alert service sees: $142.50`,
+  related: ["command"]
 };

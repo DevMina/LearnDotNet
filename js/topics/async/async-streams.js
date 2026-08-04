@@ -22,5 +22,6 @@ await foreach (var n in GetNumbersAsync())
     Console.WriteLine(n);`,
   output: `1
 4
-9`
+9`,
+  related: ["channels"]
 };

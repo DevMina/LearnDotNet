@@ -20,5 +20,6 @@ Point b = a;      // copies the value
 b.X = 99;
 
 Console.WriteLine($"a.X = {a.X}, b.X = {b.X}");`,
-  output: `a.X = 1, b.X = 99`
+  output: `a.X = 1, b.X = 99`,
+  related: ["boxing-unboxing"]
 };

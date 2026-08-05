@@ -27,7 +27,16 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CATEGORIES, ALL_TOPICS_FLAT, TOPIC_INDEX, loadTopic } from '../js/topics/manifest.js';
+import { TRACKS } from '../js/topics/tracks.js';
 import { highlightCSharp } from '../js/highlight.js';
+
+const TRACKS_BY_TOPIC = new Map();
+for (const track of TRACKS) {
+  for (const topicId of track.topicIds) {
+    if (!TRACKS_BY_TOPIC.has(topicId)) TRACKS_BY_TOPIC.set(topicId, []);
+    TRACKS_BY_TOPIC.get(topicId).push(track);
+  }
+}
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://devmina.github.io/LearnDotNet/';
@@ -80,6 +89,11 @@ function buildTopicMainHTML({ topic, content, category, prev, next, related, roo
     `<a class="related-chip" href="${siblingPrefix}${r.id}/">${escapeHtml(r.title)}</a>`
   ).join('\n        ');
 
+  const memberTracks = TRACKS_BY_TOPIC.get(topic.id) || [];
+  const trackBadgesHTML = memberTracks.length
+    ? `<div class="track-badges">${memberTracks.map(t => `<a class="track-badge" href="${rootPrefix}tracks/${t.id}/">&#8227; Part of: ${escapeHtml(t.title)}</a>`).join('')}</div>`
+    : '';
+
   const prevHTML = prev
     ? `<a href="${siblingPrefix}${prev.id}/"><span class="dir">Previous &larr;</span>${escapeHtml(prev.title)}</a>`
     : '<span></span>';
@@ -97,6 +111,7 @@ function buildTopicMainHTML({ topic, content, category, prev, next, related, roo
       </button>
     </div>
     <div class="topic-tagline">${content.tagline}</div>
+    ${trackBadgesHTML}
 
     <div class="prose">${content.explanation}</div>
 
@@ -135,6 +150,31 @@ function buildTopicMainHTML({ topic, content, category, prev, next, related, roo
     <div class="keyboard-hint">Tip: use &larr; &rarr; to move between topics, or press / to search.</div>`;
 }
 
+// ---------- Track page main content ----------
+function buildTrackMainHTML({ track, trackTopics, rootPrefix }) {
+  const topicHref = id => `${rootPrefix}topics/${id}/`;
+
+  const stepsHTML = trackTopics.map((t, i) => {
+    return `<a class="track-step" href="${topicHref(t.id)}">
+      <span class="track-step-num">${i + 1}</span>
+      <span class="track-step-title">${escapeHtml(t.title)}</span>
+      <span class="track-step-cat">${escapeHtml(t.category.name)}</span>
+    </a>`;
+  }).join('\n      ');
+
+  return `<div class="crumb"><a href="${rootPrefix}">Home</a><span class="sep">/</span>Guided track</div>
+    <h1 class="topic-title">${escapeHtml(track.title)}</h1>
+    <div class="topic-tagline">${escapeHtml(track.description)}</div>
+
+    <a class="track-start-btn" href="${topicHref(trackTopics[0].id)}">
+      <span class="play">&#9654;</span> Start track
+    </a>
+
+    <div class="track-steps">
+      ${stepsHTML}
+    </div>`;
+}
+
 // ---------- Landing page main content (baked into root index.html) ----------
 function buildLandingMainHTML() {
   const totalTopics = CATEGORIES.reduce((n, c) => n + c.topics.length, 0);
@@ -146,27 +186,46 @@ function buildLandingMainHTML() {
     </a>`;
   }).join('\n    ');
 
+  const trackCardsHTML = TRACKS.map(track => {
+    return `<a class="track-card" href="tracks/${track.id}/">
+      <div class="count">${track.topicIds.length} topics</div>
+      <div class="name">${escapeHtml(track.title)}</div>
+      <div class="track-card-desc">${escapeHtml(track.description)}</div>
+    </a>`;
+  }).join('\n    ');
+
   return `<div class="landing-hero">
       <h1>C# &amp; .NET,<br>explained through running code.</h1>
       <p class="lead">${totalTopics} concepts from fundamentals to design patterns &mdash; each with a short explanation,
       a real code sample, and a console you can run to see the output. Pick a folder in Solution Explorer to start,
       or jump into a category below.</p>
+      <a class="quiz-cta" href="#/quiz">&#9654; Test yourself &mdash; quick multiple-choice quiz</a>
       <div class="category-grid" id="categoryGrid">
     ${cardsHTML}
+      </div>
+
+      <h2 class="section-heading">Guided tracks</h2>
+      <p class="section-subhead">Prefer a path over browsing? These pull from the same topics above, just in a deliberate order for a specific goal.</p>
+      <div class="track-grid" id="trackGrid">
+    ${trackCardsHTML}
       </div>
     </div>`;
 }
 
 // ---------- Full HTML page wrapper ----------
-function buildPage({ title, description, canonical, assetPrefix, sidebarHTML, mainHTML, bootstrapHash }) {
-  const bootstrapScript = bootstrapHash
-    ? `<script>history.replaceState(null, '', location.pathname + location.search + '#/${bootstrapHash}');</script>\n`
+function buildPage({ title, description, canonical, assetPrefix, sidebarHTML, mainHTML, bootstrapHash, jsonLd }) {
+  const hashScript = bootstrapHash
+    ? `history.replaceState(null, '', location.pathname + location.search + '#/${bootstrapHash}');`
+    : '';
+  const jsonLdScript = jsonLd
+    ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n`
     : '';
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-${bootstrapScript}<meta charset="UTF-8">
+<script>document.documentElement.className = 'js';${hashScript}</script>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
@@ -186,7 +245,7 @@ ${bootstrapScript}<meta charset="UTF-8">
 <link rel="apple-touch-icon" href="${assetPrefix}icons/apple-touch-icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D1117'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%23E8A33D' text-anchor='middle'%3EC%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="${assetPrefix}css/style.css">
-</head>
+${jsonLdScript}</head>
 <body>
 
   <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">&#9776;</button>
@@ -220,6 +279,101 @@ ${sidebarHTML}
 </body>
 </html>
 `;
+}
+
+// ---------- Structured data (JSON-LD) ----------
+// Deliberately no datePublished/dateModified: there's no real per-topic
+// modification date available without wiring up git history, and the same
+// reasoning that killed sitemap.xml's <lastmod> applies here — a fabricated
+// "today's date" would make every generated page change every single day
+// for no real reason, which is worse than just omitting an optional field.
+function buildTopicJsonLd({ topic, content, category, canonical }) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'TechArticle',
+        headline: topic.title,
+        description: content.tagline,
+        articleSection: category.name,
+        image: OG_IMAGE,
+        url: canonical,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+        isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: BASE_URL },
+        author: { '@type': 'Person', name: 'Mina Abdo' },
+        publisher: {
+          '@type': 'Organization',
+          name: SITE_NAME,
+          logo: { '@type': 'ImageObject', url: OG_IMAGE }
+        }
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+          { '@type': 'ListItem', position: 2, name: topic.title, item: canonical }
+        ]
+      }
+    ]
+  };
+}
+
+function buildHomeJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: BASE_URL
+  };
+}
+
+
+// ---------- Generate track pages ----------
+async function buildTrackPages() {
+  const tracksDir = path.join(root, 'tracks');
+  await rm(tracksDir, { recursive: true, force: true });
+  await mkdir(tracksDir, { recursive: true });
+
+  const rootPrefix = '../../';
+
+  for (const track of TRACKS) {
+    const trackTopics = track.topicIds.map(id => TOPIC_INDEX[id]).filter(Boolean);
+
+    const sidebarHTML = buildSidebarHTML({
+      activeId: null,
+      topicHrefFor: id => `${rootPrefix}topics/${id}/`,
+      homeHref: rootPrefix
+    });
+
+    const mainHTML = buildTrackMainHTML({ track, trackTopics, rootPrefix });
+
+    const page = buildPage({
+      title: `${track.title} — ${SITE_NAME}`,
+      description: track.description,
+      canonical: `${BASE_URL}tracks/${track.id}/`,
+      assetPrefix: rootPrefix,
+      sidebarHTML,
+      mainHTML,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: track.title,
+        description: track.description,
+        itemListElement: trackTopics.map((t, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: t.title,
+          url: `${BASE_URL}topics/${t.id}/`
+        }))
+      }
+    });
+
+    const dir = path.join(tracksDir, track.id);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'index.html'), page, 'utf-8');
+  }
+  return TRACKS.length;
 }
 
 // ---------- Generate topic pages ----------
@@ -257,7 +411,8 @@ async function buildTopicPages() {
       assetPrefix: rootPrefix,
       sidebarHTML,
       mainHTML,
-      bootstrapHash: navMeta.id
+      bootstrapHash: navMeta.id,
+      jsonLd: buildTopicJsonLd({ topic: navMeta, content, category, canonical: `${BASE_URL}topics/${navMeta.id}/` })
     });
 
     const dir = path.join(topicsDir, navMeta.id);
@@ -302,10 +457,16 @@ async function updateRootIndex() {
 // fail constantly for no real reason. Omitting it keeps generation fully
 // deterministic: the file only changes when the actual set of topics does.
 async function updateSitemap() {
+  // The contact "page" is only reachable as a hash fragment (#/contact) on
+  // the same homepage document, so it isn't a distinct URL a crawler could
+  // index separately — listing it here would just be noise (and could read
+  // as a duplicate-URL warning in tools like Search Console). Real topic
+  // and track pages are genuinely distinct documents, so those are the only
+  // entries.
   const urls = [
     BASE_URL,
-    `${BASE_URL}#/contact`,
-    ...ALL_TOPICS_FLAT.map(t => `${BASE_URL}topics/${t.id}/`)
+    ...ALL_TOPICS_FLAT.map(t => `${BASE_URL}topics/${t.id}/`),
+    ...TRACKS.map(t => `${BASE_URL}tracks/${t.id}/`)
   ];
 
   const entries = urls.map(u => `  <url>\n    <loc>${u}</loc>\n  </url>`).join('\n');
@@ -319,10 +480,12 @@ async function updateSitemap() {
   return urls.length;
 }
 
+const trackCount = await buildTrackPages();
 const topicCount = await buildTopicPages();
 await updateRootIndex();
 const urlCount = await updateSitemap();
 
+console.log(`✓ Generated ${trackCount} static track pages under tracks/<id>/`);
 console.log(`✓ Generated ${topicCount} static topic pages under topics/<id>/`);
 console.log(`✓ Regenerated sidebar + landing content in index.html`);
 console.log(`✓ Regenerated sitemap.xml (${urlCount} URLs) and robots.txt with real paths`);

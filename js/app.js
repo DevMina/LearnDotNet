@@ -1,6 +1,19 @@
 import { CATEGORIES, TOPIC_INDEX, ALL_TOPICS_FLAT, loadTopic } from './topics/manifest.js';
 import { SEARCH_INDEX } from './topics/search-index.js';
+import { TRACKS } from './topics/tracks.js';
 import { highlightCSharp } from './highlight.js';
+import { buildQuestion, buildQuiz } from './quiz.js';
+
+// Reverse lookup: topic id -> array of tracks it belongs to (usually 0 or 1,
+// but a topic can appear in more than one track without any duplication of
+// content — tracks are just orderings over the same underlying topics).
+const TRACKS_BY_TOPIC = new Map();
+for (const track of TRACKS) {
+  for (const topicId of track.topicIds) {
+    if (!TRACKS_BY_TOPIC.has(topicId)) TRACKS_BY_TOPIC.set(topicId, []);
+    TRACKS_BY_TOPIC.get(topicId).push(track);
+  }
+}
 
 const sidebarEl = document.getElementById('sidebar');
 const mainEl = document.getElementById('main');
@@ -224,12 +237,17 @@ function renderLanding() {
       <p class="lead">${totalTopics} concepts from fundamentals to design patterns &mdash; each with a short explanation,
       a real code sample, and a console you can run to see the output. Pick a folder in Solution Explorer to start,
       or jump into a category below.</p>
+      <a class="quiz-cta" href="#/quiz">&#9654; Test yourself &mdash; quick multiple-choice quiz</a>
       ${totalLearned > 0 ? `
       <div class="progress-summary">
         <div class="progress-summary-label">${totalLearned} of ${totalTopics} topics marked as learned</div>
         <div class="progress-bar" role="progressbar" aria-valuenow="${totalLearned}" aria-valuemin="0" aria-valuemax="${totalTopics}" aria-label="Overall learning progress"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
       </div>` : ''}
       <div class="category-grid" id="categoryGrid"></div>
+
+      <h2 class="section-heading">Guided tracks</h2>
+      <p class="section-subhead">Prefer a path over browsing? These pull from the same topics above, just in a deliberate order for a specific goal.</p>
+      <div class="track-grid" id="trackGrid"></div>
     </div>
   `;
 
@@ -248,6 +266,23 @@ function renderLanding() {
       location.hash = `#/${cat.topics[0].id}`;
     });
     grid.appendChild(card);
+  });
+
+  const trackGrid = document.getElementById('trackGrid');
+  TRACKS.forEach(track => {
+    const learnedInTrack = learnedCountFor(track.topicIds);
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'track-card';
+    card.innerHTML = `
+      <div class="count">${track.topicIds.length} topics${learnedInTrack > 0 ? ` &middot; ${learnedInTrack} learned` : ''}</div>
+      <div class="name">${track.title}</div>
+      <div class="track-card-desc">${track.description}</div>
+    `;
+    card.addEventListener('click', () => {
+      location.hash = `#/track/${track.id}`;
+    });
+    trackGrid.appendChild(card);
   });
 
   document.title = 'C# & .NET Concepts — Interactive Guide';
@@ -324,6 +359,7 @@ async function renderTopic(topicId, myToken) {
   const related = (topic.related || [])
     .map(id => TOPIC_INDEX[id])
     .filter(Boolean);
+  const memberTracks = TRACKS_BY_TOPIC.get(topicId) || [];
 
   mainEl.innerHTML = `
     <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>${category.name}<span class="sep">/</span>${topic.title}.cs</div>
@@ -334,12 +370,18 @@ async function renderTopic(topicId, myToken) {
       </button>
     </div>
     <div class="topic-tagline">${topic.tagline}</div>
+    ${memberTracks.length ? `<div class="track-badges">${memberTracks.map(t => `<a class="track-badge" href="#/track/${t.id}">&#8227; Part of: ${t.title}</a>`).join('')}</div>` : ''}
 
     <div class="prose">${topic.explanation}</div>
 
     <div class="key-points">
       <div class="kp-title">Key points</div>
       <ul>${topic.keyPoints.map(kp => `<li>${kp}</li>`).join('')}</ul>
+    </div>
+
+    <div class="quiz-box" id="quickCheck">
+      <div class="kp-title">Quick check</div>
+      <div class="quiz-loading">Preparing a question&hellip;</div>
     </div>
 
     <div class="workbench">
@@ -400,6 +442,88 @@ async function renderTopic(topicId, myToken) {
       setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
     }
   });
+
+  initQuickCheck(navMeta, content, myToken);
+}
+
+// ---------- Quick check (per-topic quiz widget) ----------
+// Renders a single multiple-choice question built from this topic's own
+// keyPoints (correct answer) plus keyPoints borrowed from other topics in
+// the same category (wrong answers) — see js/quiz.js. Runs after the main
+// topic content is already on screen, since it needs a few more topics'
+// content loaded and shouldn't block the page the person actually asked for.
+function renderQuizChoices(container, question, onAnswered) {
+  const choicesHTML = question.choices.map((c, i) =>
+    `<button class="quiz-choice" type="button" data-idx="${i}">${c.text}</button>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="quiz-prompt">${question.prompt}</div>
+    <div class="quiz-choices">${choicesHTML}</div>
+    <div class="quiz-feedback" aria-live="polite"></div>
+  `;
+
+  const buttons = [...container.querySelectorAll('.quiz-choice')];
+  let answered = false;
+
+  buttons.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      const wasCorrect = question.choices[i].correct;
+      buttons.forEach((b, j) => {
+        b.disabled = true;
+        if (question.choices[j].correct) b.classList.add('correct');
+        else if (j === i) b.classList.add('incorrect');
+      });
+      const feedback = container.querySelector('.quiz-feedback');
+      feedback.textContent = wasCorrect
+        ? 'Correct!'
+        : 'Not quite — the correct answer is highlighted above.';
+      feedback.classList.add(wasCorrect ? 'correct' : 'incorrect');
+      onAnswered(wasCorrect);
+    });
+  });
+}
+
+async function initQuickCheck(navMeta, content, myToken) {
+  const container = document.getElementById('quickCheck');
+  if (!container || !content.keyPoints || content.keyPoints.length === 0) {
+    if (container) container.remove();
+    return;
+  }
+
+  let usedIndices = [];
+
+  async function loadNext() {
+    if (usedIndices.length >= content.keyPoints.length) usedIndices = [];
+    const available = content.keyPoints.map((_, i) => i).filter(i => !usedIndices.includes(i));
+    const correctIndex = available[Math.floor(Math.random() * available.length)];
+    usedIndices.push(correctIndex);
+
+    const question = await buildQuestion({
+      subjectMeta: navMeta,
+      subjectContent: content,
+      poolMetas: navMeta.category.topics,
+      loadTopic,
+      correctIndex
+    });
+
+    if (myToken !== renderToken) return; // navigated away while this was loading
+    const el = document.getElementById('quickCheck');
+    if (!el) return;
+
+    if (!question) {
+      el.innerHTML = `<div class="kp-title">Quick check</div><div class="quiz-loading">Not enough other topics in this category yet to build a fair question here.</div>`;
+      return;
+    }
+
+    el.innerHTML = `<div class="kp-title">Quick check</div><div class="quiz-question"></div><button class="quiz-another-btn" type="button">Try another question</button>`;
+    renderQuizChoices(el.querySelector('.quiz-question'), question, () => {});
+    el.querySelector('.quiz-another-btn').addEventListener('click', loadNext);
+  }
+
+  await loadNext();
 }
 
 function navLink(topic, label, isPrev) {
@@ -430,7 +554,183 @@ function runSample(topic) {
   }, 450);
 }
 
-// ---------- Contact page ----------
+// ---------- Guided track page ----------
+function renderTrack(trackId) {
+  const track = TRACKS.find(t => t.id === trackId);
+  if (!track) {
+    renderLanding();
+    return;
+  }
+
+  const trackTopics = track.topicIds.map(id => TOPIC_INDEX[id]).filter(Boolean);
+  const learnedInTrack = learnedCountFor(track.topicIds);
+  const pct = trackTopics.length ? Math.round((learnedInTrack / trackTopics.length) * 100) : 0;
+  const firstUnlearned = trackTopics.find(t => !isLearned(t.id)) || trackTopics[0];
+
+  document.title = `${track.title} — C# & .NET Concepts`;
+  updateMetaTags({
+    description: track.description,
+    url: `${location.origin}${location.pathname}#/track/${track.id}`
+  });
+
+  const stepsHTML = trackTopics.map((t, i) => {
+    const learned = isLearned(t.id);
+    return `<a class="track-step${learned ? ' learned' : ''}" href="#/${t.id}">
+      <span class="track-step-num">${learned ? '&#10003;' : i + 1}</span>
+      <span class="track-step-title">${t.title}</span>
+      <span class="track-step-cat">${t.category.name}</span>
+    </a>`;
+  }).join('');
+
+  mainEl.innerHTML = `
+    <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>Guided track</div>
+    <h1 class="topic-title">${track.title}</h1>
+    <div class="topic-tagline">${track.description}</div>
+
+    ${learnedInTrack > 0 ? `
+    <div class="progress-summary">
+      <div class="progress-summary-label">${learnedInTrack} of ${trackTopics.length} topics in this track marked as learned</div>
+      <div class="progress-bar" role="progressbar" aria-valuenow="${learnedInTrack}" aria-valuemin="0" aria-valuemax="${trackTopics.length}" aria-label="Track progress"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    </div>` : ''}
+
+    <a class="track-start-btn" href="#/${firstUnlearned.id}">
+      <span class="play">&#9654;</span> ${learnedInTrack > 0 ? 'Continue' : 'Start'} track
+    </a>
+
+    <div class="track-steps">
+      ${stepsHTML}
+    </div>
+  `;
+}
+
+// ---------- Quiz mode page (#/quiz) ----------
+// Three states rendered in place (no sub-routes, so the browser's back
+// button returns to wherever the person was before starting a quiz, not to
+// individual questions): pick a scope, answer questions, see results.
+const QUIZ_QUESTION_COUNT = 10;
+
+function renderQuizScopeSelect() {
+  const totalTopics = ALL_TOPICS_FLAT.length;
+
+  document.title = 'Test yourself — C# & .NET Concepts';
+  updateMetaTags({
+    description: 'Multiple-choice questions built from the key points of every topic — pick a category or mix the whole site.',
+    url: `${location.origin}${location.pathname}#/quiz`
+  });
+
+  mainEl.innerHTML = `
+    <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>Quiz</div>
+    <h1 class="topic-title">Test yourself</h1>
+    <div class="topic-tagline">Multiple-choice, built from the same key points on every topic page. Pick a category, or mix the whole site.</div>
+    <div class="quiz-scope-grid" id="quizScopeGrid"></div>
+  `;
+
+  const grid = document.getElementById('quizScopeGrid');
+
+  const allCard = document.createElement('button');
+  allCard.type = 'button';
+  allCard.className = 'quiz-scope-card';
+  allCard.innerHTML = `<div class="count">${totalTopics} topics</div><div class="name">All topics (mixed)</div>`;
+  allCard.addEventListener('click', () => startQuizSession(ALL_TOPICS_FLAT, 'All topics (mixed)'));
+  grid.appendChild(allCard);
+
+  CATEGORIES.forEach(cat => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'quiz-scope-card';
+    card.innerHTML = `<div class="count">${cat.topics.length} topics</div><div class="name">${cat.name}</div>`;
+    card.addEventListener('click', () => startQuizSession(cat.topics, cat.name));
+    grid.appendChild(card);
+  });
+}
+
+async function startQuizSession(poolMetas, scopeLabel) {
+  const myToken = ++renderToken;
+
+  mainEl.innerHTML = `
+    <div class="crumb"><a href="#/">Home</a><span class="sep">/</span><a href="#/quiz">Quiz</a><span class="sep">/</span>${scopeLabel}</div>
+    <h1 class="topic-title">Test yourself</h1>
+    <div class="quiz-progress" id="quizProgress">Building your quiz&hellip;</div>
+    <div class="quiz-session-box" id="quizSessionBox"></div>
+  `;
+
+  const questions = await buildQuiz({ poolMetas, loadTopic, questionCount: QUIZ_QUESTION_COUNT });
+  if (myToken !== renderToken) return; // navigated away while building
+
+  if (questions.length === 0) {
+    document.getElementById('quizProgress').textContent = '';
+    document.getElementById('quizSessionBox').innerHTML = `<p class="topic-tagline">This scope doesn't have enough topics to build a fair quiz yet.</p>`;
+    return;
+  }
+
+  let index = 0;
+  const results = [];
+
+  function showQuestion() {
+    document.getElementById('quizProgress').textContent = `Question ${index + 1} of ${questions.length} \u2014 ${scopeLabel}`;
+    const box = document.getElementById('quizSessionBox');
+    box.innerHTML = '';
+    renderQuizChoices(box, questions[index], (wasCorrect) => {
+      results.push({ topicId: questions[index].topicId, topicTitle: questions[index].topicTitle, correct: wasCorrect });
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'quiz-next-btn';
+      nextBtn.textContent = index === questions.length - 1 ? 'See results' : 'Next question';
+      nextBtn.addEventListener('click', () => {
+        index++;
+        if (index >= questions.length) renderQuizResults(results, poolMetas, scopeLabel);
+        else showQuestion();
+      });
+      box.appendChild(nextBtn);
+    });
+  }
+
+  showQuestion();
+}
+
+function renderQuizResults(results, poolMetas, scopeLabel) {
+  const correctCount = results.filter(r => r.correct).length;
+  const wrongResults = results.filter(r => !r.correct);
+  const rightResults = results.filter(r => r.correct);
+
+  document.title = 'Quiz results — C# & .NET Concepts';
+
+  mainEl.innerHTML = `
+    <div class="crumb"><a href="#/">Home</a><span class="sep">/</span><a href="#/quiz">Quiz</a><span class="sep">/</span>Results</div>
+    <h1 class="topic-title">Quiz results</h1>
+    <div class="topic-tagline">${scopeLabel}</div>
+    <div class="quiz-results-score">${correctCount} / ${results.length}</div>
+
+    ${wrongResults.length ? `
+    <div class="quiz-results-list">
+      <div class="kp-title">Worth another look</div>
+      ${wrongResults.map(r => `<div class="quiz-result-row wrong"><span class="quiz-result-icon">&#10007;</span><a href="#/${r.topicId}">${r.topicTitle}</a></div>`).join('')}
+    </div>` : ''}
+
+    <div class="quiz-actions">
+      <button class="quiz-next-btn" id="retakeBtn" type="button">Retake this quiz</button>
+      <button class="run-btn" id="chooseAnotherBtn" type="button">Choose a different scope</button>
+      ${rightResults.length ? `<button class="learned-toggle" id="markLearnedBtn" type="button"><span class="check">&#10003;</span> Mark ${rightResults.length} correct topic${rightResults.length === 1 ? '' : 's'} as learned</button>` : ''}
+    </div>
+  `;
+
+  document.getElementById('retakeBtn').addEventListener('click', () => startQuizSession(poolMetas, scopeLabel));
+  document.getElementById('chooseAnotherBtn').addEventListener('click', () => renderQuizScopeSelect());
+
+  const markBtn = document.getElementById('markLearnedBtn');
+  if (markBtn) {
+    markBtn.addEventListener('click', () => {
+      const set = getLearnedSet();
+      rightResults.forEach(r => set.add(r.topicId));
+      saveLearnedSet(set);
+      markBtn.textContent = 'Marked as learned!';
+      markBtn.disabled = true;
+      renderSidebar(null);
+    }, { once: true });
+  }
+}
+
+
 const CONTACT_EMAIL = 'mina.abdo2030@gmail.com';
 
 function renderContact() {
@@ -492,6 +792,18 @@ async function route() {
   }
   if (hash === 'contact') {
     renderContact();
+    renderSidebar(null);
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (hash.startsWith('track/')) {
+    renderTrack(hash.slice('track/'.length));
+    renderSidebar(null);
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (hash === 'quiz') {
+    renderQuizScopeSelect();
     renderSidebar(null);
     window.scrollTo(0, 0);
     return;

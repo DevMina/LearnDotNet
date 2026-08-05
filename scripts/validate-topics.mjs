@@ -29,6 +29,9 @@ const { CATEGORIES, ALL_TOPICS_FLAT, loadTopic } = await import(
 const { SEARCH_INDEX } = await import(
   path.join(root, 'js/topics/search-index.js')
 );
+const { TRACKS } = await import(
+  path.join(root, 'js/topics/tracks.js')
+);
 
 const errors = [];
 const REQUIRED_FIELDS = ['tagline', 'explanation', 'keyPoints', 'code', 'output'];
@@ -146,6 +149,48 @@ for (const cat of CATEGORIES) {
   categoryIds.add(cat.id);
   if (!Array.isArray(cat.topics) || cat.topics.length === 0) {
     errors.push(`Category "${cat.id}" has no topics`);
+  }
+}
+
+// ---------- Guided tracks ----------
+const trackIds = new Set();
+for (const track of TRACKS) {
+  if (trackIds.has(track.id)) {
+    errors.push(`Duplicate track id "${track.id}" in tracks.js`);
+  }
+  trackIds.add(track.id);
+
+  if (!track.title || !track.description) {
+    errors.push(`Track "${track.id}" is missing a title or description`);
+  }
+  if (!Array.isArray(track.topicIds) || track.topicIds.length === 0) {
+    errors.push(`Track "${track.id}" has no topicIds`);
+    continue;
+  }
+  for (const topicId of track.topicIds) {
+    if (!allIds.has(topicId)) {
+      errors.push(`Track "${track.id}" references topic id "${topicId}", which doesn't exist in the manifest`);
+    }
+  }
+}
+
+let trackDirs = [];
+try {
+  const { readdir } = await import('node:fs/promises');
+  trackDirs = await readdir(path.join(root, 'tracks'));
+} catch {
+  errors.push('tracks/ directory is missing — run `node scripts/build-static.mjs`');
+}
+if (trackDirs.length) {
+  for (const track of TRACKS) {
+    if (!trackDirs.includes(track.id)) {
+      errors.push(`tracks/${track.id}/ is missing — run \`node scripts/build-static.mjs\``);
+    }
+  }
+  for (const dir of trackDirs) {
+    if (!trackIds.has(dir)) {
+      errors.push(`tracks/${dir}/ exists but "${dir}" is no longer a track — run \`node scripts/build-static.mjs\` to remove stale output`);
+    }
   }
 }
 

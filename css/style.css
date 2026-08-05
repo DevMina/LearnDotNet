@@ -337,6 +337,200 @@ h1.topic-title {
 
 .key-points ul { margin: 0; padding-left: 18px; }
 .key-points li { margin-bottom: 6px; font-size: 14px; }
+
+/* ---------- Quiz (quick check + full quiz mode) ---------- */
+.quiz-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+
+.quiz-box .kp-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--violet);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.quiz-loading {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.quiz-prompt {
+  font-size: 14.5px;
+  color: var(--heading);
+  margin-bottom: 12px;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-choice {
+  text-align: left;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-family: inherit;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.quiz-choice:hover:not(:disabled) { border-color: var(--teal); }
+.quiz-choice:disabled { cursor: default; }
+
+.quiz-choice.correct {
+  border-color: var(--green);
+  background: rgba(63, 185, 80, 0.1);
+  color: var(--green);
+}
+
+.quiz-choice.incorrect {
+  border-color: #E85D5D;
+  background: rgba(232, 93, 93, 0.1);
+  color: #E85D5D;
+}
+
+.quiz-feedback {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  min-height: 1em;
+}
+
+.quiz-feedback.correct { color: var(--green); }
+.quiz-feedback.incorrect { color: #E85D5D; }
+
+.quiz-another-btn {
+  margin-top: 14px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.quiz-another-btn:hover { color: var(--text); border-color: var(--muted); }
+
+/* ---------- Quiz mode page (#/quiz) ---------- */
+.quiz-scope-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.quiz-scope-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.quiz-scope-card:hover { border-color: var(--violet); }
+
+.quiz-scope-card .count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.quiz-scope-card .name {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  color: var(--heading);
+  margin-top: 4px;
+}
+
+.quiz-progress {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.quiz-session-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.quiz-next-btn {
+  margin-top: 16px;
+  background: var(--amber);
+  color: #0D1117;
+  border: none;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.quiz-next-btn:hover { filter: brightness(1.08); }
+.quiz-next-btn:disabled { opacity: 0.4; cursor: default; }
+
+.quiz-results-score {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  color: var(--heading);
+  margin: 16px 0 4px;
+}
+
+.quiz-results-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13.5px;
+}
+
+.quiz-result-row.wrong { border-color: rgba(232, 93, 93, 0.4); }
+.quiz-result-row.right { border-color: rgba(63, 185, 80, 0.3); }
+
+.quiz-result-icon { font-family: var(--font-mono); flex-shrink: 0; }
+.quiz-result-row.right .quiz-result-icon { color: var(--green); }
+.quiz-result-row.wrong .quiz-result-icon { color: #E85D5D; }
+
+.quiz-result-row a { flex: 1; color: var(--text); }
+.quiz-result-row a:hover { color: var(--heading); }
+
+.quiz-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
 .key-points li:last-child { margin-bottom: 0; }
 
 /* ---------- Code / console panel ---------- */
@@ -650,6 +844,167 @@ pre.code-block {
   margin-top: 6px;
 }
 
+/* ---------- Guided tracks ---------- */
+.quiz-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 22px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--violet);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 16px;
+}
+
+.quiz-cta:hover { border-color: var(--violet); text-decoration: none; }
+
+.section-heading {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  color: var(--heading);
+  margin: 36px 0 6px;
+}
+
+.section-subhead {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 12px;
+  max-width: 620px;
+}
+
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.track-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 18px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+  display: block;
+}
+
+.track-card:hover { border-color: var(--teal); }
+
+.track-card .count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.track-card .name {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--heading);
+  margin-top: 6px;
+}
+
+.track-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Badge on a topic page showing it belongs to one or more guided tracks */
+.track-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.track-badge {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--teal);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.track-badge:hover { border-color: var(--teal); text-decoration: none; }
+
+/* Start/continue button + ordered step list on a track page */
+.track-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  background: var(--green);
+  color: #0D1117;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+}
+
+.track-start-btn:hover { text-decoration: none; filter: brightness(1.08); }
+.track-start-btn .play { font-size: 10px; }
+
+.track-steps {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.track-step + .track-step { margin-top: 8px; }
+.track-step:hover { border-color: var(--amber); text-decoration: none; }
+
+.track-step-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-step.learned .track-step-num {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.track-step-title {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--heading);
+  flex: 1;
+}
+
+.track-step-cat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
 /* ---------- Site footer ---------- */
 .site-footer {
   border-top: 1px solid var(--border);
@@ -740,18 +1095,24 @@ pre.code-block {
 }
 
 @media (max-width: 860px) {
-  .mobile-toggle { display: block; }
-  .mobile-toggle.is-hidden { display: none; }
-  .sidebar {
+  /* The collapsible drawer (hamburger + off-canvas sidebar + backdrop) only
+     works with JS to toggle it open — app.js adds/removes these classes.
+     Scoping it to html.js means a no-JS visitor never sees a button that
+     does nothing; see the html:not(.js) block below for what they get
+     instead: the sidebar simply stacked in-flow, fully readable and
+     navigable with real links, no toggle required. */
+  html.js .mobile-toggle { display: block; }
+  html.js .mobile-toggle.is-hidden { display: none; }
+  html.js .sidebar {
     position: fixed;
     left: -300px;
     z-index: 9;
     transition: left 0.2s ease;
     box-shadow: 8px 0 24px rgba(0,0,0,0.4);
   }
-  .sidebar.open { left: 0; }
-  .sidebar-header { padding-right: 44px; }
-  .sidebar-close {
+  html.js .sidebar.open { left: 0; }
+  html.js .sidebar-header { padding-right: 44px; }
+  html.js .sidebar-close {
     display: block;
     position: absolute;
     top: 14px;
@@ -766,6 +1127,14 @@ pre.code-block {
     line-height: 1;
     cursor: pointer;
   }
+  html.js .backdrop.visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 8;
+  }
+
   .main { padding: 70px 20px 60px; max-width: 100%; }
   .landing-hero h1 { font-size: 30px; }
 
@@ -773,13 +1142,32 @@ pre.code-block {
   .topic-nav a { max-width: 100%; }
 
   .topic-title-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
 
-  .backdrop.visible {
+/* No-JS mobile fallback: stack content above a full, plain, in-flow sidebar
+   instead of the off-canvas drawer above (which requires JS to open and
+   would otherwise be permanently unreachable — no button, no scroll, no way
+   to see it at all). Real content first, then a real, fully-linked way to
+   get to every other topic — nothing here depends on JavaScript running. */
+@media (max-width: 860px) {
+  html:not(.js) body { flex-direction: column; }
+  html:not(.js) .mobile-toggle { display: none; }
+  html:not(.js) .content-column {
+    order: 1;
+    flex: none;
     display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 8;
+    min-height: 0;
+  }
+  html:not(.js) .sidebar {
+    order: 2;
+    position: static;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    border-right: none;
+    border-top: 1px solid var(--border);
   }
 }
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-<script>history.replaceState(null, '', location.pathname + location.search + '#/adapter');</script>
+<script>document.documentElement.className = 'js';history.replaceState(null, '', location.pathname + location.search + '#/adapter');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adapter — C# &amp; .NET Concepts</title>
@@ -22,6 +22,7 @@
 <link rel="apple-touch-icon" href="../../icons/apple-touch-icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D1117'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%23E8A33D' text-anchor='middle'%3EC%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Adapter","description":"Make an incompatible interface fit the one you need.","articleSection":"Design Patterns","image":"https://devmina.github.io/LearnDotNet/icons/icon-512.png","url":"https://devmina.github.io/LearnDotNet/topics/adapter/","mainEntityOfPage":{"@type":"WebPage","@id":"https://devmina.github.io/LearnDotNet/topics/adapter/"},"isPartOf":{"@type":"WebSite","name":"C# & .NET Concepts","url":"https://devmina.github.io/LearnDotNet/"},"author":{"@type":"Person","name":"Mina Abdo"},"publisher":{"@type":"Organization","name":"C# & .NET Concepts","logo":{"@type":"ImageObject","url":"https://devmina.github.io/LearnDotNet/icons/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devmina.github.io/LearnDotNet/"},{"@type":"ListItem","position":2,"name":"Adapter","item":"https://devmina.github.io/LearnDotNet/topics/adapter/"}]}]}</script>
 </head>
 <body>
 
@@ -153,6 +154,7 @@
       </button>
     </div>
     <div class="topic-tagline">Make an incompatible interface fit the one you need.</div>
+    <div class="track-badges"><a class="track-badge" href="../../tracks/design-patterns-essentials/">&#8227; Part of: Design Patterns Essentials</a></div>
 
     <div class="prose">
           <p>The <strong>Adapter</strong> pattern wraps an existing class behind a new interface so it can be used where that interface is expected, without modifying the original class. It's the classic fix for plugging a third-party or legacy API into code written against your own abstraction.</p>

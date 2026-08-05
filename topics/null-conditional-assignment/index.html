@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-<script>history.replaceState(null, '', location.pathname + location.search + '#/null-conditional-assignment');</script>
+<script>document.documentElement.className = 'js';history.replaceState(null, '', location.pathname + location.search + '#/null-conditional-assignment');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Null-Conditional Assignment — C# &amp; .NET Concepts</title>
@@ -22,6 +22,7 @@
 <link rel="apple-touch-icon" href="../../icons/apple-touch-icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D1117'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%23E8A33D' text-anchor='middle'%3EC%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Null-Conditional Assignment","description":"Use ?. on the left side of an assignment (C# 14).","articleSection":"C# 12–14 Highlights","image":"https://devmina.github.io/LearnDotNet/icons/icon-512.png","url":"https://devmina.github.io/LearnDotNet/topics/null-conditional-assignment/","mainEntityOfPage":{"@type":"WebPage","@id":"https://devmina.github.io/LearnDotNet/topics/null-conditional-assignment/"},"isPartOf":{"@type":"WebSite","name":"C# & .NET Concepts","url":"https://devmina.github.io/LearnDotNet/"},"author":{"@type":"Person","name":"Mina Abdo"},"publisher":{"@type":"Organization","name":"C# & .NET Concepts","logo":{"@type":"ImageObject","url":"https://devmina.github.io/LearnDotNet/icons/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devmina.github.io/LearnDotNet/"},{"@type":"ListItem","position":2,"name":"Null-Conditional Assignment","item":"https://devmina.github.io/LearnDotNet/topics/null-conditional-assignment/"}]}]}</script>
 </head>
 <body>
 
@@ -153,6 +154,7 @@
       </button>
     </div>
     <div class="topic-tagline">Use ?. on the left side of an assignment (C# 14).</div>
+    
 
     <div class="prose">
           <p>Before C# 14, safely assigning to a property on a possibly-null object required an explicit <em>if</em> check first. <strong>Null-conditional assignment</strong> lets you write <em>customer?.Name = "Guest"</em> directly — the right-hand side is only evaluated and assigned when the receiver isn't null, and the whole statement is a no-op otherwise.</p>

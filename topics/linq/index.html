@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-<script>history.replaceState(null, '', location.pathname + location.search + '#/linq');</script>
+<script>document.documentElement.className = 'js';history.replaceState(null, '', location.pathname + location.search + '#/linq');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LINQ — C# &amp; .NET Concepts</title>
@@ -22,6 +22,7 @@
 <link rel="apple-touch-icon" href="../../icons/apple-touch-icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D1117'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%23E8A33D' text-anchor='middle'%3EC%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"LINQ","description":"Query collections declaratively, like SQL for in-memory data.","articleSection":"Intermediate","image":"https://devmina.github.io/LearnDotNet/icons/icon-512.png","url":"https://devmina.github.io/LearnDotNet/topics/linq/","mainEntityOfPage":{"@type":"WebPage","@id":"https://devmina.github.io/LearnDotNet/topics/linq/"},"isPartOf":{"@type":"WebSite","name":"C# & .NET Concepts","url":"https://devmina.github.io/LearnDotNet/"},"author":{"@type":"Person","name":"Mina Abdo"},"publisher":{"@type":"Organization","name":"C# & .NET Concepts","logo":{"@type":"ImageObject","url":"https://devmina.github.io/LearnDotNet/icons/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devmina.github.io/LearnDotNet/"},{"@type":"ListItem","position":2,"name":"LINQ","item":"https://devmina.github.io/LearnDotNet/topics/linq/"}]}]}</script>
 </head>
 <body>
 
@@ -153,6 +154,7 @@
       </button>
     </div>
     <div class="topic-tagline">Query collections declaratively, like SQL for in-memory data.</div>
+    <div class="track-badges"><a class="track-badge" href="../../tracks/interview-prep/">&#8227; Part of: Interview Prep: Core Concepts</a></div>
 
     <div class="prose">
           <p><strong>LINQ</strong> (Language Integrated Query) adds query operators like <em>Where</em>, <em>Select</em>, <em>OrderBy</em>, and <em>GroupBy</em> directly onto any <em>IEnumerable&lt;T&gt;</em>. These are lazily evaluated — nothing runs until you actually enumerate the result, e.g. with <em>foreach</em> or <em>.ToList()</em>.</p>

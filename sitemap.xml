@@ -4,9 +4,6 @@
     <loc>https://devmina.github.io/LearnDotNet/</loc>
   </url>
   <url>
-    <loc>https://devmina.github.io/LearnDotNet/#/contact</loc>
-  </url>
-  <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/variables-types/</loc>
   </url>
   <url>
@@ -215,5 +212,20 @@
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/command/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/getting-started/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/async-deep-dive/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/design-patterns-essentials/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/modern-csharp/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/interview-prep/</loc>
   </url>
 </urlset>

@@ -29,5 +29,10 @@ public class Program
 var app = new Program(new FriendlyGreeter());
 app.Run();`,
   output: `Hey there, Mina!`,
-  related: ["interfaces", "reflection"]
+  related: ["interfaces", "reflection", "unit-testing", "solid-principles"],
+  mistakes: [
+      "Injecting a Scoped service into a Singleton \u2014 the scoped service is captured and outlives its scope",
+      "Resolving services from IServiceProvider directly (service locator) instead of injecting them \u2014 hides dependencies",
+      "Registering the same service twice with different lifetimes \u2014 the last registration wins, which is rarely intended"
+  ]
 };

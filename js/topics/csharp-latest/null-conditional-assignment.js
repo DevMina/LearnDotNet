@@ -18,5 +18,10 @@ customer = new Customer();
 customer?.Name = "Priya"; // assigns
 
 Console.WriteLine(customer.Name);`,
-  output: `Priya`
+  output: `Priya`,
+  mistakes: [
+      "Using ??= when you actually want to overwrite existing values \u2014 ??= only assigns if the left side is null",
+      "Forgetting that ??= is not atomic \u2014 it's not thread-safe without additional synchronisation",
+      "Chaining ??= with side-effectful right-hand sides without realising the right side runs at most once"
+  ]
 };

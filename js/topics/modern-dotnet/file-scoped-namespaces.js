@@ -23,5 +23,10 @@ using ShippingApp.Models;
 var package = new Package { TrackingNumber = "1Z999AA1" };
 Console.WriteLine(package.TrackingNumber);`,
   output: `1Z999AA1`,
-  related: ["top-level-statements"]
+  related: ["top-level-statements"],
+  mistakes: [
+      "Mixing file-scoped and block-scoped namespaces in the same project \u2014 pick one style and stick to it",
+      "Using file-scoped namespaces in a file with multiple namespaces \u2014 not allowed; one namespace per file",
+      "Forgetting the semicolon after the namespace declaration \u2014 it's a statement, not a block"
+  ]
 };

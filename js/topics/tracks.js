@@ -44,10 +44,21 @@ export const TRACKS = [
   {
     id: 'interview-prep',
     title: 'Interview Prep: Core Concepts',
-    description: 'The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, and exception handling — reviewed in a sensible order.',
+    description: 'The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, exception handling, and memory management — reviewed in a sensible order.',
     topicIds: [
       'classes-objects', 'inheritance', 'polymorphism', 'interfaces',
-      'abstract-classes', 'generics', 'linq', 'exceptions', 'delegates-events'
+      'abstract-classes', 'generics', 'linq', 'exceptions', 'delegates-events',
+      'memory-management', 'solid-principles'
+    ]
+  },
+  {
+    id: 'aspnet-core-essentials',
+    title: 'ASP.NET Core Essentials',
+    description: 'Build real web APIs from the ground up — DI, middleware, Minimal APIs, configuration, logging, authentication, and background services.',
+    topicIds: [
+      'dependency-injection', 'middleware', 'minimal-apis', 'configuration',
+      'options-pattern', 'logging', 'authentication', 'jwt',
+      'caching', 'background-services'
     ]
   }
 ];

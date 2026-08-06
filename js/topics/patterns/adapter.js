@@ -29,5 +29,10 @@ public class LegacyLoggerAdapter : IJsonLogger
 IJsonLogger logger = new LegacyLoggerAdapter(new LegacyFileLogger());
 logger.LogJson("{\\"event\\":\\"started\\"}");`,
   output: `[FILE] {"event":"started"}`,
-  related: ["decorator"]
+  related: ["decorator"],
+  mistakes: [
+      "Creating an adapter when you could change the original class \u2014 adapters add indirection; prefer direct changes when possible",
+      "Making the adapter do more than translate the interface \u2014 additional logic belongs in a separate class",
+      "Adapter over an adapter \u2014 indicates a design smell upstream"
+  ]
 };

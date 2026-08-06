@@ -23,5 +23,10 @@ await foreach (var n in GetNumbersAsync())
   output: `1
 4
 9`,
-  related: ["channels"]
+  related: ["channels"],
+  mistakes: [
+      "Forgetting await before foreach when consuming an IAsyncEnumerable \u2014 won't compile, but the error message is confusing",
+      "Not passing CancellationToken to the async stream \u2014 use WithCancellation() on the foreach",
+      "Materialising the entire async stream into a list before processing \u2014 defeats the purpose of streaming"
+  ]
 };

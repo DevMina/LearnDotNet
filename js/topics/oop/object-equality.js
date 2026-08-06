@@ -23,5 +23,10 @@ var b = new Point { X = 1, Y = 2 };
 Console.WriteLine(a == b);        // reference comparison, not overloaded here
 Console.WriteLine(a.Equals(b));   // value comparison, overridden`,
   output: `False
-True`
+True`,
+  mistakes: [
+      "Forgetting to override GetHashCode when overriding Equals \u2014 objects used as dictionary keys will break",
+      "Comparing reference types with == when you mean value equality \u2014 override == or use Equals explicitly",
+      "Making Equals throw on null argument \u2014 it should return false, not throw"
+  ]
 };

@@ -21,5 +21,10 @@ b.X = 99;
 
 Console.WriteLine($"a.X = {a.X}, b.X = {b.X}");`,
   output: `a.X = 1, b.X = 99`,
-  related: ["boxing-unboxing"]
+  related: ["boxing-unboxing"],
+  mistakes: [
+      "Mutating a struct through a readonly field or property \u2014 the compiler silently copies it first",
+      "Making structs too large \u2014 structs are copied on assignment, so large structs hurt performance",
+      "Forgetting that structs can't have parameterless constructors before C# 10, causing default values to be all-zero"
+  ]
 };

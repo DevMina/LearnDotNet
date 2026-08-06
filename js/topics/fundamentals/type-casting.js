@@ -26,5 +26,10 @@ if (obj is string s)
   output: `19
 hello
 null
-Length: 5`
+Length: 5`,
+  mistakes: [
+      "Using a hard cast (MyType)obj when it might fail \u2014 prefer as + null check or is pattern matching",
+      "Confusing as (returns null on failure) with a direct cast (throws InvalidCastException)",
+      "Casting numeric types and losing precision silently: assigning a double to an int truncates, not rounds"
+  ]
 };

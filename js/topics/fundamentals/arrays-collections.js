@@ -21,5 +21,10 @@ var ages = new Dictionary<string, int>
 Console.WriteLine($"Scores: {string.Join(", ", scores)}");
 Console.WriteLine($"Grace is {ages["Grace"]}");`,
   output: `Scores: 90, 85, 77, 99
-Grace is 34`
+Grace is 34`,
+  mistakes: [
+      "Accessing an index that doesn't exist \u2014 always check Count/Length or use TryGetValue",
+      "Confusing List<T> (resizable) with arrays (fixed size) \u2014 most code should prefer List<T>",
+      "Adding to a collection while iterating over it \u2014 collect changes and apply after the loop"
+  ]
 };

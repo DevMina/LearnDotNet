@@ -23,5 +23,10 @@ public class Circle : IShape
 IShape shape = new Circle { Radius = 2 };
 Console.WriteLine($"Area: {shape.Area():F2}");`,
   output: `Area: 12.57`,
-  related: ["dependency-injection"]
+  related: ["dependency-injection"],
+  mistakes: [
+      "Implementing an interface but making methods throw NotImplementedException \u2014 violates the Liskov principle",
+      "Creating interfaces with too many members \u2014 prefer small, focused interfaces (Interface Segregation)",
+      "Adding methods to a published interface and breaking all implementors \u2014 use default interface methods or a new interface"
+  ]
 };

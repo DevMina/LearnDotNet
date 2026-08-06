@@ -18,5 +18,10 @@ export default {
 var car = new Car { Model = "Civic", Year = 2024 };
 Console.WriteLine($"{car.Year} {car.Model}");`,
   output: `2024 Civic`,
-  related: ["init-only-properties", "records"]
+  related: ["init-only-properties", "records"],
+  mistakes: [
+      "Using object initializers to bypass validation in the constructor \u2014 the constructor runs first, but properties with setters have no guard",
+      "Initialising the same property in both the constructor and an initializer \u2014 the initializer wins, silently",
+      "Using object initializers on types with only a non-public constructor \u2014 compiler error, not always obvious why"
+  ]
 };

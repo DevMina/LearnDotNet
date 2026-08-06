@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<script>document.documentElement.className = 'js';history.replaceState(null, '', location.pathname + location.search + '#/memory-management');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Management — C# &amp; .NET Concepts</title>
+<meta name="description" content="Understand the GC, the stack vs heap, and how to avoid common leaks.">
+<link rel="canonical" href="https://devmina.github.io/LearnDotNet/topics/memory-management/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="C# &amp; .NET Concepts">
+<meta property="og:title" content="Memory Management — C# &amp; .NET Concepts">
+<meta property="og:description" content="Understand the GC, the stack vs heap, and how to avoid common leaks.">
+<meta property="og:url" content="https://devmina.github.io/LearnDotNet/topics/memory-management/">
+<meta property="og:image" content="https://devmina.github.io/LearnDotNet/icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://devmina.github.io/LearnDotNet/icons/icon-512.png">
+<meta name="twitter:title" content="Memory Management — C# &amp; .NET Concepts">
+<meta name="twitter:description" content="Understand the GC, the stack vs heap, and how to avoid common leaks.">
+<meta name="theme-color" content="#0D1117">
+<link rel="manifest" href="../../manifest.json">
+<link rel="apple-touch-icon" href="../../icons/apple-touch-icon-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D1117'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%23E8A33D' text-anchor='middle'%3EC%23%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../../css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Memory Management","description":"Understand the GC, the stack vs heap, and how to avoid common leaks.","articleSection":"Intermediate","image":"https://devmina.github.io/LearnDotNet/icons/icon-512.png","url":"https://devmina.github.io/LearnDotNet/topics/memory-management/","mainEntityOfPage":{"@type":"WebPage","@id":"https://devmina.github.io/LearnDotNet/topics/memory-management/"},"isPartOf":{"@type":"WebSite","name":"C# & .NET Concepts","url":"https://devmina.github.io/LearnDotNet/"},"author":{"@type":"Person","name":"Mina Abdo"},"publisher":{"@type":"Organization","name":"C# & .NET Concepts","logo":{"@type":"ImageObject","url":"https://devmina.github.io/LearnDotNet/icons/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://devmina.github.io/LearnDotNet/"},{"@type":"ListItem","position":2,"name":"Memory Management","item":"https://devmina.github.io/LearnDotNet/topics/memory-management/"}]}]}</script>
+</head>
+<body>
+
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">&#9776;</button>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <nav class="sidebar" id="sidebar" aria-label="Topic navigation">
+<div class="sidebar-header">
+  <a class="logo" href="../../" aria-label="Go to home page"><span class="dot">&bull;</span> Solution Explorer</a>
+  <div class="subtitle">CSharpConcepts.sln</div>
+</div>
+<div class="tree">
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Fundamentals</span><span class="tree-category-progress">13 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../variables-types/"><span class="file-icon">cs</span><span>Variables &amp; Types</span></a>
+<a class="tree-item" href="../operators/"><span class="file-icon">cs</span><span>Operators &amp; Expressions</span></a>
+<a class="tree-item" href="../control-flow/"><span class="file-icon">cs</span><span>Control Flow</span></a>
+<a class="tree-item" href="../loops/"><span class="file-icon">cs</span><span>Loops</span></a>
+<a class="tree-item" href="../arrays-collections/"><span class="file-icon">cs</span><span>Arrays &amp; Collections</span></a>
+<a class="tree-item" href="../structs/"><span class="file-icon">cs</span><span>Structs</span></a>
+<a class="tree-item" href="../enums/"><span class="file-icon">cs</span><span>Enums</span></a>
+<a class="tree-item" href="../tuples-deconstruction/"><span class="file-icon">cs</span><span>Tuples &amp; Deconstruction</span></a>
+<a class="tree-item" href="../methods-parameters/"><span class="file-icon">cs</span><span>Methods &amp; Parameters</span></a>
+<a class="tree-item" href="../type-casting/"><span class="file-icon">cs</span><span>Type Casting &amp; Conversion</span></a>
+<a class="tree-item" href="../string-interpolation/"><span class="file-icon">cs</span><span>String Interpolation &amp; Formatting</span></a>
+<a class="tree-item" href="../nullable-value-types/"><span class="file-icon">cs</span><span>Nullable Value Types</span></a>
+<a class="tree-item" href="../boxing-unboxing/"><span class="file-icon">cs</span><span>Boxing &amp; Unboxing</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Object-Oriented Programming</span><span class="tree-category-progress">13 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../classes-objects/"><span class="file-icon">cs</span><span>Classes &amp; Objects</span></a>
+<a class="tree-item" href="../inheritance/"><span class="file-icon">cs</span><span>Inheritance</span></a>
+<a class="tree-item" href="../interfaces/"><span class="file-icon">cs</span><span>Interfaces</span></a>
+<a class="tree-item" href="../polymorphism/"><span class="file-icon">cs</span><span>Polymorphism</span></a>
+<a class="tree-item" href="../encapsulation/"><span class="file-icon">cs</span><span>Encapsulation</span></a>
+<a class="tree-item" href="../abstract-classes/"><span class="file-icon">cs</span><span>Abstract Classes</span></a>
+<a class="tree-item" href="../static-members/"><span class="file-icon">cs</span><span>Static Members &amp; Classes</span></a>
+<a class="tree-item" href="../indexers/"><span class="file-icon">cs</span><span>Indexers</span></a>
+<a class="tree-item" href="../operator-overloading/"><span class="file-icon">cs</span><span>Operator Overloading</span></a>
+<a class="tree-item" href="../object-equality/"><span class="file-icon">cs</span><span>Object Equality</span></a>
+<a class="tree-item" href="../sealed/"><span class="file-icon">cs</span><span>Sealed Classes &amp; Members</span></a>
+<a class="tree-item" href="../object-initializers/"><span class="file-icon">cs</span><span>Object Initializers</span></a>
+<a class="tree-item" href="../method-overloading/"><span class="file-icon">cs</span><span>Method Overloading</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Intermediate</span><span class="tree-category-progress">17 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../generics/"><span class="file-icon">cs</span><span>Generics</span></a>
+<a class="tree-item" href="../delegates-events/"><span class="file-icon">cs</span><span>Delegates &amp; Events</span></a>
+<a class="tree-item" href="../linq/"><span class="file-icon">cs</span><span>LINQ</span></a>
+<a class="tree-item" href="../exceptions/"><span class="file-icon">cs</span><span>Exception Handling</span></a>
+<a class="tree-item" href="../extension-methods/"><span class="file-icon">cs</span><span>Extension Methods</span></a>
+<a class="tree-item" href="../idisposable-using/"><span class="file-icon">cs</span><span>IDisposable &amp; using</span></a>
+<a class="tree-item" href="../iterators-yield/"><span class="file-icon">cs</span><span>Iterators (yield)</span></a>
+<a class="tree-item" href="../attributes/"><span class="file-icon">cs</span><span>Attributes</span></a>
+<a class="tree-item" href="../reflection/"><span class="file-icon">cs</span><span>Reflection</span></a>
+<a class="tree-item" href="../dependency-injection/"><span class="file-icon">cs</span><span>Dependency Injection</span></a>
+<a class="tree-item" href="../regular-expressions/"><span class="file-icon">cs</span><span>Regular Expressions</span></a>
+<a class="tree-item" href="../json-serialization/"><span class="file-icon">cs</span><span>JSON Serialization</span></a>
+<a class="tree-item" href="../unit-testing/"><span class="file-icon">cs</span><span>Unit Testing</span></a>
+<a class="tree-item" href="../solid-principles/"><span class="file-icon">cs</span><span>SOLID Principles</span></a>
+<a class="tree-item" href="../clean-architecture/"><span class="file-icon">cs</span><span>Clean Architecture</span></a>
+<a class="tree-item active" href="../memory-management/" aria-current="page"><span class="file-icon">cs</span><span>Memory Management</span></a>
+<a class="tree-item" href="../performance-tips/"><span class="file-icon">cs</span><span>Performance Tips</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Async &amp; Concurrency</span><span class="tree-category-progress">7 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../async-await/"><span class="file-icon">cs</span><span>async / await</span></a>
+<a class="tree-item" href="../tpl/"><span class="file-icon">cs</span><span>Task Parallel Library</span></a>
+<a class="tree-item" href="../threading-basics/"><span class="file-icon">cs</span><span>Threading Basics</span></a>
+<a class="tree-item" href="../cancellation-token/"><span class="file-icon">cs</span><span>CancellationToken</span></a>
+<a class="tree-item" href="../async-streams/"><span class="file-icon">cs</span><span>IAsyncEnumerable &amp; Async Streams</span></a>
+<a class="tree-item" href="../semaphore-slim/"><span class="file-icon">cs</span><span>SemaphoreSlim</span></a>
+<a class="tree-item" href="../channels/"><span class="file-icon">cs</span><span>Channels</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Modern .NET</span><span class="tree-category-progress">8 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../records/"><span class="file-icon">cs</span><span>Records</span></a>
+<a class="tree-item" href="../pattern-matching/"><span class="file-icon">cs</span><span>Pattern Matching</span></a>
+<a class="tree-item" href="../nullable-reference-types/"><span class="file-icon">cs</span><span>Nullable Reference Types</span></a>
+<a class="tree-item" href="../file-scoped-namespaces/"><span class="file-icon">cs</span><span>File-Scoped Namespaces</span></a>
+<a class="tree-item" href="../raw-string-literals/"><span class="file-icon">cs</span><span>Raw String Literals</span></a>
+<a class="tree-item" href="../generic-math/"><span class="file-icon">cs</span><span>Generic Math</span></a>
+<a class="tree-item" href="../init-only-properties/"><span class="file-icon">cs</span><span>Init-Only Properties</span></a>
+<a class="tree-item" href="../top-level-statements/"><span class="file-icon">cs</span><span>Top-Level Statements</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>C# 12–14 Highlights</span><span class="tree-category-progress">8 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../primary-constructors/"><span class="file-icon">cs</span><span>Primary Constructors</span></a>
+<a class="tree-item" href="../collection-expressions/"><span class="file-icon">cs</span><span>Collection Expressions</span></a>
+<a class="tree-item" href="../required-members/"><span class="file-icon">cs</span><span>Required Members</span></a>
+<a class="tree-item" href="../params-collections/"><span class="file-icon">cs</span><span>Params Collections</span></a>
+<a class="tree-item" href="../field-keyword/"><span class="file-icon">cs</span><span>The field Keyword</span></a>
+<a class="tree-item" href="../null-conditional-assignment/"><span class="file-icon">cs</span><span>Null-Conditional Assignment</span></a>
+<a class="tree-item" href="../extension-members/"><span class="file-icon">cs</span><span>Extension Members</span></a>
+<a class="tree-item" href="../lock-object/"><span class="file-icon">cs</span><span>The Lock Object</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Design Patterns</span><span class="tree-category-progress">9 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../singleton/"><span class="file-icon">cs</span><span>Singleton</span></a>
+<a class="tree-item" href="../factory/"><span class="file-icon">cs</span><span>Factory</span></a>
+<a class="tree-item" href="../observer/"><span class="file-icon">cs</span><span>Observer</span></a>
+<a class="tree-item" href="../strategy/"><span class="file-icon">cs</span><span>Strategy</span></a>
+<a class="tree-item" href="../repository/"><span class="file-icon">cs</span><span>Repository</span></a>
+<a class="tree-item" href="../builder/"><span class="file-icon">cs</span><span>Builder</span></a>
+<a class="tree-item" href="../decorator/"><span class="file-icon">cs</span><span>Decorator</span></a>
+<a class="tree-item" href="../adapter/"><span class="file-icon">cs</span><span>Adapter</span></a>
+<a class="tree-item" href="../command/"><span class="file-icon">cs</span><span>Command</span></a>
+  </div>
+</div>
+<div class="tree-category">
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>ASP.NET Core</span><span class="tree-category-progress">9 topics</span></div>
+  <div class="tree-items">
+<a class="tree-item" href="../middleware/"><span class="file-icon">cs</span><span>Middleware Pipeline</span></a>
+<a class="tree-item" href="../minimal-apis/"><span class="file-icon">cs</span><span>Minimal APIs</span></a>
+<a class="tree-item" href="../authentication/"><span class="file-icon">cs</span><span>Authentication &amp; Authorization</span></a>
+<a class="tree-item" href="../jwt/"><span class="file-icon">cs</span><span>JWT</span></a>
+<a class="tree-item" href="../background-services/"><span class="file-icon">cs</span><span>Background Services</span></a>
+<a class="tree-item" href="../caching/"><span class="file-icon">cs</span><span>Caching</span></a>
+<a class="tree-item" href="../logging/"><span class="file-icon">cs</span><span>Logging</span></a>
+<a class="tree-item" href="../configuration/"><span class="file-icon">cs</span><span>Configuration</span></a>
+<a class="tree-item" href="../options-pattern/"><span class="file-icon">cs</span><span>Options Pattern</span></a>
+  </div>
+</div>
+</div>
+  </nav>
+
+  <div class="content-column">
+    <main class="main" id="main" tabindex="-1">
+    <div class="crumb"><a href="../../">Home</a><span class="sep">/</span>Intermediate<span class="sep">/</span>Memory Management.cs</div>
+    <div class="topic-title-row">
+      <h1 class="topic-title">Memory Management</h1>
+      <button type="button" class="learned-toggle" id="learnedToggle" aria-pressed="false">
+        <span class="check">&#10003;</span> Mark as learned
+      </button>
+    </div>
+    <div class="topic-tagline">Understand the GC, the stack vs heap, and how to avoid common leaks.</div>
+    <div class="track-badges"><a class="track-badge" href="../../tracks/interview-prep/">&#8227; Part of: Interview Prep: Core Concepts</a></div>
+
+    <div class="prose">
+          <p>.NET uses a <strong>generational garbage collector</strong> that automatically reclaims heap memory. Objects are born in <strong>Generation 0</strong>; those that survive a collection are promoted to Gen 1, then Gen 2. Short-lived objects (most objects) are collected cheaply in Gen 0. Long-lived objects (caches, singletons) sit in Gen 2 and are collected rarely — if they grow unbounded, that's a memory leak even under GC.</p>
+          <p>Value types (structs, primitives) live on the <strong>stack</strong> (or inline in an array) and require no GC at all — they're simply popped when the method returns. <em>Span&lt;T&gt;</em> and <em>ArrayPool&lt;T&gt;</em> are key tools for reducing heap allocations in hot paths. For anything that wraps an unmanaged resource (file handles, sockets), implement <em>IDisposable</em> and use a <em>using</em> statement — the GC does not call <em>Dispose</em> for you.</p>
+        </div>
+
+    <div class="key-points">
+      <div class="kp-title">Key points</div>
+      <ul><li>GC is generational — Gen 0 is cheap; large or long-lived objects in Gen 2 are expensive to collect</li><li>IDisposable/using is mandatory for unmanaged resources — the GC won't call Dispose</li><li>Span<T> and ArrayPool<T> reduce allocations and GC pressure in performance-critical paths</li></ul>
+    </div>
+
+    <div class="key-points mistakes-box">
+      <div class="kp-title kp-title--mistakes">&#9888; Common mistakes</div>
+      <ul><li>Not disposing of IDisposable objects — relying on the GC to clean up unmanaged resources that the GC doesn't know about</li><li>Holding large object graph references in static fields — prevents GC from collecting the entire subgraph</li><li>Allocating in a hot path — even small, frequent allocations increase GC pressure over time</li></ul>
+    </div>
+
+    <div class="workbench">
+      <div class="workbench-tabs">
+        <div class="workbench-tab file-tab">MemoryManagement.cs</div>
+        <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+        <button class="print-btn" id="printBtn" type="button">&#8659; PDF</button>
+        <button class="run-btn" id="runBtn" type="button"><span class="play">&#9654;</span> Run</button>
+      </div>
+      <pre class="code-block"><code><span class="c">// IDisposable pattern for unmanaged resources</span>
+<span class="k">public</span> <span class="k">class</span> <span class="ty">FileProcessor</span> : <span class="ty">IDisposable</span>
+{
+    <span class="k">private</span> <span class="k">readonly</span> <span class="ty">FileStream</span> _stream;
+    <span class="k">private</span> <span class="k">bool</span> _disposed;
+
+    <span class="k">public</span> <span class="ty">FileProcessor</span>(<span class="k">string</span> path)
+        =&gt; _stream = <span class="ty">File</span>.<span class="ty">OpenRead</span>(path);
+
+    <span class="k">public</span> <span class="k">long</span> <span class="ty">Length</span> =&gt; _stream.<span class="ty">Length</span>;
+
+    <span class="k">public</span> <span class="k">void</span> <span class="ty">Dispose</span>()
+    {
+        <span class="k">if</span> (_disposed) <span class="k">return</span>;
+        _stream.<span class="ty">Dispose</span>();
+        _disposed = <span class="k">true</span>;
+    }
+}
+
+<span class="c">// Always use 'using' — even if an exception is thrown, Dispose runs</span>
+<span class="k">using</span> <span class="k">var</span> processor = <span class="k">new</span> <span class="ty">FileProcessor</span>(<span class="s">"data.bin"</span>);
+<span class="ty">Console</span>.<span class="ty">WriteLine</span>(processor.<span class="ty">Length</span>);</code></pre>
+      <div class="console">
+        <div class="console-header built" id="consoleHeader">
+          <span class="light"></span> Output
+        </div>
+        <div class="console-body" id="consoleBody"><span class="build-line">Build succeeded.</span>// _stream.Dispose() called automatically when 'using' block exits.
+// The FileStream (and its OS file handle) is released immediately.</div>
+      </div>
+    </div>
+
+    <div class="related-topics">
+      <div class="kp-title">Related topics</div>
+      <div class="related-chips">
+        <a class="related-chip" href="../idisposable-using/">IDisposable &amp; using</a>
+        <a class="related-chip" href="../structs/">Structs</a>
+        <a class="related-chip" href="../boxing-unboxing/">Boxing &amp; Unboxing</a>
+      </div>
+    </div>
+
+    <div class="topic-nav">
+      <a href="../clean-architecture/"><span class="dir">Previous &larr;</span>Clean Architecture</a>
+      <a href="../performance-tips/"><span class="dir">Next</span>Performance Tips &rarr;</a>
+    </div>
+    <div class="keyboard-hint">Tip: use &larr; &rarr; to move between topics, or press / to search.</div>
+    </main>
+
+    <footer class="site-footer">
+      <span>&copy; <span id="copyrightYear">2026</span> Mina Abdo</span>
+      <span class="sep">&middot;</span>
+      <a href="#/contact">Contact us</a>
+    </footer>
+  </div>
+
+  <script type="module" src="../../js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('../../sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

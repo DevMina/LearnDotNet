@@ -19,5 +19,10 @@ using (var handle = new ResourceHandle())
     Console.WriteLine("Using the resource");
 }`,
   output: `Using the resource
-Resource released`
+Resource released`,
+  mistakes: [
+      "Forgetting using on anything that implements IDisposable \u2014 file handles, connections, and streams leak",
+      "Calling Dispose manually and then using the object \u2014 always set to null or use using",
+      "Implementing IDisposable but not suppressing the finalizer after Dispose \u2014 the GC does double cleanup work"
+  ]
 };

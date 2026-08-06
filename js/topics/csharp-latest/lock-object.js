@@ -23,5 +23,10 @@ void Increment()
 Parallel.For(0, 500, _ => Increment());
 Console.WriteLine(counter);`,
   output: `500`,
-  related: ["semaphore-slim"]
+  related: ["semaphore-slim"],
+  mistakes: [
+      "Using a public or externally-visible object as the lock target \u2014 external code can deadlock your class",
+      "Locking on this or the type itself \u2014 same problem as above",
+      "Holding a lock while doing I/O or calling unknown code \u2014 causes deadlocks or starvation"
+  ]
 };

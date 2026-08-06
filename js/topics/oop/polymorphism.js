@@ -14,5 +14,10 @@ export default {
 foreach (var s in shapes)
     Console.WriteLine($"{s.GetType().Name}: {s.Area():F2}");`,
   output: `Circle: 3.14
-Circle: 28.27`
+Circle: 28.27`,
+  mistakes: [
+      "Forgetting virtual on the base method \u2014 without it, the derived method hides rather than overrides",
+      "Using new instead of override \u2014 the method is hidden, not overridden, and virtual dispatch won't reach it",
+      "Testing with is/typeof instead of using virtual dispatch \u2014 that's what polymorphism is for"
+  ]
 };

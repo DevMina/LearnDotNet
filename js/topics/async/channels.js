@@ -30,5 +30,10 @@ await Task.WhenAll(ProduceAsync(), ConsumeAsync());`,
   output: `Received 1
 Received 2
 Received 3`,
-  related: ["tpl", "async-streams"]
+  related: ["tpl", "async-streams"],
+  mistakes: [
+      "Not completing the writer \u2014 ReadAllAsync waits forever if Complete() is never called",
+      "Ignoring the return value of TryWrite on a bounded channel \u2014 it returns false when full, data is silently dropped",
+      "Using an unbounded channel with a fast producer \u2014 memory grows without limit; prefer bounded with backpressure"
+  ]
 };

@@ -23,5 +23,10 @@ finally
     Console.WriteLine("Cleanup ran");
 }`,
   output: `Caught: Index was outside the bounds of the array.
-Cleanup ran`
+Cleanup ran`,
+  mistakes: [
+      "Catching Exception (or worse, catching and swallowing it) instead of a specific exception type",
+      "Using exceptions for normal control flow \u2014 they're expensive and make code harder to read",
+      "Re-throwing with throw ex instead of throw \u2014 throw ex resets the stack trace"
+  ]
 };

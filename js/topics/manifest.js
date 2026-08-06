@@ -210,6 +210,31 @@ export const CATEGORIES = [
         "id": "json-serialization",
         "title": "JSON Serialization",
         "file": "./intermediate/json-serialization.js"
+      },
+      {
+        "id": "unit-testing",
+        "title": "Unit Testing",
+        "file": "./intermediate/unit-testing.js"
+      },
+      {
+        "id": "solid-principles",
+        "title": "SOLID Principles",
+        "file": "./intermediate/solid-principles.js"
+      },
+      {
+        "id": "clean-architecture",
+        "title": "Clean Architecture",
+        "file": "./intermediate/clean-architecture.js"
+      },
+      {
+        "id": "memory-management",
+        "title": "Memory Management",
+        "file": "./intermediate/memory-management.js"
+      },
+      {
+        "id": "performance-tips",
+        "title": "Performance Tips",
+        "file": "./intermediate/performance-tips.js"
       }
     ]
   },
@@ -394,6 +419,57 @@ export const CATEGORIES = [
         "id": "command",
         "title": "Command",
         "file": "./patterns/command.js"
+      }
+    ]
+  },
+  {
+    "id": "aspnet",
+    "name": "ASP.NET Core",
+    "topics": [
+      {
+        "id": "middleware",
+        "title": "Middleware Pipeline",
+        "file": "./aspnet/middleware.js"
+      },
+      {
+        "id": "minimal-apis",
+        "title": "Minimal APIs",
+        "file": "./aspnet/minimal-apis.js"
+      },
+      {
+        "id": "authentication",
+        "title": "Authentication & Authorization",
+        "file": "./aspnet/authentication.js"
+      },
+      {
+        "id": "jwt",
+        "title": "JWT",
+        "file": "./aspnet/jwt.js"
+      },
+      {
+        "id": "background-services",
+        "title": "Background Services",
+        "file": "./aspnet/background-services.js"
+      },
+      {
+        "id": "caching",
+        "title": "Caching",
+        "file": "./aspnet/caching.js"
+      },
+      {
+        "id": "logging",
+        "title": "Logging",
+        "file": "./aspnet/logging.js"
+      },
+      {
+        "id": "configuration",
+        "title": "Configuration",
+        "file": "./aspnet/configuration.js"
+      },
+      {
+        "id": "options-pattern",
+        "title": "Options Pattern",
+        "file": "./aspnet/options-pattern.js"
       }
     ]
   }

@@ -17,5 +17,10 @@ export default {
 
 string bio = "Loves distributed systems and long walks";
 Console.WriteLine(bio.Truncate(20));`,
-  output: `Loves distributed s...`
+  output: `Loves distributed s...`,
+  mistakes: [
+      "Adding extension methods to very broad types (object, string) \u2014 they pollute every using context",
+      "Hiding instance methods with extension methods of the same signature \u2014 instance method always wins, causing confusion",
+      "Putting extension methods in the same namespace as the type they extend \u2014 makes them always visible"
+  ]
 };

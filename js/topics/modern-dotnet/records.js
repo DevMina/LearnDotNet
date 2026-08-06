@@ -20,5 +20,10 @@ Console.WriteLine(p1 == new Point(1, 2));`,
   output: `Point { X = 1, Y = 2 }
 Point { X = 1, Y = 9 }
 True`,
-  related: ["init-only-properties", "object-initializers", "json-serialization"]
+  related: ["init-only-properties", "object-initializers", "json-serialization"],
+  mistakes: [
+      "Mutating a record through a property with a public set \u2014 records are value-semantic by convention, not enforcement",
+      "Using records for entities with identity (database rows) \u2014 records compare by value, not by id",
+      "Forgetting that with-expressions create a new instance \u2014 the original is unchanged"
+  ]
 };

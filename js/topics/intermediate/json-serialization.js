@@ -21,5 +21,10 @@ var back = JsonSerializer.Deserialize<Person>(json);
 Console.WriteLine(back);`,
   output: `{"Name":"Mina","Age":29}
 Person { Name = Mina, Age = 29 }`,
-  related: ["records", "attributes"]
+  related: ["records", "attributes"],
+  mistakes: [
+      "Deserialising into a type with no public setters \u2014 the properties stay at their default values silently",
+      "Forgetting that System.Text.Json is case-sensitive by default \u2014 JSON keys must match property names exactly",
+      "Using JsonSerializer in a hot path without source generation \u2014 reflection-based serialisation has significant overhead"
+  ]
 };

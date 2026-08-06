@@ -26,5 +26,10 @@ do
   output: `apple
 mango
 tick 0
-tick 1`
+tick 1`,
+  mistakes: [
+      "Modifying a collection inside a foreach loop \u2014 throws InvalidOperationException at runtime",
+      "Off-by-one errors with for loops: using < vs <= for the boundary condition",
+      "Using while(true) without a guaranteed exit path, causing an infinite loop"
+  ]
 };

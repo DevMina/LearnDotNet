@@ -20,5 +20,10 @@ export default {
 }
 
 Console.WriteLine(string.Join(", ", Fibonacci(8)));`,
-  output: `0, 1, 1, 2, 3, 5, 8, 13`
+  output: `0, 1, 1, 2, 3, 5, 8, 13`,
+  mistakes: [
+      "Forgetting that yield return is lazy \u2014 code before the first yield doesn't run until enumeration starts",
+      "Wrapping a yield method in try/catch around the yield \u2014 catch doesn't catch exceptions from the caller's enumeration",
+      "Returning IEnumerable<T> and the caller enumerates it twice \u2014 if it's a live query, results may differ"
+  ]
 };

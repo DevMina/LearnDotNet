@@ -23,5 +23,10 @@ public sealed class Final : Base
 
 Base b = new Final();
 Console.WriteLine(b.Describe());`,
-  output: `Final`
+  output: `Final`,
+  mistakes: [
+      "Sealing every class by default before the design is stable \u2014 it prevents extension without modification",
+      "Forgetting that sealed on a method only makes sense if the method was virtual in a base class",
+      "Not sealing performance-critical classes when you intended to \u2014 the JIT can devirtualise calls on sealed types"
+  ]
 };

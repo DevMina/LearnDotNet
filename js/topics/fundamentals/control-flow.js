@@ -20,5 +20,10 @@ string grade = score switch
 };
 
 Console.WriteLine($"Grade: {grade}");`,
-  output: `Grade: B`
+  output: `Grade: B`,
+  mistakes: [
+      "Forgetting break in switch cases \u2014 without it, control falls through (except in C# pattern-matching switches)",
+      "Using if/else chains instead of switch expressions when matching a single variable",
+      "Missing the default case in a switch, leaving unhandled values silently ignored"
+  ]
 };

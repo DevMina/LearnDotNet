@@ -21,5 +21,10 @@ if (match.Success)
 }`,
   output: `Order 4821
 Date 2026-01-15`,
-  related: ["pattern-matching", "string-interpolation"]
+  related: ["pattern-matching", "string-interpolation"],
+  mistakes: [
+      "Using catastrophic backtracking patterns \u2014 nested quantifiers on overlapping character classes can hang the process",
+      "Recompiling a Regex on every call \u2014 use a static [GeneratedRegex] or a static Regex instance instead",
+      "Not anchoring the pattern \u2014 a match anywhere in the string when you meant the whole string"
+  ]
 };

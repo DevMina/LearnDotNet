@@ -22,5 +22,10 @@ Console.WriteLine(names.IsEmpty);
 names.Add("Ada");
 Console.WriteLine(names.IsEmpty);`,
   output: `True
-False`
+False`,
+  mistakes: [
+      "Defining extension members in the wrong namespace \u2014 callers must use the right namespace to see them",
+      "Overloading an extension method with the same signature as an instance method \u2014 instance method always wins",
+      "Making extension methods stateful \u2014 they're static and can't hold instance state"
+  ]
 };

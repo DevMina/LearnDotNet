@@ -26,5 +26,10 @@ try { await CountAsync(cts.Token); }
 catch (OperationCanceledException) { Console.WriteLine("Cancelled"); }`,
   output: `Tick 1
 Tick 2
-Cancelled`
+Cancelled`,
+  mistakes: [
+      "Not passing the CancellationToken to every async call in the chain \u2014 cancellation won't propagate",
+      "Catching OperationCanceledException and treating it as an error \u2014 it's a normal, expected signal",
+      "Creating a CancellationTokenSource but never cancelling or disposing it \u2014 leaks the timer if timeout was used"
+  ]
 };

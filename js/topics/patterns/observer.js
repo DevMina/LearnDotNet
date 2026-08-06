@@ -22,5 +22,10 @@ ticker.PriceChanged += p => Console.WriteLine($"Alert service sees: {p:C}");
 ticker.UpdatePrice(142.50m);`,
   output: `Dashboard sees: $142.50
 Alert service sees: $142.50`,
-  related: ["command"]
+  related: ["command"],
+  mistakes: [
+      "Not unsubscribing observers when they're done \u2014 keeps them alive and receiving events indefinitely",
+      "Making the event handler do expensive synchronous work \u2014 blocks the publisher and all other observers",
+      "Letting exceptions from one observer prevent the rest from being notified"
+  ]
 };

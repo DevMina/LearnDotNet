@@ -19,5 +19,10 @@ var order = new Order { Id = 501, Status = "Shipped" };
 Console.WriteLine($"{order.Id}: {order.Status}");
 // order.Status = "Cancelled"; // compile error — init-only`,
   output: `501: Shipped`,
-  related: ["object-initializers", "records"]
+  related: ["object-initializers", "records"],
+  mistakes: [
+      "Trying to set an init property after the object initializer \u2014 compiler error, but sometimes surprises people",
+      "Using init when you actually need a mutable setter \u2014 init is a one-way door",
+      "Forgetting that init properties can still be set in a derived class constructor \u2014 visibility follows normal rules"
+  ]
 };

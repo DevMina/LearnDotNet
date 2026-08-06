@@ -17,5 +17,10 @@ export default {
 
 var order = new Order { CustomerName = "Priya", Total = 42.50m };
 Console.WriteLine($"{order.CustomerName}: {order.Total:C}");`,
-  output: `Priya: $42.50`
+  output: `Priya: $42.50`,
+  mistakes: [
+      "Marking a property required but providing a default value \u2014 the default is ignored if required is not satisfied",
+      "Using required on a property with a private setter \u2014 callers can't set it, so required can never be satisfied from outside",
+      "Confusing required (must be set on construction) with [NotNull] (nullable annotation)"
+  ]
 };

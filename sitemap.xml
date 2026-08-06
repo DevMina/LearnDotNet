@@ -118,6 +118,21 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/json-serialization/</loc>
   </url>
   <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/unit-testing/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/solid-principles/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/clean-architecture/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/memory-management/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/performance-tips/</loc>
+  </url>
+  <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/async-await/</loc>
   </url>
   <url>
@@ -214,6 +229,33 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/command/</loc>
   </url>
   <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/middleware/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/minimal-apis/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/authentication/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/jwt/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/background-services/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/caching/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/logging/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/configuration/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/options-pattern/</loc>
+  </url>
+  <url>
     <loc>https://devmina.github.io/LearnDotNet/tracks/getting-started/</loc>
   </url>
   <url>
@@ -227,5 +269,8 @@
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/tracks/interview-prep/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/aspnet-core-essentials/</loc>
   </url>
 </urlset>

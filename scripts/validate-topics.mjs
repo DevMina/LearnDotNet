@@ -34,7 +34,7 @@ const { TRACKS } = await import(
 );
 
 const errors = [];
-const REQUIRED_FIELDS = ['tagline', 'explanation', 'keyPoints', 'code', 'output'];
+const REQUIRED_FIELDS = ['tagline', 'explanation', 'keyPoints', 'code', 'output', 'mistakes'];
 
 // ---------- 1 & 3: per-topic content + related-id validity ----------
 const allIds = new Set(ALL_TOPICS_FLAT.map(t => t.id));

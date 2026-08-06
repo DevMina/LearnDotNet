@@ -21,5 +21,10 @@ export default {
 Logger.Instance.Log("Application started");
 Console.WriteLine(ReferenceEquals(Logger.Instance, Logger.Instance));`,
   output: `[LOG] Application started
-True`
+True`,
+  mistakes: [
+      "Implementing Singleton without thread safety \u2014 two threads can create two instances simultaneously",
+      "Singleton holding mutable state in an ASP.NET app \u2014 it's shared across all requests and users",
+      "Using Singleton when a simple static class would do \u2014 they solve the same problem but Singleton is testable"
+  ]
 };

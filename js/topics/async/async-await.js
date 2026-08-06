@@ -17,5 +17,10 @@ export default {
 
 var result = await FetchGreetingAsync();
 Console.WriteLine(result);`,
-  output: `Hello from the server`
+  output: `Hello from the server`,
+  mistakes: [
+      "async void \u2014 exceptions are unobservable and crash the process; always use async Task",
+      "Blocking on async code with .Result or .Wait() \u2014 deadlocks in contexts with a synchronisation context",
+      "Forgetting to await a Task \u2014 the call returns immediately and the error is silently swallowed"
+  ]
 };

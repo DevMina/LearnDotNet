@@ -23,5 +23,10 @@ repo.Add("Task A");
 repo.Add("Task B");
 
 Console.WriteLine(string.Join(", ", repo.GetAll()));`,
-  output: `Task A, Task B`
+  output: `Task A, Task B`,
+  mistakes: [
+      "Not reading the compiler warning before suppressing it \u2014 warnings usually point to a real problem",
+      "Writing the feature before writing a test \u2014 makes it much harder to test later",
+      "Ignoring null return values from framework methods \u2014 check the documentation for when null is valid"
+  ]
 };

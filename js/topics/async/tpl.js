@@ -20,5 +20,10 @@ var results = await Task.WhenAll(tasks);
 
 Console.WriteLine(string.Join(", ", results));`,
   output: `4, 9, 16`,
-  related: ["channels"]
+  related: ["channels"],
+  mistakes: [
+      "Using Task.Run for I/O-bound work \u2014 it wastes a thread; use async/await instead",
+      "Not handling exceptions from tasks \u2014 unobserved task exceptions used to crash the process (still can in some configs)",
+      "Overusing Parallel.ForEach when the work is I/O-bound \u2014 parallelism helps CPU-bound work, not I/O"
+  ]
 };

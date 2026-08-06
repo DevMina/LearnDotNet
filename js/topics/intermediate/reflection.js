@@ -24,5 +24,10 @@ foreach (var prop in type.GetProperties())
 }`,
   output: `Name = Widget
 Price = 9.99`,
-  related: ["attributes", "dependency-injection"]
+  related: ["attributes", "dependency-injection"],
+  mistakes: [
+      "Using reflection in performance-sensitive code \u2014 it's orders of magnitude slower than direct calls",
+      "Ignoring BindingFlags \u2014 GetMethod without the right flags silently returns null instead of the method",
+      "Bypassing access modifiers with reflection in production code \u2014 breaks encapsulation and makes code fragile"
+  ]
 };

@@ -20,5 +20,10 @@ Console.WriteLine(nameLength ?? -1);
 
 record Person(string Name);`,
   output: `Unknown city
--1`
+-1`,
+  mistakes: [
+      "Confusing = (assignment) with == (equality check) inside conditions",
+      "Expecting & and | to short-circuit \u2014 use && and || for short-circuit evaluation",
+      "Forgetting operator precedence: use parentheses to make intent explicit"
+  ]
 };

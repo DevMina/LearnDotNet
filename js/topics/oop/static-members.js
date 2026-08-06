@@ -18,5 +18,10 @@ export default {
 Counter.Increment();
 Counter.Increment();
 Console.WriteLine(Counter.Total);`,
-  output: `2`
+  output: `2`,
+  mistakes: [
+      "Storing mutable state in static fields \u2014 it's shared across all threads and requests, causing race conditions",
+      "Static classes with many unrelated methods \u2014 they become grab-bags that are hard to test or extend",
+      "Calling static methods directly in business logic instead of injecting an abstraction \u2014 breaks testability"
+  ]
 };

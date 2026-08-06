@@ -23,5 +23,10 @@ export default {
 
 var car = new Car("Civic", 2023);
 Console.WriteLine($"{car.Model} ({car.Year})");`,
-  output: `Civic (2023)`
+  output: `Civic (2023)`,
+  mistakes: [
+      "Forgetting to initialise fields \u2014 reference type fields default to null, not an empty object",
+      "Making everything public \u2014 prefer private fields with properties to control access",
+      "Creating very large classes \u2014 split responsibilities when a class has more than one reason to change"
+  ]
 };

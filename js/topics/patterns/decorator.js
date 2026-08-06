@@ -32,5 +32,10 @@ INotifier notifier = new LoggingDecorator(new BaseNotifier());
 notifier.Send("Order shipped");`,
   output: `Log: about to send
 Sending: Order shipped`,
-  related: ["adapter"]
+  related: ["adapter"],
+  mistakes: [
+      "Decorating a type you don't own without an interface in common \u2014 use an adapter or wrapper instead",
+      "Stacking many decorators and forgetting which order they execute \u2014 outer decorators run first",
+      "Making decorators stateful in a way that depends on execution order \u2014 fragile and hard to test"
+  ]
 };

@@ -30,5 +30,10 @@ command.Execute();
 
 Console.WriteLine(string.Join(", ", cart));`,
   output: `Keyboard`,
-  related: ["strategy", "observer"]
+  related: ["strategy", "observer"],
+  mistakes: [
+      "Commands that directly modify shared state without going through a queue or handler \u2014 loses the undo/replay benefit",
+      "Making commands too coarse \u2014 one command per user action, not one command for a workflow",
+      "Not handling command failure \u2014 what happens if Execute throws needs to be part of the design"
+  ]
 };

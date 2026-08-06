@@ -62,6 +62,53 @@ function learnedCountFor(topicIds) {
 }
 
 // ---------- Sidebar tree ----------
+// ---------- Theme & font-size preferences ----------
+// Both are stored in localStorage and applied as CSS classes on <html>.
+// Applied before first render so there's no flash of the wrong theme.
+const THEME_KEY = 'csharp-concepts-theme';
+const FS_KEY    = 'csharp-concepts-fs';
+
+function getTheme()    { return localStorage.getItem(THEME_KEY)    || 'dark'; }
+function getFontSize() { return localStorage.getItem(FS_KEY)        || 'medium'; }
+
+function applyTheme(theme) {
+  document.documentElement.classList.toggle('theme-light', theme === 'light');
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+function applyFontSize(size) {
+  document.documentElement.classList.remove('fs-small', 'fs-large');
+  if (size !== 'medium') document.documentElement.classList.add(`fs-${size}`);
+  localStorage.setItem(FS_KEY, size);
+}
+
+// Apply immediately so there's no visible flash on load.
+applyTheme(getTheme());
+applyFontSize(getFontSize());
+
+function wireSettingsButtons() {
+  const buttons = {
+    themeDark:  () => { applyTheme('dark');   updateSettingsActive(); },
+    themeLight: () => { applyTheme('light');  updateSettingsActive(); },
+    fsSmall:    () => { applyFontSize('small');  updateSettingsActive(); },
+    fsMedium:   () => { applyFontSize('medium'); updateSettingsActive(); },
+    fsLarge:    () => { applyFontSize('large');  updateSettingsActive(); },
+  };
+  for (const [id, fn] of Object.entries(buttons)) {
+    document.getElementById(id)?.addEventListener('click', fn);
+  }
+}
+
+function updateSettingsActive() {
+  const theme = getTheme();
+  const fs    = getFontSize();
+  document.getElementById('themeDark') ?.classList.toggle('active', theme === 'dark');
+  document.getElementById('themeLight')?.classList.toggle('active', theme === 'light');
+  document.getElementById('fsSmall')   ?.classList.toggle('active', fs === 'small');
+  document.getElementById('fsMedium')  ?.classList.toggle('active', fs === 'medium');
+  document.getElementById('fsLarge')   ?.classList.toggle('active', fs === 'large');
+}
+
 function renderSidebar(activeTopicId) {
   const tree = document.createElement('div');
   tree.className = 'tree';
@@ -115,6 +162,17 @@ function renderSidebar(activeTopicId) {
       <div class="search-box">
         <input type="search" id="searchInput" placeholder="Search topics... (press /)" aria-label="Search topics" autocomplete="off">
       </div>
+      <div class="sidebar-settings" role="toolbar" aria-label="Display settings">
+        <div class="settings-group" aria-label="Theme">
+          <button type="button" class="settings-btn${getTheme() === 'dark' ? ' active' : ''}" id="themeDark" title="Dark theme">&#9681;</button>
+          <button type="button" class="settings-btn${getTheme() === 'light' ? ' active' : ''}" id="themeLight" title="Light theme">&#9728;</button>
+        </div>
+        <div class="settings-group" aria-label="Font size">
+          <button type="button" class="settings-btn${getFontSize() === 'small' ? ' active' : ''}" id="fsSmall" title="Small text">A&#8209;</button>
+          <button type="button" class="settings-btn${getFontSize() === 'medium' ? ' active' : ''}" id="fsMedium" title="Default text">A</button>
+          <button type="button" class="settings-btn${getFontSize() === 'large' ? ' active' : ''}" id="fsLarge" title="Large text">A+</button>
+        </div>
+      </div>
     </div>
   `;
   sidebarEl.appendChild(tree);
@@ -129,6 +187,8 @@ function renderSidebar(activeTopicId) {
     }
     closeMobileSidebar();
   });
+
+  wireSettingsButtons();
 
   const noResults = document.createElement('div');
   noResults.className = 'search-no-results';
@@ -148,6 +208,15 @@ function renderSidebar(activeTopicId) {
   });
 }
 
+function highlightMatch(text, query) {
+  if (!query) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return text.slice(0, idx) +
+    `<mark class="search-highlight">${text.slice(idx, idx + query.length)}</mark>` +
+    text.slice(idx + query.length);
+}
+
 function filterSidebar(query) {
   const q = query.trim().toLowerCase();
   const categories = sidebarEl.querySelectorAll('.tree-category');
@@ -158,11 +227,22 @@ function filterSidebar(query) {
     let categoryHasMatch = false;
 
     items.forEach(item => {
-      const title = item.textContent.toLowerCase();
+      const titleEl = item.querySelector('span:not(.file-icon):not(.learned-check)');
+      const rawTitle = item.dataset.title || titleEl?.textContent || '';
+      if (!item.dataset.title && rawTitle) item.dataset.title = rawTitle; // cache
+
+      const titleLower = rawTitle.toLowerCase();
       const extra = SEARCH_TEXT_BY_ID.get(item.dataset.topicId) || '';
-      const matches = q === '' || title.includes(q) || extra.includes(q);
+      const matches = q === '' || titleLower.includes(q) || extra.includes(q);
       item.classList.toggle('search-hidden', !matches);
       if (matches) categoryHasMatch = true;
+
+      // Highlight the title text when there's a match in the title itself
+      if (titleEl) {
+        titleEl.innerHTML = (q && titleLower.includes(q))
+          ? highlightMatch(rawTitle, q)
+          : rawTitle;
+      }
     });
 
     catDiv.hidden = !categoryHasMatch;
@@ -361,6 +441,25 @@ async function renderTopic(topicId, myToken) {
     .filter(Boolean);
   const memberTracks = TRACKS_BY_TOPIC.get(topicId) || [];
 
+  // Difficulty: derived from category (no new per-topic field needed)
+  const difficultyMap = {
+    fundamentals: { label: 'Beginner',      cls: 'diff-beginner' },
+    oop:          { label: 'Beginner',      cls: 'diff-beginner' },
+    intermediate: { label: 'Intermediate',  cls: 'diff-intermediate' },
+    async:        { label: 'Intermediate',  cls: 'diff-intermediate' },
+    patterns:     { label: 'Intermediate',  cls: 'diff-intermediate' },
+    'modern-dotnet': { label: 'Intermediate', cls: 'diff-intermediate' },
+    'csharp-latest': { label: 'Intermediate', cls: 'diff-intermediate' },
+    aspnet:       { label: 'Advanced',      cls: 'diff-advanced' },
+  };
+  const diff = difficultyMap[category.id] || { label: 'Intermediate', cls: 'diff-intermediate' };
+
+  // Reading time: ~200 words per minute, counting explanation + keyPoints text
+  const wordCount = [topic.explanation, topic.tagline, ...(topic.keyPoints || [])]
+    .join(' ').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+  const readMins = Math.max(1, Math.round(wordCount / 200));
+  const readLabel = `${readMins} min read`;
+
   mainEl.innerHTML = `
     <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>${category.name}<span class="sep">/</span>${topic.title}.cs</div>
     <div class="topic-title-row">
@@ -368,6 +467,10 @@ async function renderTopic(topicId, myToken) {
       <button type="button" class="learned-toggle${learned ? ' is-learned' : ''}" id="learnedToggle" aria-pressed="${learned}">
         <span class="check">&#10003;</span> ${learned ? 'Learned' : 'Mark as learned'}
       </button>
+    </div>
+    <div class="topic-meta">
+      <span class="difficulty-badge ${diff.cls}">${diff.label}</span>
+      <span class="reading-time">&#128337; ${readLabel}</span>
     </div>
     <div class="topic-tagline">${topic.tagline}</div>
     ${memberTracks.length ? `<div class="track-badges">${memberTracks.map(t => `<a class="track-badge" href="#/track/${t.id}">&#8227; Part of: ${t.title}</a>`).join('')}</div>` : ''}
@@ -379,6 +482,12 @@ async function renderTopic(topicId, myToken) {
       <ul>${topic.keyPoints.map(kp => `<li>${kp}</li>`).join('')}</ul>
     </div>
 
+    ${topic.mistakes && topic.mistakes.length ? `
+    <div class="key-points mistakes-box">
+      <div class="kp-title kp-title--mistakes">&#9888; Common mistakes</div>
+      <ul>${topic.mistakes.map(m => `<li>${m}</li>`).join('')}</ul>
+    </div>` : ''}
+
     <div class="quiz-box" id="quickCheck">
       <div class="kp-title">Quick check</div>
       <div class="quiz-loading">Preparing a question&hellip;</div>
@@ -388,7 +497,7 @@ async function renderTopic(topicId, myToken) {
       <div class="workbench-tabs">
         <div class="workbench-tab file-tab">${toPascalFileName(topic.title)}.cs</div>
         <button class="copy-btn" id="copyBtn" type="button">Copy</button>
-        <button class="print-btn" id="printBtn" type="button">Print</button>
+        <button class="print-btn" id="printBtn" type="button">&#8659; PDF</button>
         <button class="run-btn" id="runBtn" type="button"><span class="play">&#9654;</span> Run</button>
       </div>
       <pre class="code-block"><code>${highlightCSharp(topic.code)}</code></pre>
@@ -473,8 +582,13 @@ function renderQuizChoices(container, question, onAnswered) {
       const wasCorrect = question.choices[i].correct;
       buttons.forEach((b, j) => {
         b.disabled = true;
-        if (question.choices[j].correct) b.classList.add('correct');
-        else if (j === i) b.classList.add('incorrect');
+        if (question.choices[j].correct) {
+          b.classList.add('correct');
+          b.innerHTML = `<span class="quiz-choice-icon" aria-hidden="true">&#10003;</span>${b.innerHTML}`;
+        } else if (j === i) {
+          b.classList.add('incorrect');
+          b.innerHTML = `<span class="quiz-choice-icon" aria-hidden="true">&#10007;</span>${b.innerHTML}`;
+        }
       });
       const feedback = container.querySelector('.quiz-feedback');
       feedback.textContent = wasCorrect
@@ -495,7 +609,7 @@ async function initQuickCheck(navMeta, content, myToken) {
 
   let usedIndices = [];
 
-  async function loadNext() {
+  async function loadNext(isRegeneration = false) {
     if (usedIndices.length >= content.keyPoints.length) usedIndices = [];
     const available = content.keyPoints.map((_, i) => i).filter(i => !usedIndices.includes(i));
     const correctIndex = available[Math.floor(Math.random() * available.length)];
@@ -519,8 +633,12 @@ async function initQuickCheck(navMeta, content, myToken) {
     }
 
     el.innerHTML = `<div class="kp-title">Quick check</div><div class="quiz-question"></div><button class="quiz-another-btn" type="button">Try another question</button>`;
+    el.setAttribute('tabindex', '-1');
     renderQuizChoices(el.querySelector('.quiz-question'), question, () => {});
-    el.querySelector('.quiz-another-btn').addEventListener('click', loadNext);
+    el.querySelector('.quiz-another-btn').addEventListener('click', () => {
+      loadNext(true);
+    });
+    if (isRegeneration) el.focus({ preventScroll: true });
   }
 
   await loadNext();
@@ -609,8 +727,20 @@ function renderTrack(trackId) {
 // individual questions): pick a scope, answer questions, see results.
 const QUIZ_QUESTION_COUNT = 10;
 
+// These state transitions are deliberately NOT hash-based navigations (see
+// above), so they don't go through route()'s scrollTo(0,0) — without this,
+// "Next question" or reaching results could leave the person scrolled to
+// wherever they were reading the previous question, looking at nothing
+// relevant. Focusing <main> (tabindex="-1" in the page shell) also gives
+// screen reader users a sensible landing point after each transition.
+function resetQuizViewport() {
+  window.scrollTo(0, 0);
+  mainEl.focus({ preventScroll: true });
+}
+
 function renderQuizScopeSelect() {
   const totalTopics = ALL_TOPICS_FLAT.length;
+  resetQuizViewport();
 
   document.title = 'Test yourself — C# & .NET Concepts';
   updateMetaTags({
@@ -667,6 +797,7 @@ async function startQuizSession(poolMetas, scopeLabel) {
   const results = [];
 
   function showQuestion() {
+    resetQuizViewport();
     document.getElementById('quizProgress').textContent = `Question ${index + 1} of ${questions.length} \u2014 ${scopeLabel}`;
     const box = document.getElementById('quizSessionBox');
     box.innerHTML = '';
@@ -689,6 +820,7 @@ async function startQuizSession(poolMetas, scopeLabel) {
 }
 
 function renderQuizResults(results, poolMetas, scopeLabel) {
+  resetQuizViewport();
   const correctCount = results.filter(r => r.correct).length;
   const wrongResults = results.filter(r => !r.correct);
   const rightResults = results.filter(r => r.correct);
@@ -860,3 +992,73 @@ if (copyrightYearEl) copyrightYearEl.textContent = new Date().getFullYear();
 
 window.addEventListener('hashchange', route);
 window.addEventListener('DOMContentLoaded', route);
+
+// ---------- Service worker update notification ----------
+// When a new SW has installed and is waiting to activate, show a small
+// non-intrusive banner. The user can dismiss it or click "Reload" to
+// activate the new SW immediately. We deliberately don't auto-reload —
+// that would interrupt a quiz session or a topic mid-read.
+(function initSwUpdateNotification() {
+  if (!('serviceWorker' in navigator)) return;
+
+  // Create the banner element and inject it into the page now (hidden),
+  // so it's ready when the SW signals an update.
+  const banner = document.createElement('div');
+  banner.id = 'sw-update-banner';
+  banner.setAttribute('role', 'status');
+  banner.setAttribute('aria-live', 'polite');
+  banner.innerHTML = `
+    <span class="sw-update-msg">&#9432; New content available.</span>
+    <button class="sw-update-btn" id="swReloadBtn" type="button">Reload to update</button>
+    <button class="sw-update-dismiss" id="swDismissBtn" type="button" aria-label="Dismiss">&#10005;</button>
+  `;
+  document.body.appendChild(banner);
+
+  let waitingWorker = null;
+
+  function showBanner(worker) {
+    waitingWorker = worker;
+    banner.classList.add('visible');
+  }
+
+  document.getElementById('swReloadBtn').addEventListener('click', () => {
+    banner.classList.remove('visible');
+    if (waitingWorker) {
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    }
+  });
+
+  document.getElementById('swDismissBtn').addEventListener('click', () => {
+    banner.classList.remove('visible');
+  });
+
+  // When the new SW activates (after skipWaiting), reload all clients.
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+
+  // Check on registration: if a SW is already waiting, show the banner.
+  navigator.serviceWorker.ready.then(reg => {
+    if (reg.waiting) showBanner(reg.waiting);
+
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      if (!newWorker) return;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          showBanner(newWorker);
+        }
+      });
+    });
+  });
+
+  // Also listen for the postMessage from the SW itself (triggered during
+  // install when other tabs are already open).
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'SW_WAITING') {
+      navigator.serviceWorker.ready.then(reg => {
+        if (reg.waiting) showBanner(reg.waiting);
+      });
+    }
+  });
+}());

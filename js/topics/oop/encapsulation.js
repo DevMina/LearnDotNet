@@ -25,5 +25,10 @@ export default {
 var acct = new BankAccount();
 acct.Deposit(150);
 Console.WriteLine($"Balance: {acct.Balance:C}");`,
-  output: `Balance: $150.00`
+  output: `Balance: $150.00`,
+  mistakes: [
+      "Exposing mutable collections as public properties \u2014 callers can modify the internal state directly",
+      "Making fields public instead of using properties \u2014 bypasses validation and future-proofing",
+      "Using public setters when init-only or constructor injection would enforce invariants"
+  ]
 };

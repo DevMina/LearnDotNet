@@ -20,5 +20,10 @@ decimal Checkout(decimal total, IDiscountStrategy strategy)
 
 Console.WriteLine(Checkout(200m, new TenPercentOff()));`,
   output: `180.0`,
-  related: ["command"]
+  related: ["command"],
+  mistakes: [
+      "Using Strategy when a simple if/else or switch covers all cases and never changes",
+      "Making strategy objects stateful \u2014 strategies should be stateless and interchangeable",
+      "Not injecting the strategy via DI \u2014 hardcoding it defeats the purpose of the pattern"
+  ]
 };

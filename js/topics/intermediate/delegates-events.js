@@ -20,5 +20,10 @@ button.Clicked += () => Console.WriteLine("Handler A fired");
 button.Clicked += () => Console.WriteLine("Handler B fired");
 button.Click();`,
   output: `Handler A fired
-Handler B fired`
+Handler B fired`,
+  mistakes: [
+      "Not null-checking an event before invoking \u2014 use event?.Invoke() to avoid NullReferenceException",
+      "Forgetting to unsubscribe from events \u2014 keeps the subscriber alive, causing memory leaks",
+      "Using public fields of delegate type instead of event \u2014 any caller can fire or clear the delegate"
+  ]
 };

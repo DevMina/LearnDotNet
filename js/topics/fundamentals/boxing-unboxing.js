@@ -19,5 +19,10 @@ int unboxed = (int)boxed;
 Console.WriteLine(unboxed);`,
   output: `42
 42`,
-  related: ["generics", "structs"]
+  related: ["generics", "structs"],
+  mistakes: [
+      "Adding value types to non-generic collections (ArrayList, Hashtable) \u2014 each add boxes the value",
+      "Unboxing to the wrong type \u2014 you must unbox to the exact original type or it throws InvalidCastException",
+      "Using interfaces on structs \u2014 calling an interface method on a struct boxes it implicitly"
+  ]
 };

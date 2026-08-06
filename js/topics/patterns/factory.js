@@ -26,5 +26,10 @@ static class NotifierFactory
 }
 
 NotifierFactory.Create("sms").Send("Order shipped");`,
-  output: `SMS: Order shipped`
+  output: `SMS: Order shipped`,
+  mistakes: [
+      "Returning concrete types from a factory instead of an interface \u2014 defeats the purpose of abstracting construction",
+      "Overcomplicating a factory when a constructor with optional parameters would do",
+      "Not handling the unknown type case \u2014 a factory switch with no default throws at runtime"
+  ]
 };

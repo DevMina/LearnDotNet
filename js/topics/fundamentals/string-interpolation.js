@@ -17,5 +17,10 @@ Console.WriteLine($"{quantity} items at {price:C} each = {price * quantity:C}");
 Console.WriteLine($"Date: {date:yyyy-MM-dd}");`,
   output: `3 items at $1,234.50 each = $3,703.50
 Date: 2026-08-03`,
-  related: ["regular-expressions"]
+  related: ["regular-expressions"],
+  mistakes: [
+      "Using string concatenation in a loop \u2014 use StringBuilder or string.Join for many concatenations",
+      "Forgetting culture sensitivity: $\"{price}\" uses the current culture; use .ToString(\"C\", culture) for display",
+      "Embedding complex expressions in interpolation \u2014 extract to a variable first for readability"
+  ]
 };

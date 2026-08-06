@@ -22,5 +22,10 @@ var attr = typeof(ObsoleteExample)
 
 Console.WriteLine(attr?.Message);`,
   output: `Use NewMethod instead`,
-  related: ["reflection"]
+  related: ["reflection"],
+  mistakes: [
+      "Applying attributes without understanding their actual effect \u2014 many require framework support to do anything",
+      "Forgetting AttributeUsage \u2014 without it, the attribute can be applied anywhere, even where it makes no sense",
+      "Accessing attribute data with reflection in hot paths \u2014 reflection is slow, cache the result"
+  ]
 };

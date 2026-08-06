@@ -13,5 +13,10 @@ export default {
 List<int> more = [..numbers, 4, 5];
 
 Console.WriteLine(string.Join(", ", more));`,
-  output: `1, 2, 3, 4, 5`
+  output: `1, 2, 3, 4, 5`,
+  mistakes: [
+      "Using collection expressions where the target type is ambiguous \u2014 the compiler needs to infer the type",
+      "Assuming spread (..) copies deeply \u2014 it's a shallow spread, nested references are shared",
+      "Mixing collection expressions with LINQ chains before materialising \u2014 the expression must produce a concrete type first"
+  ]
 };

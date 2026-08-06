@@ -21,5 +21,10 @@ export default {
 var total = new Money(10.50m) + new Money(4.25m);
 Console.WriteLine(total);`,
   output: `$14.75`,
-  related: ["method-overloading"]
+  related: ["method-overloading"],
+  mistakes: [
+      "Overloading == without also overloading != and overriding Equals/GetHashCode \u2014 breaking symmetry",
+      "Making operator behaviour surprising \u2014 + should feel like addition, not concatenation on a numeric type",
+      "Overloading operators on mutable types \u2014 leads to confusing aliasing bugs"
+  ]
 };

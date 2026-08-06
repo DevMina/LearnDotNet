@@ -16,5 +16,10 @@ export default {
 
 var greeter = new Greeter("Ada");
 Console.WriteLine(greeter.Greet());`,
-  output: `Hello, Ada!`
+  output: `Hello, Ada!`,
+  mistakes: [
+      "Capturing a mutable parameter and modifying it \u2014 the same parameter is shared across all uses in the class",
+      "Using primary constructors for classes with complex validation \u2014 move validation to a factory method instead",
+      "Forgetting that primary constructor parameters aren't automatically exposed as properties \u2014 declare them if needed"
+  ]
 };

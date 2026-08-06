@@ -17,5 +17,10 @@ Console.WriteLine($"Total: {total}");
 static int Sum(params int[] nums) => nums.Sum();`,
   output: `Starting up...
 Total: 6`,
-  related: ["file-scoped-namespaces"]
+  related: ["file-scoped-namespaces"],
+  mistakes: [
+      "Thinking top-level statements remove all structure \u2014 there's still an implicit Program class and Main method",
+      "Mixing top-level statements with an explicit Main \u2014 only one file per project can have top-level statements",
+      "Putting too much code in Program.cs \u2014 top-level statements are for startup, not business logic"
+  ]
 };

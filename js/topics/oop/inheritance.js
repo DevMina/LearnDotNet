@@ -21,5 +21,10 @@ public class Dog : Animal
 
 Animal a = new Dog();
 Console.WriteLine(a.Speak());`,
-  output: `Woof! ...`
+  output: `Woof! ...`,
+  mistakes: [
+      "Overusing inheritance for code reuse \u2014 prefer composition when the 'is-a' relationship isn't real",
+      "Forgetting to call base() in a constructor, leaving the base class uninitialised",
+      "Sealing a class too early, or never sealing it \u2014 be intentional about whether subclassing is intended"
+  ]
 };

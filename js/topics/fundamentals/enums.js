@@ -17,5 +17,10 @@ Console.WriteLine((int)status);
 Console.WriteLine(Enum.Parse<OrderStatus>("Delivered"));`,
   output: `Shipped
 1
-Delivered`
+Delivered`,
+  mistakes: [
+      "Casting an arbitrary integer to an enum \u2014 use Enum.IsDefined to validate first",
+      "Using enums for bit flags without [Flags] and powers of two \u2014 bitwise operations won't work correctly",
+      "Comparing enum values with == but forgetting they're integers underneath \u2014 string comparison won't work"
+  ]
 };

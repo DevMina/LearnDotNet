@@ -17,5 +17,10 @@ var result = numbers
     .OrderBy(n => n);
 
 Console.WriteLine(string.Join(", ", result));`,
-  output: `30, 32, 46, 84`
+  output: `30, 32, 46, 84`,
+  mistakes: [
+      "Forgetting that LINQ queries are lazy \u2014 the query runs each time you enumerate it, not when you define it",
+      "Calling .ToList() prematurely and materialising a large set before filtering it",
+      "Throwing exceptions inside a Select \u2014 the exception surfaces at enumeration, not at the Select call"
+  ]
 };

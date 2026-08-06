@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
+/* ---------- Design tokens (dark theme, default) ---------- */
 :root {
   --bg: #0D1117;
   --panel: #151B23;
@@ -17,7 +18,28 @@
 
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Font-size scale — adjusted by the font-size toggle (small/medium/large) */
+  --fs-base: 15px;
+  --fs-sm: 13.5px;
+  --fs-xs: 12px;
+  --fs-code: 13.5px;
 }
+
+/* ---------- Light theme ---------- */
+html.theme-light {
+  --bg: #FFFFFF;
+  --panel: #F6F8FA;
+  --panel-2: #EAEEF2;
+  --border: #D0D7DE;
+  --text: #24292F;
+  --muted: #57606A;
+  --heading: #0D1117;
+}
+
+/* ---------- Font size overrides ---------- */
+html.fs-small  { --fs-base: 13.5px; --fs-sm: 12px;   --fs-xs: 11px;   --fs-code: 12px; }
+html.fs-large  { --fs-base: 17px;   --fs-sm: 15px;   --fs-xs: 13.5px; --fs-code: 15px; }
 
 * { box-sizing: border-box; }
 
@@ -27,6 +49,7 @@ html, body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  font-size: var(--fs-base);
   height: 100%;
 }
 
@@ -117,7 +140,48 @@ a:hover { text-decoration: underline; }
 .search-box input[type="search"]::placeholder { color: var(--muted); }
 .search-box input[type="search"]:focus-visible { outline: 2px solid var(--amber); outline-offset: 1px; }
 
+/* ---------- Sidebar settings toolbar (theme + font size) ---------- */
+.sidebar-settings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-top: 1px solid var(--border);
+}
+
+.settings-group {
+  display: flex;
+  gap: 2px;
+}
+
+.settings-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 7px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.settings-btn:hover { color: var(--text); }
+.settings-btn.active {
+  border-color: var(--border);
+  background: var(--panel-2);
+  color: var(--heading);
+}
+
 .tree-item.search-hidden { display: none; }
+
+mark.search-highlight {
+  background: rgba(232, 163, 61, 0.35);
+  color: var(--heading);
+  border-radius: 2px;
+  padding: 0 1px;
+  font-style: normal;
+}
 
 .search-no-results {
   padding: 10px 18px;
@@ -261,6 +325,34 @@ h1.topic-title {
   font-weight: 700;
 }
 
+/* Difficulty badge + reading time */
+.topic-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.difficulty-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.diff-beginner     { background: rgba(63,185,80,0.12);  color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.diff-intermediate { background: rgba(232,163,61,0.12); color: var(--amber); border: 1px solid rgba(232,163,61,0.3); }
+.diff-advanced     { background: rgba(199,125,255,0.12);color: var(--violet);border: 1px solid rgba(199,125,255,0.3); }
+
+.reading-time {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
 .topic-title-row {
   display: flex;
   align-items: flex-start;
@@ -308,7 +400,7 @@ h1.topic-title {
 }
 
 .prose {
-  font-size: 15px;
+  font-size: var(--fs-base);
   line-height: 1.7;
   color: var(--text);
 }
@@ -336,7 +428,16 @@ h1.topic-title {
 }
 
 .key-points ul { margin: 0; padding-left: 18px; }
-.key-points li { margin-bottom: 6px; font-size: 14px; }
+.key-points li { margin-bottom: 6px; font-size: var(--fs-sm); }
+
+.mistakes-box {
+  border-color: rgba(232, 163, 61, 0.3);
+  background: rgba(232, 163, 61, 0.04);
+}
+
+.kp-title--mistakes {
+  color: var(--amber) !important;
+}
 
 /* ---------- Quiz (quick check + full quiz mode) ---------- */
 .quiz-box {
@@ -381,7 +482,7 @@ h1.topic-title {
   color: var(--text);
   border-radius: 6px;
   padding: 10px 14px;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   font-family: inherit;
   cursor: pointer;
   line-height: 1.4;
@@ -400,6 +501,14 @@ h1.topic-title {
   border-color: #E85D5D;
   background: rgba(232, 93, 93, 0.1);
   color: #E85D5D;
+}
+
+.quiz-choice-icon {
+  display: inline-block;
+  width: 16px;
+  margin-right: 8px;
+  font-family: var(--font-mono);
+  font-weight: 700;
 }
 
 .quiz-feedback {
@@ -626,7 +735,7 @@ pre.code-block {
   padding: 18px 20px;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--fs-code);
   line-height: 1.65;
   tab-size: 4;
 }
@@ -1176,52 +1285,140 @@ pre.code-block {
 }
 
 /* ---------- Print (per-topic cheat sheet) ---------- */
-@media print {
-  .sidebar,
-  .mobile-toggle,
-  .backdrop,
-  .site-footer,
-  .crumb,
-  .topic-nav,
-  .keyboard-hint,
-  .learned-toggle,
-  .related-topics,
-  .copy-btn,
-  .print-btn,
-  .run-btn,
-  .console {
-    display: none !important;
-  }
+/* ---------- Service worker update notification banner ---------- */
+#sw-update-banner {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: bottom 0.3s ease;
+  white-space: nowrap;
+}
 
-  body, .layout, .content-column { background: #fff; color: #111; }
+#sw-update-banner.visible { bottom: 20px; }
+
+.sw-update-msg {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.sw-update-btn {
+  background: var(--amber);
+  color: #0D1117;
+  border: none;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sw-update-btn:hover { filter: brightness(1.1); }
+
+.sw-update-dismiss {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.sw-update-dismiss:hover { color: var(--text); }
+
+@media (max-width: 860px) {
+  #sw-update-banner {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    white-space: normal;
+    flex-wrap: wrap;
+  }
+}
+
+@media print {
+  /* Hide all chrome — navigation, interactive elements, quiz widget, update banner */
+  .sidebar, .mobile-toggle, .backdrop, .site-footer, .crumb,
+  .topic-nav, .keyboard-hint, .learned-toggle, .related-topics,
+  .copy-btn, .print-btn, .run-btn, .console, .quiz-box,
+  .track-badges, .topic-meta, #sw-update-banner,
+  .quiz-another-btn, .sw-update-banner { display: none !important; }
+
+  /* Page setup */
+  @page { margin: 18mm 15mm; size: A4 portrait; }
+
+  body, .layout, .content-column { background: #fff !important; color: #111 !important; }
+  .content-column { display: block !important; }
   .main { max-width: 100%; padding: 0; }
 
-  h1.topic-title { color: #111; }
-  .topic-tagline { color: #444; }
-  .prose { color: #111; }
-  .prose strong { color: #111; }
-
-  .key-points {
-    background: #fff;
-    border: 1px solid #ccc;
-  }
-  .key-points .kp-title { color: #333; }
-
-  .workbench {
-    border: 1px solid #ccc;
-    background: #fff;
-  }
-  .workbench-tabs { background: #f3f3f3; border-bottom: 1px solid #ccc; }
-  .workbench-tab.file-tab { color: #111; border-bottom-color: #999; }
-
-  pre.code-block {
-    background: #f7f7f7;
+  /* Header */
+  h1.topic-title {
+    font-size: 22pt;
     color: #111;
+    margin: 0 0 4pt;
+    border-bottom: 2pt solid #111;
+    padding-bottom: 4pt;
+  }
+  .topic-tagline { color: #444; margin-bottom: 10pt; font-size: 11pt; }
+
+  /* Prose */
+  .prose { color: #111; font-size: 10pt; line-height: 1.5; margin-bottom: 10pt; }
+  .prose p { margin-bottom: 6pt; }
+  .prose strong { color: #111; }
+  .prose em { color: #333; }
+
+  /* Key points and mistakes — side by side if space allows */
+  .key-points, .mistakes-box {
+    background: #f8f8f8;
+    border: 0.5pt solid #ccc;
+    border-radius: 0;
+    padding: 8pt 10pt;
+    margin: 6pt 0;
+    break-inside: avoid;
+  }
+  .key-points .kp-title { color: #333; font-size: 8pt; }
+  .kp-title--mistakes { color: #b07800 !important; }
+  .mistakes-box { border-color: #c8a020; background: #fefaee; }
+  .key-points li { font-size: 9.5pt; margin-bottom: 3pt; }
+
+  /* Code block */
+  .workbench { border: 0.5pt solid #ccc; break-inside: avoid; margin: 8pt 0; }
+  .workbench-tabs { background: #f0f0f0; border-bottom: 0.5pt solid #ccc; padding: 4pt 8pt; }
+  .workbench-tab.file-tab { color: #333; font-size: 9pt; border: none; }
+  pre.code-block {
+    background: #f7f7f7 !important;
+    color: #111 !important;
+    font-size: 9pt;
     white-space: pre-wrap;
     word-break: break-word;
+    padding: 10pt 12pt;
   }
-  .k, .ty, .m { color: #111; font-weight: 600; }
-  .s { color: #333; }
-  .c { color: #666; }
-  .n { color: #111; }
+  .k, .ty, .m { color: #111 !important; font-weight: 600; }
+  .s { color: #2d5a00 !important; }
+  .c { color: #666 !important; font-style: italic; }
+  .n { color: #333 !important; }
+
+  /* Print footer with URL */
+  .main::after {
+    content: "https://devmina.github.io/LearnDotNet/ · C# & .NET Concepts";
+    display: block;
+    margin-top: 14pt;
+    font-size: 8pt;
+    color: #888;
+    border-top: 0.5pt solid #ccc;
+    padding-top: 4pt;
+  }
 }
+

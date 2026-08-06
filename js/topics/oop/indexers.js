@@ -23,5 +23,10 @@ export default {
 var schedule = new WeekSchedule();
 schedule[0] = "Standup meeting";
 Console.WriteLine(schedule[0]);`,
-  output: `Standup meeting`
+  output: `Standup meeting`,
+  mistakes: [
+      "Not validating the index argument \u2014 out-of-range access should throw ArgumentOutOfRangeException, not return null",
+      "Making indexers do expensive work \u2014 callers expect index access to be fast, like array access",
+      "Exposing internal state by reference through an indexer \u2014 wrap in a copy or expose read-only"
+  ]
 };

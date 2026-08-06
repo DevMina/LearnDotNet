@@ -21,5 +21,10 @@ Console.WriteLine(GetGreeting(null));
 Console.WriteLine(GetGreeting("Priya"));`,
   output: `Hello, stranger
 Hello, Priya`,
-  related: ["nullable-value-types"]
+  related: ["nullable-value-types"],
+  mistakes: [
+      "Suppressing warnings with ! without understanding why the compiler thinks something could be null",
+      "Enabling nullable in a project that doesn't have null guards everywhere \u2014 a flood of warnings that get ignored",
+      "Confusing nullable reference types (compile-time check) with nullable value types (runtime Nullable<T>)"
+  ]
 };

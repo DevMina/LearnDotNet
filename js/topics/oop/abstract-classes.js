@@ -26,5 +26,10 @@ public class SalariedEmployee : Employee
 
 Employee e = new SalariedEmployee { Name = "Sam", AnnualSalary = 84000 };
 e.PrintPaycheck();`,
-  output: `Sam: $7,000.00`
+  output: `Sam: $7,000.00`,
+  mistakes: [
+      "Making a class abstract when an interface would do \u2014 abstract classes consume the single base-class slot",
+      "Putting too much concrete logic in an abstract class \u2014 makes subclasses harder to test in isolation",
+      "Forgetting that abstract classes can have constructors \u2014 they run when the subclass is instantiated"
+  ]
 };

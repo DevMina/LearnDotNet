@@ -22,5 +22,10 @@ if (age is int a)
   output: `False
 -1
 Age is 30`,
-  related: ["nullable-reference-types"]
+  related: ["nullable-reference-types"],
+  mistakes: [
+      "Accessing .Value without checking .HasValue first \u2014 throws InvalidOperationException if null",
+      "Confusing Nullable<T> (value types) with nullable reference types (classes with ?) \u2014 they're different mechanisms",
+      "Returning null from a method that callers expect to never be null \u2014 document and enforce the contract"
+  ]
 };

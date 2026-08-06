@@ -23,5 +23,10 @@ Console.WriteLine(Describe(new Shape("circle", 4)));
 Console.WriteLine(Describe(new Shape("circle", 9)));`,
   output: `Circle
 Large circle`,
-  related: ["regular-expressions"]
+  related: ["regular-expressions"],
+  mistakes: [
+      "Using patterns in if-chains instead of switch expressions when all cases are known \u2014 switch expressions are exhaustive and cleaner",
+      "Forgetting that when guards run after the pattern matches \u2014 the variable is in scope inside the guard",
+      "Using is Type x and then immediately casting again \u2014 the variable x already holds the cast value"
+  ]
 };

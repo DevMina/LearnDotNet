@@ -18,5 +18,10 @@ int? score = null;            // nullable value type
 Console.WriteLine($"{name} is {age}, active: {isActive}");
 Console.WriteLine($"Score has value: {score.HasValue}");`,
   output: `Ada is 29, active: True
-Score has value: False`
+Score has value: False`,
+  mistakes: [
+      "Using var and assuming it means dynamic \u2014 var is still statically typed at compile time",
+      "Comparing strings with == on reference types from different sources \u2014 use string.Equals or == which is overloaded for string",
+      "Forgetting that integer division truncates: 5 / 2 == 2, not 2.5"
+  ]
 };

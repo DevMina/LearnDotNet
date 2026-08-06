@@ -19,5 +19,10 @@ export default {
 Console.WriteLine(SumAll(new[] { 1, 2, 3 }));
 Console.WriteLine(SumAll(new[] { 1.5, 2.5 }));`,
   output: `6
-4`
+4`,
+  mistakes: [
+      "Not reading the compiler warning before suppressing it \u2014 warnings usually point to a real problem",
+      "Writing the feature before writing a test \u2014 makes it much harder to test later",
+      "Ignoring null return values from framework methods \u2014 check the documentation for when null is valid"
+  ]
 };

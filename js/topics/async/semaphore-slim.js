@@ -31,5 +31,10 @@ Console.WriteLine("All done");`,
 Task 2 running
 Task 3 running
 All done`,
-  related: ["lock-object", "threading-basics"]
+  related: ["lock-object", "threading-basics"],
+  mistakes: [
+      "Forgetting Release() in the success path \u2014 the semaphore count never recovers, eventually starving all callers",
+      "Not using try/finally around WaitAsync \u2014 an exception between Wait and Release leaks the slot permanently",
+      "Using SemaphoreSlim(1,1) as a mutex but calling it from the same thread twice \u2014 it's not reentrant, it deadlocks"
+  ]
 };

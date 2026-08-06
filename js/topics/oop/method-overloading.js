@@ -19,5 +19,10 @@ Console.WriteLine(Add(1, 2, 3));`,
   output: `5
 6
 6`,
-  related: ["methods-parameters", "operator-overloading"]
+  related: ["methods-parameters", "operator-overloading"],
+  mistakes: [
+      "Creating overloads that differ only in optionality \u2014 callers can't tell which one will be called",
+      "Overloading with params and a fixed signature of the same arity \u2014 the compiler picks unexpectedly",
+      "Changing the behaviour of an overload when callers expect them all to do the same thing, just with different inputs"
+  ]
 };

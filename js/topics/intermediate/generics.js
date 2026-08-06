@@ -16,5 +16,10 @@ Console.WriteLine(Max(3, 7));
 Console.WriteLine(Max("pear", "kiwi"));`,
   output: `7
 pear`,
-  related: ["boxing-unboxing"]
+  related: ["boxing-unboxing"],
+  mistakes: [
+      "Forgetting type constraints \u2014 unconstrained T can't call any methods, use where T : IMyInterface",
+      "Creating unnecessary generic types when the concrete type is always the same at every call site",
+      "Confusing generic type variance \u2014 List<Dog> is not assignable to List<Animal> even if Dog : Animal"
+  ]
 };

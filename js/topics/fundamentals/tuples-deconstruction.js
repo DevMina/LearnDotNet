@@ -13,5 +13,10 @@ export default {
 
 var (name, age) = GetPerson();
 Console.WriteLine($"{name} is {age}");`,
-  output: `Ada is 29`
+  output: `Ada is 29`,
+  mistakes: [
+      "Using ValueTuple for public APIs \u2014 named properties on a class or record are far more readable",
+      "Forgetting that tuple element names are compile-time only \u2014 they don't survive reflection or serialisation",
+      "Deconstructing into too few variables and silently discarding values"
+  ]
 };

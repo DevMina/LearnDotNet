@@ -26,5 +26,10 @@ if (TryDivide(10, 2, out int quotient))
     Console.WriteLine(quotient);`,
   output: `6
 5`,
-  related: ["method-overloading"]
+  related: ["method-overloading"],
+  mistakes: [
+      "Forgetting that params creates an array \u2014 calling with no args passes an empty array, not null",
+      "Overusing ref and out when simply returning a value or tuple is cleaner",
+      "Optional parameters with default values are baked into the call site at compile time \u2014 changing them requires recompiling all callers"
+  ]
 };

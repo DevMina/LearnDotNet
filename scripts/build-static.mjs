@@ -256,7 +256,7 @@ function buildPage({ title, description, canonical, assetPrefix, sidebarHTML, ma
 ${jsonLdScript}</head>
 <body>
 
-  <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">&#9776;</button>
+  <button type="button" class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">&#9776;</button>
 
   <div class="backdrop" id="backdrop"></div>
 

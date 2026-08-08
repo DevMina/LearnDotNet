@@ -14,7 +14,7 @@
 //               banner. The banner's "Reload" button sends SKIP_WAITING back,
 //               which triggers activate and a page reload.
 
-const CACHE_VERSION = 'v-7a25a8ah';
+const CACHE_VERSION = 'v-7a25a8ay';
 const CACHE_NAME = `csharp-concepts-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [

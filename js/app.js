@@ -25,7 +25,10 @@ const SEARCH_TEXT_BY_ID = new Map(SEARCH_INDEX.map(r => [r.id, r.keywords]));
 
 // ---------- Progress tracking ("mark as learned") ----------
 // Stored client-side only, per browser, as a plain array of topic ids.
-const PROGRESS_KEY = 'csharp-concepts-progress';
+const PROGRESS_KEY   = 'csharp-concepts-progress';
+const BOOKMARKS_KEY  = 'csharp-concepts-bookmarks';
+const RECENTS_KEY    = 'csharp-concepts-recents';
+const RECENTS_MAX    = 8;
 
 function getLearnedSet() {
   try {
@@ -59,6 +62,36 @@ function toggleLearned(topicId) {
 function learnedCountFor(topicIds) {
   const set = getLearnedSet();
   return topicIds.reduce((n, id) => n + (set.has(id) ? 1 : 0), 0);
+}
+
+// ---------- Bookmarks ----------
+function getBookmarks() {
+  try { return new Set(JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+function saveBookmarks(set) {
+  try { localStorage.setItem(BOOKMARKS_KEY, JSON.stringify([...set])); } catch {}
+}
+function isBookmarked(id) { return getBookmarks().has(id); }
+function toggleBookmark(id) {
+  const set = getBookmarks();
+  if (set.has(id)) set.delete(id); else set.add(id);
+  saveBookmarks(set);
+  return set.has(id);
+}
+
+// ---------- Recently viewed ----------
+function getRecents() {
+  try { return JSON.parse(localStorage.getItem(RECENTS_KEY) || '[]'); }
+  catch { return []; }
+}
+function recordRecent(topicId) {
+  const recents = getRecents().filter(id => id !== topicId);
+  recents.unshift(topicId);
+  try { localStorage.setItem(RECENTS_KEY, JSON.stringify(recents.slice(0, RECENTS_MAX))); } catch {}
+}
+function getLastVisited() {
+  return getRecents()[0] || null;
 }
 
 // ---------- Sidebar tree ----------
@@ -311,6 +344,18 @@ function renderLanding() {
   const totalLearned = learnedCountFor(ALL_TOPICS_FLAT.map(t => t.id));
   const pct = totalTopics ? Math.round((totalLearned / totalTopics) * 100) : 0;
 
+  // Continue learning: last visited topic that isn't fully learned (or just last visited)
+  const lastVisited = getLastVisited();
+  const lastMeta = lastVisited ? TOPIC_INDEX[lastVisited] : null;
+
+  // Recently viewed: last 8, excluding the very first (shown as "continue")
+  const recents = getRecents().map(id => TOPIC_INDEX[id]).filter(Boolean);
+  const recentDisplay = lastMeta ? recents.slice(1, 6) : recents.slice(0, 6);
+
+  // Bookmarks
+  const bookmarkIds = [...getBookmarks()];
+  const bookmarkMetas = bookmarkIds.map(id => TOPIC_INDEX[id]).filter(Boolean);
+
   mainEl.innerHTML = `
     <div class="landing-hero">
       <h1>C# &amp; .NET,<br>explained through running code.</h1>
@@ -323,11 +368,34 @@ function renderLanding() {
         <div class="progress-summary-label">${totalLearned} of ${totalTopics} topics marked as learned</div>
         <div class="progress-bar" role="progressbar" aria-valuenow="${totalLearned}" aria-valuemin="0" aria-valuemax="${totalTopics}" aria-label="Overall learning progress"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
       </div>` : ''}
+
+      ${lastMeta ? `
+      <div class="continue-bar">
+        <span class="continue-label">Continue where you left off</span>
+        <a class="continue-link" href="#/${lastMeta.id}">
+          <span class="continue-cat">${lastMeta.category.name}</span>
+          <span class="continue-title">${lastMeta.title} &rarr;</span>
+        </a>
+      </div>` : ''}
+
       <div class="category-grid" id="categoryGrid"></div>
 
       <h2 class="section-heading">Guided tracks</h2>
       <p class="section-subhead">Prefer a path over browsing? These pull from the same topics above, just in a deliberate order for a specific goal.</p>
       <div class="track-grid" id="trackGrid"></div>
+
+      ${recentDisplay.length ? `
+      <h2 class="section-heading">Recently viewed</h2>
+      <div class="pill-list" id="recentsList">
+        ${recentDisplay.map(m => `<a class="topic-pill" href="#/${m.id}">${m.title}</a>`).join('')}
+      </div>` : ''}
+
+      ${bookmarkMetas.length ? `
+      <h2 class="section-heading">&#9733; Bookmarks</h2>
+      <div class="pill-list" id="bookmarksList">
+        ${bookmarkMetas.map(m => `<a class="topic-pill topic-pill--bookmarked" href="#/${m.id}">${m.title}</a>`).join('')}
+        <button class="pill-clear-btn" id="clearBookmarksBtn" type="button">Clear all</button>
+      </div>` : ''}
     </div>
   `;
 
@@ -365,6 +433,11 @@ function renderLanding() {
     trackGrid.appendChild(card);
   });
 
+  document.getElementById('clearBookmarksBtn')?.addEventListener('click', () => {
+    saveBookmarks(new Set());
+    renderLanding(); // re-render to remove the section
+  });
+
   document.title = 'C# & .NET Concepts — Interactive Guide';
   updateMetaTags({
     description: 'An interactive tour of C# and .NET concepts, from fundamentals to design patterns, with runnable code samples.',
@@ -396,6 +469,10 @@ async function renderTopic(topicId, myToken) {
     renderLanding();
     return;
   }
+
+  // Record the visit immediately, before the async load, so fast navigators
+  // don't miss their history even if they leave before the content loads.
+  recordRecent(topicId);
 
   renderTopicSkeleton();
 
@@ -436,6 +513,7 @@ async function renderTopic(topicId, myToken) {
   });
 
   const learned = isLearned(topicId);
+  const bookmarked = isBookmarked(topicId);
   const related = (topic.related || [])
     .map(id => TOPIC_INDEX[id])
     .filter(Boolean);
@@ -464,9 +542,14 @@ async function renderTopic(topicId, myToken) {
     <div class="crumb"><a href="#/">Home</a><span class="sep">/</span>${category.name}<span class="sep">/</span>${topic.title}.cs</div>
     <div class="topic-title-row">
       <h1 class="topic-title">${topic.title}</h1>
-      <button type="button" class="learned-toggle${learned ? ' is-learned' : ''}" id="learnedToggle" aria-pressed="${learned}">
-        <span class="check">&#10003;</span> ${learned ? 'Learned' : 'Mark as learned'}
-      </button>
+      <div class="topic-actions">
+        <button type="button" class="bookmark-btn${bookmarked ? ' is-bookmarked' : ''}" id="bookmarkBtn" aria-pressed="${bookmarked}" title="${bookmarked ? 'Remove bookmark' : 'Bookmark this topic'}">
+          ${bookmarked ? '&#9733;' : '&#9734;'}
+        </button>
+        <button type="button" class="learned-toggle${learned ? ' is-learned' : ''}" id="learnedToggle" aria-pressed="${learned}">
+          <span class="check">&#10003;</span> ${learned ? 'Learned' : 'Mark as learned'}
+        </button>
+      </div>
     </div>
     <div class="topic-meta">
       <span class="difficulty-badge ${diff.cls}">${diff.label}</span>
@@ -498,6 +581,7 @@ async function renderTopic(topicId, myToken) {
         <div class="workbench-tab file-tab">${toPascalFileName(topic.title)}.cs</div>
         <button class="copy-btn" id="copyBtn" type="button">Copy</button>
         <button class="print-btn" id="printBtn" type="button">&#8659; PDF</button>
+        <a class="sharplab-btn" id="sharplabBtn" href="https://sharplab.io/" target="_blank" rel="noopener noreferrer" title="Copy code, then open SharpLab to run it">&#9654; SharpLab</a>
         <button class="run-btn" id="runBtn" type="button"><span class="play">&#9654;</span> Run</button>
       </div>
       <pre class="code-block"><code>${highlightCSharp(topic.code)}</code></pre>
@@ -528,6 +612,34 @@ async function renderTopic(topicId, myToken) {
 
   document.getElementById('runBtn').addEventListener('click', () => runSample(topic));
   document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+  // SharpLab: copy code to clipboard then open SharpLab in a new tab.
+  // We can't pre-fill SharpLab's editor via URL (they use a proprietary binary
+  // format), so the next best thing is copying the code so the user can paste
+  // it immediately when the tab opens. The button text confirms this.
+  document.getElementById('sharplabBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('sharplabBtn');
+    try {
+      await navigator.clipboard.writeText(topic.code);
+      const original = btn.textContent;
+      btn.textContent = '&#10003; Copied — pasting in SharpLab';
+      btn.innerHTML = '&#10003; Copied!';
+      window.open('https://sharplab.io/', '_blank', 'noopener,noreferrer');
+      setTimeout(() => { btn.innerHTML = '&#9654; SharpLab'; }, 2000);
+    } catch {
+      window.open('https://sharplab.io/', '_blank', 'noopener,noreferrer');
+    }
+  });
+
+  const bookmarkBtn = document.getElementById('bookmarkBtn');
+  bookmarkBtn.addEventListener('click', () => {
+    const nowBookmarked = toggleBookmark(topicId);
+    bookmarkBtn.classList.toggle('is-bookmarked', nowBookmarked);
+    bookmarkBtn.setAttribute('aria-pressed', String(nowBookmarked));
+    bookmarkBtn.innerHTML = nowBookmarked ? '&#9733;' : '&#9734;';
+    bookmarkBtn.title = nowBookmarked ? 'Remove bookmark' : 'Bookmark this topic';
+  });
 
   const learnedBtn = document.getElementById('learnedToggle');
   learnedBtn.addEventListener('click', () => {
@@ -735,12 +847,15 @@ const QUIZ_QUESTION_COUNT = 10;
 // screen reader users a sensible landing point after each transition.
 function resetQuizViewport() {
   window.scrollTo(0, 0);
-  mainEl.focus({ preventScroll: true });
+  // Note: we deliberately do NOT call mainEl.focus() here.
+  // Programmatically focusing the <main> element (even with preventScroll)
+  // can trigger spurious hashchange events in some browsers, which fires
+  // route() and re-renders renderQuizScopeSelect(), clobbering the in-progress
+  // quiz session. The scroll-to-top is the meaningful part anyway.
 }
 
 function renderQuizScopeSelect() {
   const totalTopics = ALL_TOPICS_FLAT.length;
-  resetQuizViewport();
 
   document.title = 'Test yourself — C# & .NET Concepts';
   updateMetaTags({
@@ -797,7 +912,7 @@ async function startQuizSession(poolMetas, scopeLabel) {
   const results = [];
 
   function showQuestion() {
-    resetQuizViewport();
+    window.scrollTo(0, 0);
     document.getElementById('quizProgress').textContent = `Question ${index + 1} of ${questions.length} \u2014 ${scopeLabel}`;
     const box = document.getElementById('quizSessionBox');
     box.innerHTML = '';
@@ -1033,8 +1148,13 @@ window.addEventListener('DOMContentLoaded', route);
   });
 
   // When the new SW activates (after skipWaiting), reload all clients.
+  // Guard: only reload if there was already a controller — the first time a SW
+  // installs and calls clients.claim(), controllerchange fires too, but that's
+  // not an update (there was no previous controller), so we must not reload.
+  let hadController = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    window.location.reload();
+    if (hadController) window.location.reload();
+    hadController = true;
   });
 
   // Check on registration: if a SW is already waiting, show the banner.

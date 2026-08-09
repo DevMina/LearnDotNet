@@ -143,6 +143,11 @@ function updateSettingsActive() {
 }
 
 function renderSidebar(activeTopicId) {
+  // Find which category contains the active topic
+  const activeCatId = activeTopicId
+    ? CATEGORIES.find(c => c.topics.some(t => t.id === activeTopicId))?.id
+    : null;
+
   const tree = document.createElement('div');
   tree.className = 'tree';
 
@@ -153,10 +158,15 @@ function renderSidebar(activeTopicId) {
     const catTopicIds = cat.topics.map(t => t.id);
     const learnedInCat = learnedCountFor(catTopicIds);
 
+    // Collapse all categories except the one containing the active topic.
+    // When there's no active topic (landing, quiz, track pages), collapse all.
+    const isExpanded = activeCatId !== null && cat.id === activeCatId;
+    if (!isExpanded) catDiv.classList.add('collapsed');
+
     const label = document.createElement('button');
     label.type = 'button';
     label.className = 'tree-category-label';
-    label.setAttribute('aria-expanded', 'true');
+    label.setAttribute('aria-expanded', String(isExpanded));
     label.innerHTML = `<span class="chevron">\u25BE</span><span>${cat.name}</span><span class="tree-category-progress">${learnedInCat}/${catTopicIds.length}</span>`;
     label.addEventListener('click', () => {
       const collapsed = catDiv.classList.toggle('collapsed');
@@ -173,9 +183,22 @@ function renderSidebar(activeTopicId) {
       item.type = 'button';
       item.className = 'tree-item' + (isActive ? ' active' : '') + (learned ? ' learned' : '');
       item.dataset.topicId = t.id;
+      item.dataset.title = t.title;
       if (isActive) item.setAttribute('aria-current', 'page');
       item.innerHTML = `<span class="file-icon">cs</span><span>${t.title}</span><span class="learned-check" aria-hidden="true">&#10003;</span>`;
       item.addEventListener('click', () => {
+        // Collapse every category except the one that was just clicked
+        tree.querySelectorAll('.tree-category').forEach(div => {
+          const containsTarget = div.querySelector(`[data-topic-id="${t.id}"]`);
+          const lbl = div.querySelector('.tree-category-label');
+          if (containsTarget) {
+            div.classList.remove('collapsed');
+            lbl?.setAttribute('aria-expanded', 'true');
+          } else {
+            div.classList.add('collapsed');
+            lbl?.setAttribute('aria-expanded', 'false');
+          }
+        });
         location.hash = `#/${t.id}`;
         closeMobileSidebar();
       });
@@ -281,9 +304,19 @@ function filterSidebar(query) {
     catDiv.hidden = !categoryHasMatch;
     if (categoryHasMatch) anyVisible = true;
 
-    // Auto-expand categories with matches while searching, restore otherwise.
-    if (q !== '' && categoryHasMatch) {
-      catDiv.classList.remove('collapsed');
+    // While searching: expand all matching categories.
+    // When query is cleared: restore — collapse all except the active topic's category.
+    if (q !== '') {
+      if (categoryHasMatch) catDiv.classList.remove('collapsed');
+    } else {
+      const hasActive = catDiv.querySelector('.tree-item.active');
+      if (hasActive) {
+        catDiv.classList.remove('collapsed');
+        catDiv.querySelector('.tree-category-label')?.setAttribute('aria-expanded', 'true');
+      } else {
+        catDiv.classList.add('collapsed');
+        catDiv.querySelector('.tree-category-label')?.setAttribute('aria-expanded', 'false');
+      }
     }
   });
 
@@ -757,7 +790,9 @@ async function initQuickCheck(navMeta, content, myToken) {
 }
 
 function navLink(topic, label, isPrev) {
-  return `<a href="#/${topic.id}"><span class="dir">${label}${isPrev ? ' \u2190' : ''}</span>${topic.title}${isPrev ? '' : ' \u2192'}</a>`;
+  return isPrev
+    ? `<a href="#/${topic.id}"><span class="dir">&larr; ${label}</span>${topic.title}</a>`
+    : `<a href="#/${topic.id}"><span class="dir">${label} &rarr;</span>${topic.title}</a>`;
 }
 
 function toPascalFileName(title) {

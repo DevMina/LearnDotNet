@@ -95,10 +95,10 @@ function buildTopicMainHTML({ topic, content, category, prev, next, related, roo
     : '';
 
   const prevHTML = prev
-    ? `<a href="${siblingPrefix}${prev.id}/"><span class="dir">Previous &larr;</span>${escapeHtml(prev.title)}</a>`
+    ? `<a href="${siblingPrefix}${prev.id}/"><span class="dir">&larr; Previous</span>${escapeHtml(prev.title)}</a>`
     : '<span></span>';
   const nextHTML = next
-    ? `<a href="${siblingPrefix}${next.id}/"><span class="dir">Next</span>${escapeHtml(next.title)} &rarr;</a>`
+    ? `<a href="${siblingPrefix}${next.id}/"><span class="dir">Next &rarr;</span>${escapeHtml(next.title)}</a>`
     : '<span></span>';
 
   const escapedOutput = escapeHtml(content.output);

@@ -7,14 +7,18 @@
 //               from the first visit, not just after visiting each page.
 //   Activate — delete any old caches from previous builds, claim all clients
 //               immediately so the new SW takes effect without a reload.
-//   Fetch    — cache-first for pre-cached assets (they're versioned by the
-//               CACHE_VERSION string); network-first for everything else.
+//   Fetch    — network-first for all GET requests: always try the network so
+//               visitors get the latest content; fall back to cache when the
+//               network fails (offline or flaky connection). Fresh responses
+//               are always written back to the cache. Navigation requests that
+//               fail fall back to the cached index.html so the SPA shell loads
+//               even fully offline.
 //   Update   — when a new SW installs and is waiting, postMessage all open
 //               clients so app.js can show a non-intrusive "update available"
 //               banner. The banner's "Reload" button sends SKIP_WAITING back,
 //               which triggers activate and a page reload.
 
-const CACHE_VERSION = 'v-7a25a8ax';
+const CACHE_VERSION = 'v-7a25a8ac';
 const CACHE_NAME = `csharp-concepts-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -249,33 +253,17 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET' || !req.url.startsWith(self.location.origin)) return;
 
-  const url = new URL(req.url);
-  const pathname = url.pathname;
-
-  // Cache-first for pre-cached assets (JS modules, CSS, static pages).
-  // These are versioned by CACHE_VERSION so stale responses are never served
-  // after a deploy — the old cache is deleted on activate.
-  const isPrecached = PRECACHE_URLS.some(u => {
-    const p = new URL(u, self.location.href).pathname;
-    return p === pathname;
-  });
-
-  if (isPrecached) {
-    event.respondWith(
-      caches.match(req).then(cached => cached || fetch(req).then(res => {
-        caches.open(CACHE_NAME).then(c => c.put(req, res.clone()));
-        return res;
-      }))
-    );
-    return;
-  }
-
-  // Network-first for everything else (topic JS modules loaded dynamically
-  // after a new topic is added but before the SW is updated, external fonts).
+  // Network-first for all requests — always try the network first so visitors
+  // always get the latest content. Fall back to cache when offline or when
+  // the network fails. For navigation requests (page loads), fall back to
+  // the cached index.html so the SPA shell loads offline.
   event.respondWith(
     fetch(req)
       .then(res => {
-        caches.open(CACHE_NAME).then(c => c.put(req, res.clone()));
+        // Cache a fresh copy on every successful network response.
+        if (res.ok) {
+          caches.open(CACHE_NAME).then(c => c.put(req, res.clone()));
+        }
         return res;
       })
       .catch(() =>

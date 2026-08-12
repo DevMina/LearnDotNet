@@ -965,6 +965,7 @@ pre.code-block {
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--panel);
+  white-space: nowrap;
 }
 
 .related-chip:hover {
@@ -1355,6 +1356,20 @@ pre.code-block {
 
   .topic-title-row { flex-direction: column; align-items: flex-start; gap: 10px; }
   .topic-actions { flex-wrap: wrap; }
+
+  /* Workbench toolbar: hide secondary actions (PDF + SharpLab) on mobile to
+     prevent overflow — Copy and Run are the two actions mobile users need. */
+  .print-btn { display: none; }
+  .sharplab-btn { display: none; }
+
+  /* Related chips: allow horizontal scroll so long chip names never wrap */
+  .related-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    gap: 6px;
+  }
 }
 
 /* No-JS mobile fallback: stack content above a full, plain, in-flow sidebar
@@ -1389,6 +1404,77 @@ pre.code-block {
 }
 
 /* ---------- Print (per-topic cheat sheet) ---------- */
+/* ---------- PWA install prompt banner ---------- */
+#pwa-install-banner {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-2);
+  border: 1px solid var(--teal);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 99;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: bottom 0.3s ease;
+  white-space: nowrap;
+}
+
+#pwa-install-banner.visible { bottom: 64px; }
+
+.pwa-install-msg {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.pwa-install-btn {
+  background: var(--teal);
+  color: #0D1117;
+  border: none;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.pwa-install-btn:hover { filter: brightness(1.1); }
+
+.pwa-install-dismiss {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pwa-install-dismiss:hover { color: var(--text); }
+
+@media (max-width: 860px) {
+  #pwa-install-banner {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    white-space: normal;
+    flex-wrap: wrap;
+    bottom: -120px;
+  }
+  #pwa-install-banner.visible { bottom: 16px; }
+}
+
+@media print {
+  #pwa-install-banner { display: none !important; }
+}
+
 /* ---------- Service worker update notification banner ---------- */
 #sw-update-banner {
   position: fixed;

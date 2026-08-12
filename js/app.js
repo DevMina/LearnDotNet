@@ -1217,3 +1217,56 @@ window.addEventListener('DOMContentLoaded', route);
     }
   });
 }());
+
+// ---------- PWA install prompt ----------
+// The browser fires 'beforeinstallprompt' when all PWA criteria are met
+// (HTTPS, manifest, service worker) and the app isn't already installed.
+// We hold the event and show a small non-intrusive banner. The user can
+// dismiss it permanently (stored in localStorage) or tap to install.
+// We never show it again after dismissal or after a successful install.
+(function initPwaInstallPrompt() {
+  const DISMISSED_KEY = 'csharp-concepts-pwa-dismissed';
+  if (localStorage.getItem(DISMISSED_KEY)) return; // already dismissed
+
+  let deferredPrompt = null;
+
+  const banner = document.createElement('div');
+  banner.id = 'pwa-install-banner';
+  banner.setAttribute('role', 'status');
+  banner.setAttribute('aria-live', 'polite');
+  banner.innerHTML = `
+    <span class="pwa-install-msg">&#128187; Install this site as an app for offline access.</span>
+    <button class="pwa-install-btn" id="pwaInstallBtn" type="button">Install</button>
+    <button class="pwa-install-dismiss" id="pwaDismissBtn" type="button" aria-label="Dismiss">&#10005;</button>
+  `;
+  document.body.appendChild(banner);
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // stop the automatic mini-infobar
+    deferredPrompt = e;
+    banner.classList.add('visible');
+  });
+
+  document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    banner.classList.remove('visible');
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (outcome === 'accepted') {
+      localStorage.setItem(DISMISSED_KEY, '1');
+    }
+  });
+
+  document.getElementById('pwaDismissBtn').addEventListener('click', () => {
+    banner.classList.remove('visible');
+    localStorage.setItem(DISMISSED_KEY, '1');
+  });
+
+  // If the app gets installed through any other path, hide and suppress future prompts.
+  window.addEventListener('appinstalled', () => {
+    banner.classList.remove('visible');
+    localStorage.setItem(DISMISSED_KEY, '1');
+    deferredPrompt = null;
+  });
+}());

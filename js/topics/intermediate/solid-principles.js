@@ -30,9 +30,14 @@ public class ReportService
   output: `// Adding a new formatter or sender requires no changes to ReportService
 // — it's open for extension, closed for modification (OCP + DIP).`,
   related: ["interfaces", "dependency-injection", "clean-architecture"],
+  prerequisites: ["inheritance","interfaces","dependency-injection"],
   mistakes: [
       "Treating SOLID as rules to follow mechanically rather than heuristics for recognising design problems",
       "Applying Dependency Inversion everywhere immediately \u2014 start concrete, extract interfaces when you have two implementations",
       "Creating interfaces for every class before there's a real need \u2014 YAGNI applies"
-  ]
+  ],
+  interviewQ: `Can you explain the Dependency Inversion Principle with a concrete example?`,
+  interviewA: `DIP states that high-level modules should not depend on low-level modules — both should depend on abstractions. Example: instead of <code>OrderService</code> creating a <code>SqlOrderRepository</code> directly, it depends on <code>IOrderRepository</code>. The concrete SQL implementation is provided via DI. This means you can swap the repository for an in-memory fake in tests without changing <code>OrderService</code>.`,
+  whyItMatters: `The SOLID principles are the most cited design guidelines in object-oriented programming interviews and code reviews. Following them produces code that is easier to test, extend, and reason about — and violating them is the most common cause of codebases that become hard to change over time.`,
+  difficulty: 'advanced'
 };

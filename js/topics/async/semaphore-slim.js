@@ -36,5 +36,15 @@ All done`,
       "Forgetting Release() in the success path \u2014 the semaphore count never recovers, eventually starving all callers",
       "Not using try/finally around WaitAsync \u2014 an exception between Wait and Release leaks the slot permanently",
       "Using SemaphoreSlim(1,1) as a mutex but calling it from the same thread twice \u2014 it's not reentrant, it deadlocks"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What is the difference between <code>lock</code> and <code>SemaphoreSlim</code>?`,
+
+  interviewA: `<code>lock</code> is a mutual exclusion primitive — only one thread at a time, synchronous only, and it blocks the thread while waiting. <code>SemaphoreSlim</code> allows up to N concurrent waiters (set count to 1 for mutual exclusion), supports <code>await WaitAsync()</code> so the thread is not blocked while waiting, and can be used across async continuations (unlike <code>lock</code>, which cannot be held across an <code>await</code>). Use <code>SemaphoreSlim(1,1)</code> as an async-compatible mutex, and higher counts to throttle concurrent access to a limited resource (e.g. connection pools).`,
+
+  whyItMatters: `Holding a <code>lock</code> across an <code>await</code> is a common deadlock source in async code. <code>SemaphoreSlim</code> is the correct tool when you need synchronisation that works with async/await without deadlocking or blocking thread pool threads.`,
+
+  prerequisites: ["async-await","threading-basics"],
 };

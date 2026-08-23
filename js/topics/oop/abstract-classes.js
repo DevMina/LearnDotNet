@@ -27,9 +27,15 @@ public class SalariedEmployee : Employee
 Employee e = new SalariedEmployee { Name = "Sam", AnnualSalary = 84000 };
 e.PrintPaycheck();`,
   output: `Sam: $7,000.00`,
+  prerequisites: ["classes-objects","interfaces"],
   mistakes: [
       "Making a class abstract when an interface would do \u2014 abstract classes consume the single base-class slot",
       "Putting too much concrete logic in an abstract class \u2014 makes subclasses harder to test in isolation",
       "Forgetting that abstract classes can have constructors \u2014 they run when the subclass is instantiated"
-  ]
+  ],
+  interviewQ: `When should you choose an abstract class over an interface?`,
+  interviewA: `Choose an abstract class when you need to share implementation (concrete methods, fields, constructors) between related types and the types share a common identity. Choose an interface when you want to define a capability that unrelated types can adopt. In modern C# (8+) interfaces can have default implementations, which blurs the line — but abstract classes are still better when shared state or constructors are required.`,
+  whyItMatters: `Abstract classes let you build extensible frameworks — define the skeleton of an algorithm and leave specific steps to subclasses (the Template Method pattern). They strike the balance between total flexibility (interfaces) and total implementation (concrete classes).`,
+  related: ["inheritance","interfaces","classes-objects","polymorphism"],
+  difficulty: 'intermediate'
 };

@@ -29,5 +29,15 @@ Price = 9.99`,
       "Using reflection in performance-sensitive code \u2014 it's orders of magnitude slower than direct calls",
       "Ignoring BindingFlags \u2014 GetMethod without the right flags silently returns null instead of the method",
       "Bypassing access modifiers with reflection in production code \u2014 breaks encapsulation and makes code fragile"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What are the main drawbacks of reflection and how can you mitigate them?`,
+
+  interviewA: `Reflection is slow (5–100× slower than direct calls), bypasses compile-time type safety, breaks with AOT/NativeAOT compilation, and can circumvent access modifiers. Mitigate with: caching <code>MethodInfo</code>/<code>PropertyInfo</code> objects (the lookup is the expensive part); using source generators (C# 9+) to generate the equivalent code at compile time; or using compiled expression trees which are fast after the first compilation. <code>System.Text.Json</code> ships a source generator exactly for this reason.`,
+
+  whyItMatters: `Reflection powers frameworks — ORMs, serialisers, DI containers, and test runners all use it. Understanding it lets you write your own extensible tools and, critically, understand why they behave unexpectedly when working with dynamic types, private members, or AOT deployments.`,
+
+  prerequisites: ["classes-objects","generics"],
 };

@@ -28,5 +28,13 @@ Console.WriteLine(schedule[0]);`,
       "Not validating the index argument \u2014 out-of-range access should throw ArgumentOutOfRangeException, not return null",
       "Making indexers do expensive work \u2014 callers expect index access to be fast, like array access",
       "Exposing internal state by reference through an indexer \u2014 wrap in a copy or expose read-only"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `Indexers let your custom types support <code>obj[key]</code> syntax, making them feel like first-class collections. They are how <code>Dictionary&lt;K,V&gt;</code> and <code>Matrix</code>-style types expose their data naturally.`,
+  interviewQ: `How does an indexer differ from a property in C#?`,
+  interviewA: `A property has a fixed name and no parameters — it represents a single value on the object. An indexer has no name but takes one or more parameters in square brackets — it represents a parameterised lookup. Indexers use the <code>this[T key]</code> syntax and can be overloaded with different parameter types. The <code>Dictionary&lt;K,V&gt;</code> indexer is a canonical example: <code>dict["key"] = value</code> invokes the <code>set</code> accessor with <code>key</code> as the parameter.`,
+  related: ["arrays-collections","classes-objects","operator-overloading"],
+  prerequisites: ["classes-objects","arrays-collections"]
 };

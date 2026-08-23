@@ -24,5 +24,16 @@ Resource released`,
       "Forgetting using on anything that implements IDisposable \u2014 file handles, connections, and streams leak",
       "Calling Dispose manually and then using the object \u2014 always set to null or use using",
       "Implementing IDisposable but not suppressing the finalizer after Dispose \u2014 the GC does double cleanup work"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What happens if you do not dispose an <code>IDisposable</code> object?`,
+
+  interviewA: `The object's unmanaged resources (file handles, network connections, database connections, native memory) are not released until the GC finalises the object — which may be a long time later, or never if the process exits unexpectedly. This causes resource leaks, file locks, and connection pool exhaustion. The <code>using</code> statement guarantees <code>Dispose()</code> is called even if an exception is thrown, making it the correct pattern for any <code>IDisposable</code>. In async code, use <code>await using</code> for <code>IAsyncDisposable</code>.`,
+
+  whyItMatters: `Resource leaks are the most common cause of memory pressure, connection pool exhaustion, and file lock issues in .NET services. The <code>using</code> statement and dispose pattern are the mechanisms that make deterministic cleanup possible in a GC-managed runtime.`,
+
+  prerequisites: ["classes-objects","exceptions"],
+  related: ["memory-management","exceptions","async-await"]
 };

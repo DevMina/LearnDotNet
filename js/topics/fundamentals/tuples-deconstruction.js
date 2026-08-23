@@ -18,5 +18,13 @@ Console.WriteLine($"{name} is {age}");`,
       "Using ValueTuple for public APIs \u2014 named properties on a class or record are far more readable",
       "Forgetting that tuple element names are compile-time only \u2014 they don't survive reflection or serialisation",
       "Deconstructing into too few variables and silently discarding values"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `Tuples let you return multiple values from a method without defining a dedicated class. Combined with deconstruction, they make splitting data clean and readable. They are also the foundation of pattern matching and positional patterns.`,
+  interviewQ: `What is the difference between <code>System.Tuple</code> and <code>System.ValueTuple</code> in C#?`,
+  interviewA: `<code>Tuple</code> (pre-C# 7) is a class — heap-allocated, with unnamed properties (<code>.Item1</code>, <code>.Item2</code>). <code>ValueTuple</code> (C# 7+, the <code>(T1, T2)</code> syntax) is a struct — stack-allocated for small tuples, with named elements (<code>(string Name, int Age) t = ("Ada", 29); t.Name</code>). Prefer <code>ValueTuple</code> for all new code: it is more efficient, more readable, and supports deconstruction. Named elements are erased at runtime — they are compiler-only aliases for <code>.Item1</code>, <code>.Item2</code>, etc.`,
+  related: ["records","pattern-matching","methods-parameters"],
+  prerequisites: ["variables-types"]
 };

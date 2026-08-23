@@ -28,5 +28,15 @@ After: 200`,
       "Not calling await next(context) \u2014 the rest of the pipeline is silently skipped",
       "Adding middleware in the wrong order \u2014 authentication must precede authorization, routing must precede endpoints",
       "Writing expensive synchronous work in middleware \u2014 blocks the request thread; use async throughout"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What is the difference between middleware and filters in ASP.NET Core?`,
+
+  interviewA: `Middleware operates on the raw HTTP pipeline — it runs for every request regardless of whether it reaches a controller, and has access to the raw <code>HttpContext</code>. Filters operate within the MVC/Minimal API layer — they run only for requests that reach an action method and have access to action-specific context (model state, action arguments, result). Use middleware for cross-cutting concerns that apply to all requests (authentication, logging, rate limiting, CORS). Use filters for concerns specific to action execution (validation, result transformation, action-specific exception handling).`,
+
+  whyItMatters: `The middleware pipeline is the foundation of every ASP.NET Core application. Understanding request ordering — which middleware runs first and why — is essential for correctly implementing authentication, CORS, rate limiting, and exception handling.`,
+
+  prerequisites: ["top-level-statements"],
 };

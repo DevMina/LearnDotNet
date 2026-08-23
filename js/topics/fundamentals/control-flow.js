@@ -25,5 +25,13 @@ Console.WriteLine($"Grade: {grade}");`,
       "Forgetting break in switch cases \u2014 without it, control falls through (except in C# pattern-matching switches)",
       "Using if/else chains instead of switch expressions when matching a single variable",
       "Missing the default case in a switch, leaving unhandled values silently ignored"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `All program logic is built on branches and conditions. Mastering switch expressions (C# 8+) dramatically reduces boilerplate and makes intent clearer than long if/else chains.`,
+  related: ["loops","pattern-matching","operators"],
+  prerequisites: ["variables-types","operators"],
+  interviewQ: `What is the advantage of a switch expression over a switch statement?`,
+  interviewA: `Switch expressions (C# 8+) produce a value, are concise (one expression per arm with <code>=&gt;</code> instead of <code>case/break</code>), and are exhaustive by default — the compiler warns if a possible value is unhandled. They also support pattern matching arms (type patterns, property patterns, relational patterns, when guards) that switch statements cannot. A switch expression that does not cover all cases throws <code>InvalidOperationException</code> at runtime rather than silently falling through.`
 };

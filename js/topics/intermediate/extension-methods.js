@@ -22,5 +22,15 @@ Console.WriteLine(bio.Truncate(20));`,
       "Adding extension methods to very broad types (object, string) \u2014 they pollute every using context",
       "Hiding instance methods with extension methods of the same signature \u2014 instance method always wins, causing confusion",
       "Putting extension methods in the same namespace as the type they extend \u2014 makes them always visible"
-  ]
+  ],
+
+  interviewQ: `What are extension methods and what are their limitations?`,
+
+  interviewA: `Extension methods add methods to existing types without subclassing or modifying the original type. They are defined as static methods in a static class with <code>this T</code> as the first parameter, and are called as if they were instance methods. Limitations: they cannot access private members; instance methods always take precedence over extensions with the same signature; they can surprise readers who do not know the namespace is imported; and they cannot be used to add properties, operators (before C# 14), or events.`,
+
+  whyItMatters: `Extension methods are the backbone of fluent APIs — LINQ itself is a set of extension methods on <code>IEnumerable&lt;T&gt;</code>. They let you enrich types you do not own (third-party libraries, BCL types) with domain-specific helpers without inheritance.`,
+
+  prerequisites: ["classes-objects"],
+  related: ["interfaces","linq","extension-members","static-members"],
+  difficulty: 'intermediate'
 };

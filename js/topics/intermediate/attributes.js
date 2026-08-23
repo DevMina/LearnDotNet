@@ -27,5 +27,13 @@ Console.WriteLine(attr?.Message);`,
       "Applying attributes without understanding their actual effect \u2014 many require framework support to do anything",
       "Forgetting AttributeUsage \u2014 without it, the attribute can be applied anywhere, even where it makes no sense",
       "Accessing attribute data with reflection in hot paths \u2014 reflection is slow, cache the result"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `Attributes are how the .NET ecosystem communicates metadata from your code to frameworks at runtime — validation rules, serialisation settings, route definitions, test markers. Writing your own attributes is the correct way to add declarative framework-style behaviour to your own libraries.`,
+
+  prerequisites: ["classes-objects","reflection"],
+  interviewQ: `How do you create a custom attribute and read it at runtime?`,
+  interviewA: `Derive a class from <code>Attribute</code>, add <code>[AttributeUsage(...)]</code> to control where it can be applied, and add properties or constructor parameters for its data. Read it at runtime with reflection: <code>typeof(MyClass).GetCustomAttribute&lt;MyAttr&gt;()</code> or on a member: <code>method.GetCustomAttribute&lt;MyAttr&gt;()</code>. Convention: attribute class names end in "Attribute" but callers can omit the suffix. For performance in .NET 7+, use source generators or cached reflection instead of calling <code>GetCustomAttribute</code> on every request.`
 };

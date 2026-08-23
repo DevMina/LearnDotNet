@@ -73,6 +73,16 @@ export const CATEGORIES = [
         "id": "boxing-unboxing",
         "title": "Boxing & Unboxing",
         "file": "./fundamentals/boxing-unboxing.js"
+      },
+      {
+        "id": "ref-out-in",
+        "title": "ref, out & in Parameters",
+        "file": "./fundamentals/ref-out-in.js"
+      },
+      {
+        "id": "const-readonly",
+        "title": "const vs readonly",
+        "file": "./fundamentals/const-readonly.js"
       }
     ]
   },
@@ -235,6 +245,26 @@ export const CATEGORIES = [
         "id": "performance-tips",
         "title": "Performance Tips",
         "file": "./intermediate/performance-tips.js"
+      },
+      {
+        "id": "span",
+        "title": "Span<T> & Memory<T>",
+        "file": "./intermediate/span.js"
+      },
+      {
+        "id": "expression-trees",
+        "title": "Expression Trees",
+        "file": "./intermediate/expression-trees.js"
+      },
+      {
+        "id": "source-generators",
+        "title": "Source Generators",
+        "file": "./intermediate/source-generators.js"
+      },
+      {
+        "id": "ienumerable-iqueryable",
+        "title": "IEnumerable vs IQueryable",
+        "file": "./intermediate/ienumerable-iqueryable.js"
       }
     ]
   },
@@ -276,6 +306,11 @@ export const CATEGORIES = [
         "id": "channels",
         "title": "Channels",
         "file": "./async/channels.js"
+      },
+      {
+        "id": "valuetask",
+        "title": "ValueTask",
+        "file": "./async/valuetask.js"
       }
     ]
   },
@@ -470,6 +505,51 @@ export const CATEGORIES = [
         "id": "options-pattern",
         "title": "Options Pattern",
         "file": "./aspnet/options-pattern.js"
+      },
+      {
+        "id": "controllers",
+        "title": "Controllers",
+        "file": "./aspnet/controllers.js"
+      },
+      {
+        "id": "model-binding",
+        "title": "Model Binding",
+        "file": "./aspnet/model-binding.js"
+      },
+      {
+        "id": "model-validation",
+        "title": "Model Validation",
+        "file": "./aspnet/model-validation.js"
+      },
+      {
+        "id": "exception-handling",
+        "title": "Exception Handling & ProblemDetails",
+        "file": "./aspnet/exception-handling.js"
+      },
+      {
+        "id": "filters",
+        "title": "Filters",
+        "file": "./aspnet/filters.js"
+      },
+      {
+        "id": "cors",
+        "title": "CORS",
+        "file": "./aspnet/cors.js"
+      },
+      {
+        "id": "rate-limiting",
+        "title": "Rate Limiting",
+        "file": "./aspnet/rate-limiting.js"
+      },
+      {
+        "id": "openapi",
+        "title": "OpenAPI / Scalar",
+        "file": "./aspnet/openapi.js"
+      },
+      {
+        "id": "ef-core",
+        "title": "EF Core",
+        "file": "./aspnet/ef-core.js"
       }
     ]
   }

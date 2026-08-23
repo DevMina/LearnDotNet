@@ -28,5 +28,15 @@ Console.WriteLine(b.Describe());`,
       "Sealing every class by default before the design is stable \u2014 it prevents extension without modification",
       "Forgetting that sealed on a method only makes sense if the method was virtual in a base class",
       "Not sealing performance-critical classes when you intended to \u2014 the JIT can devirtualise calls on sealed types"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What is the purpose of the <code>sealed</code> keyword and when should you use it?`,
+
+  interviewA: `<code>sealed</code> prevents a class from being inherited. On a class, it stops subclassing entirely. On an override, it stops further overriding in deeper subclasses. Use it when you have deliberately designed a class not to be extended — it communicates intent and allows the JIT to devirtualise calls (a real performance benefit in tight loops). The .NET runtime seals many core types (e.g. <code>string</code>) for exactly this reason.`,
+
+  whyItMatters: `Sealing classes is a defensive design choice. If you publish a library, unsealed classes become an implicit API contract — callers can subclass them and depend on internal behaviour. Sealing gives you the freedom to change internals without breaking subclasses.`,
+  related: ["inheritance","classes-objects","performance-tips"],
+  prerequisites: ["inheritance"]
 };

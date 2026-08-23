@@ -40,5 +40,15 @@ Passed: IsValid_ChecksQuantity (qty=0)`,
       "Testing implementation details instead of behaviour \u2014 tests break on refactoring even when behaviour is unchanged",
       "Making tests depend on each other or on shared mutable state \u2014 tests should be fully independent",
       "Not testing edge cases: empty collections, null inputs, boundary values"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What is the difference between a unit test, an integration test, and an end-to-end test?`,
+
+  interviewA: `A unit test isolates a single class or function in memory — no database, no file system, no network. It runs in milliseconds and is the cheapest to write and maintain. An integration test verifies that two or more components work together — e.g. a service class talking to a real (or test) database. An end-to-end test drives the full system via its public interface (HTTP, UI) and is the most expensive and slowest. The test pyramid says to have many unit tests, fewer integration tests, and very few end-to-end tests.`,
+
+  whyItMatters: `Unit tests are the safety net that makes refactoring possible without fear. A comprehensive test suite lets you change internals confidently, catch regressions immediately, and document expected behaviour as executable specifications.`,
+
+  prerequisites: ["classes-objects","interfaces","dependency-injection"],
 };

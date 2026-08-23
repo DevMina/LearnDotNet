@@ -21,9 +21,15 @@ button.Clicked += () => Console.WriteLine("Handler B fired");
 button.Click();`,
   output: `Handler A fired
 Handler B fired`,
+  prerequisites: ["classes-objects"],
   mistakes: [
       "Not null-checking an event before invoking \u2014 use event?.Invoke() to avoid NullReferenceException",
       "Forgetting to unsubscribe from events \u2014 keeps the subscriber alive, causing memory leaks",
       "Using public fields of delegate type instead of event \u2014 any caller can fire or clear the delegate"
-  ]
+  ],
+  interviewQ: `What is the difference between a delegate and an event in C#?`,
+  interviewA: `A delegate is a type-safe function pointer — it can be invoked by anyone who holds a reference to it. An event wraps a delegate with access modifiers: only the declaring class can invoke it; external subscribers can only add or remove handlers. This prevents external code from accidentally clearing all subscribers or firing the event. The convention is to use <code>EventHandler&lt;TEventArgs&gt;</code> for events and <code>Func</code>/<code>Action</code> for callbacks.`,
+  whyItMatters: `Delegates and events are the foundation of the observer pattern in C#. They underpin GUI frameworks, async patterns, and decoupled component communication — understanding them is essential for working with any event-driven code.`,
+  related: ["async-await","observer","linq","expression-trees"],
+  difficulty: 'intermediate'
 };

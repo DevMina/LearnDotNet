@@ -39,5 +39,13 @@ info: OrderService[0]
       "Using string interpolation instead of message templates \u2014 loses structured data and causes unnecessary allocations",
       "Logging at the wrong level \u2014 Debug in production floods logs; Error for expected business events adds noise",
       "Not including a correlation ID \u2014 makes it impossible to trace a single request across log lines"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `Structured logging (key-value pairs rather than concatenated strings) makes logs queryable in tools like Seq, Elasticsearch, or Azure Monitor. Using <code>ILogger&lt;T&gt;</code> rather than a static logger keeps your classes testable and lets the host control log output at runtime.`,
+
+  prerequisites: ["dependency-injection","top-level-statements"],
+  interviewQ: `What is structured logging and why is it preferred over string concatenation?`,
+  interviewA: `Structured logging stores log data as key-value pairs rather than as a formatted string. <code>logger.LogInformation("User {UserId} logged in from {IP}", userId, ip)</code> stores <code>UserId=42</code> and <code>IP=1.2.3.4</code> as searchable properties — not embedded in a string. Log aggregators (Seq, Splunk, Elastic) can then query <code>UserId = 42</code> across millions of log entries in milliseconds. String concatenation (<code>"User " + userId + " logged in"</code>) is unqueryable — you can only do full-text search. Structured logging also avoids the allocation of formatting the string when the log level is disabled.`
 };

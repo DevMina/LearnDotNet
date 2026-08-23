@@ -34,5 +34,13 @@ Second request: (no log, served from cache) → "Sunny in London"`,
       "Caching without expiration \u2014 the cache grows unbounded until the process runs out of memory",
       "Caching user-specific data in a shared cache without scoping the key \u2014 users see each other's data",
       "Not handling cache stampedes \u2014 when many requests miss simultaneously, they all compute the expensive value at once"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `Caching is typically the highest-leverage performance optimisation available to a web service. Serving a cached database result costs microseconds; the original query may cost hundreds of milliseconds. Understanding the difference between in-process, distributed, and output caching tells you which layer to cache at for your use case.`,
+
+  prerequisites: ["dependency-injection","top-level-statements"],
+  interviewQ: `What is the difference between <code>IMemoryCache</code> and <code>IDistributedCache</code>?`,
+  interviewA: `<code>IMemoryCache</code> stores data in the process's memory — it is fast but not shared across multiple server instances. If you deploy two pods, each has its own cache and they can serve stale data relative to each other. <code>IDistributedCache</code> stores data in an external store (Redis, SQL Server, NCache) shared by all instances — consistent but with a network roundtrip per access. Use <code>IMemoryCache</code> for single-instance deployments or data that is acceptable to be instance-local (lookup tables, computed values). Use <code>IDistributedCache</code> (typically backed by Redis) in multi-instance deployments where cache consistency matters.`
 };

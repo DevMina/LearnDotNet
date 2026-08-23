@@ -24,41 +24,164 @@ const mobileToggle = document.getElementById('mobileToggle');
 const SEARCH_TEXT_BY_ID = new Map(SEARCH_INDEX.map(r => [r.id, r.keywords]));
 
 // ---------- Progress tracking ("mark as learned") ----------
-// Stored client-side only, per browser, as a plain array of topic ids.
 const PROGRESS_KEY   = 'csharp-concepts-progress';
+const TIMESTAMPS_KEY = 'csharp-concepts-timestamps';
 const BOOKMARKS_KEY  = 'csharp-concepts-bookmarks';
 const RECENTS_KEY    = 'csharp-concepts-recents';
+const RUN_COUNT_KEY  = 'csharp-concepts-run-count';
+const QUIZ_CORRECT_KEY = 'csharp-concepts-quiz-correct';
 const RECENTS_MAX    = 8;
 
 function getLearnedSet() {
-  try {
-    const raw = localStorage.getItem(PROGRESS_KEY);
-    return new Set(raw ? JSON.parse(raw) : []);
-  } catch {
-    return new Set();
-  }
+  try { return new Set(JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]')); }
+  catch { return new Set(); }
 }
-
 function saveLearnedSet(set) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify([...set])); } catch {}
+}
+function getTimestamps() {
+  try { return JSON.parse(localStorage.getItem(TIMESTAMPS_KEY) || '{}'); } catch { return {}; }
+}
+function saveTimestamp(topicId, markingLearned) {
   try {
-    localStorage.setItem(PROGRESS_KEY, JSON.stringify([...set]));
-  } catch {
-    // Storage unavailable (private browsing, quota, etc.) — progress just won't persist.
+    const ts = getTimestamps();
+    if (markingLearned) ts[topicId] = new Date().toISOString().slice(0, 10);
+    else delete ts[topicId];
+    localStorage.setItem(TIMESTAMPS_KEY, JSON.stringify(ts));
+  } catch {}
+}
+function getRunCount() {
+  try { return parseInt(localStorage.getItem(RUN_COUNT_KEY) || '0', 10); } catch { return 0; }
+}
+function incrementRunCount() {
+  try { localStorage.setItem(RUN_COUNT_KEY, String(getRunCount() + 1)); } catch {}
+}
+function getQuizCorrect() {
+  try { return parseInt(localStorage.getItem(QUIZ_CORRECT_KEY) || '0', 10); } catch { return 0; }
+}
+function incrementQuizCorrect() {
+  try { localStorage.setItem(QUIZ_CORRECT_KEY, String(getQuizCorrect() + 1)); } catch {}
+}
+
+// Record any learning activity for streak (called by: markLearned, Run button, quiz correct)
+function recordActivityToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  // Use a sentinel key so activity-only days (run/quiz without marking learned) also count
+  try {
+    const ts = getTimestamps();
+    const key = `__activity__${today}`;
+    if (!ts[key]) { ts[key] = today; localStorage.setItem(TIMESTAMPS_KEY, JSON.stringify(ts)); }
+  } catch {}
+}
+
+// Returns { current, longest } streak from all dates in the timestamp map
+function getStreaks() {
+  const ts = getTimestamps();
+  const dates = [...new Set(Object.values(ts))].sort();
+  if (!dates.length) return { current: 0, longest: 0 };
+  let longest = 1, run = 1;
+  for (let i = 1; i < dates.length; i++) {
+    const diff = (new Date(dates[i]) - new Date(dates[i-1])) / 86400000;
+    if (diff === 1) { run++; longest = Math.max(longest, run); }
+    else if (diff > 1) run = 1;
   }
+  const today     = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const last = dates[dates.length - 1];
+  let current = 0;
+  if (last === today || last === yesterday) {
+    current = 1;
+    for (let i = dates.length - 2; i >= 0; i--) {
+      if ((new Date(dates[i+1]) - new Date(dates[i])) / 86400000 === 1) current++;
+      else break;
+    }
+  }
+  return { current, longest: Math.max(longest, current) };
 }
 
-function isLearned(topicId) {
-  return getLearnedSet().has(topicId);
+// Last 7 calendar days as { label, active } for the streak calendar
+function getWeekCalendar() {
+  const ts = getTimestamps();
+  const activeDates = new Set(Object.values(ts));
+  const labels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(Date.now() - (6 - i) * 86400000);
+    return { label: labels[d.getDay()], active: activeDates.has(d.toISOString().slice(0, 10)) };
+  });
 }
 
+// ---------- Achievements ----------
+const ACHIEVEMENTS = [
+  { id: 'first-step',    emoji: '🎯', title: 'First Step',
+    desc: 'Complete your first concept',
+    check: d => d.learnedCount >= 1 },
+  { id: 'getting-started', emoji: '📚', title: 'Getting Started',
+    desc: 'Complete 5 concepts',
+    progress: d => ({ value: Math.min(d.learnedCount, 5), max: 5 }),
+    check: d => d.learnedCount >= 5 },
+  { id: 'cs-apprentice', emoji: '🧠', title: 'C# Apprentice',
+    desc: 'Complete all C# Fundamentals',
+    progress: d => ({ value: d.fundamentalsLearned, max: d.fundamentalsTotal }),
+    check: d => d.fundamentalsLearned >= d.fundamentalsTotal },
+  { id: 'async-master',  emoji: '⚡', title: 'Async Master',
+    desc: 'Complete the Async & Concurrency track',
+    progress: d => ({ value: d.asyncLearned, max: d.asyncTotal }),
+    check: d => d.asyncLearned >= d.asyncTotal },
+  { id: 'pattern-master',emoji: '🎨', title: 'Pattern Master',
+    desc: 'Complete all Design Patterns',
+    progress: d => ({ value: d.patternsLearned, max: d.patternsTotal }),
+    check: d => d.patternsLearned >= d.patternsTotal },
+  { id: 'explorer',      emoji: '🚀', title: '.NET Explorer',
+    desc: 'Complete 25 concepts',
+    progress: d => ({ value: Math.min(d.learnedCount, 25), max: 25 }),
+    check: d => d.learnedCount >= 25 },
+  { id: 'dotnet-master', emoji: '🏆', title: '.NET Master',
+    desc: 'Complete 50 concepts',
+    progress: d => ({ value: Math.min(d.learnedCount, 50), max: 50 }),
+    check: d => d.learnedCount >= 50 },
+  { id: 'completionist', emoji: '💯', title: 'Completionist',
+    desc: 'Complete every concept',
+    progress: d => ({ value: d.learnedCount, max: d.totalTopics }),
+    check: d => d.learnedCount >= d.totalTopics },
+  { id: 'code-runner',   emoji: '🧪', title: 'Code Runner',
+    desc: 'Run 20 code examples',
+    progress: d => ({ value: Math.min(d.runCount, 20), max: 20 }),
+    check: d => d.runCount >= 20 },
+  { id: 'quiz-master',   emoji: '🎓', title: 'Quiz Master',
+    desc: 'Get 10 quiz questions correct',
+    progress: d => ({ value: Math.min(d.quizCorrect, 10), max: 10 }),
+    check: d => d.quizCorrect >= 10 },
+];
+
+function getAchievementData() {
+  const learnedSet = getLearnedSet();
+  const fundamentalIds = CATEGORIES.find(c => c.id === 'fundamentals')?.topics.map(t => t.id) || [];
+  const asyncTrack     = TRACKS.find(t => t.id === 'async-deep-dive')?.topicIds || [];
+  const patternsIds    = CATEGORIES.find(c => c.id === 'patterns')?.topics.map(t => t.id) || [];
+  return {
+    learnedCount:       learnedSet.size,
+    totalTopics:        ALL_TOPICS_FLAT.length,
+    fundamentalsLearned: fundamentalIds.filter(id => learnedSet.has(id)).length,
+    fundamentalsTotal:  fundamentalIds.length,
+    asyncLearned:       asyncTrack.filter(id => learnedSet.has(id)).length,
+    asyncTotal:         asyncTrack.length,
+    patternsLearned:    patternsIds.filter(id => learnedSet.has(id)).length,
+    patternsTotal:      patternsIds.length,
+    runCount:           getRunCount(),
+    quizCorrect:        getQuizCorrect(),
+  };
+}
+
+function isLearned(topicId) { return getLearnedSet().has(topicId); }
 function toggleLearned(topicId) {
   const set = getLearnedSet();
-  if (set.has(topicId)) set.delete(topicId);
-  else set.add(topicId);
+  const nowLearned = !set.has(topicId);
+  if (nowLearned) { set.add(topicId); recordActivityToday(); }
+  else set.delete(topicId);
   saveLearnedSet(set);
-  return set.has(topicId);
+  saveTimestamp(topicId, nowLearned);
+  return nowLearned;
 }
-
 function learnedCountFor(topicIds) {
   const set = getLearnedSet();
   return topicIds.reduce((n, id) => n + (set.has(id) ? 1 : 0), 0);
@@ -216,7 +339,7 @@ function renderSidebar(activeTopicId) {
       <button type="button" class="logo" id="homeLink" aria-label="Go to home page"><span class="dot">&bull;</span> Solution Explorer</button>
       <div class="subtitle">CSharpConcepts.sln</div>
       <div class="search-box">
-        <input type="search" id="searchInput" placeholder="Search topics... (press /)" aria-label="Search topics" autocomplete="off">
+        <input type="search" id="searchInput" placeholder="Search topics... (/ or Ctrl+K)" aria-label="Search topics" autocomplete="off">
       </div>
       <div class="sidebar-settings" role="toolbar" aria-label="Display settings">
         <div class="settings-group" aria-label="Theme">
@@ -371,6 +494,12 @@ mobileToggle.addEventListener('click', () => {
 
 backdropEl.addEventListener('click', closeMobileSidebar);
 
+// ---------- Random topic ----------
+function goToRandomTopic() {
+  const idx = Math.floor(Math.random() * ALL_TOPICS_FLAT.length);
+  location.hash = `#/${ALL_TOPICS_FLAT[idx].id}`;
+}
+
 // ---------- Landing page ----------
 function renderLanding() {
   const totalTopics = CATEGORIES.reduce((n, c) => n + c.topics.length, 0);
@@ -389,13 +518,74 @@ function renderLanding() {
   const bookmarkIds = [...getBookmarks()];
   const bookmarkMetas = bookmarkIds.map(id => TOPIC_INDEX[id]).filter(Boolean);
 
+  const { current: streakCurrent, longest: streakLongest } = getStreaks();
+  const calendar = getWeekCalendar();
+  const calendarHtml = `<div class="streak-calendar" aria-label="Activity this week">
+    ${calendar.map(d => `<div class="streak-cal-day">
+      <span class="streak-cal-dot${d.active ? ' streak-cal-dot--active' : ''}"></span>
+      <span class="streak-cal-label">${d.label}</span>
+    </div>`).join('')}
+  </div>`;
+
+  const streakHtml = streakCurrent >= 2
+    ? `<div class="streak-bar" role="status" aria-label="${streakCurrent}-day learning streak">
+        <span class="streak-flame" aria-hidden="true">🔥</span>
+        <span class="streak-count">${streakCurrent}-day streak</span>
+        ${streakLongest > streakCurrent ? `<span class="streak-best">Best: ${streakLongest}</span>` : '<span class="streak-best">Personal best!</span>'}
+        ${calendarHtml}
+       </div>`
+    : streakCurrent === 1
+      ? `<div class="streak-bar streak-bar--day1" role="status" aria-label="Day 1 learning streak">
+          <span class="streak-flame" aria-hidden="true">⚡</span>
+          <span class="streak-count">Day 1 — come back tomorrow to start a streak!</span>
+          ${calendarHtml}
+         </div>`
+      : streakLongest >= 2
+        ? `<div class="streak-bar streak-bar--cold" role="status" aria-label="No active streak">
+            <span class="streak-flame" aria-hidden="true">❄️</span>
+            <span class="streak-count">Start a new streak — best was ${streakLongest} days</span>
+            ${calendarHtml}
+           </div>`
+        : '';
+
+  // Achievements
+  const achData = getAchievementData();
+  const unlockedCount = ACHIEVEMENTS.filter(a => a.check(achData)).length;
+  const achievementsHtml = `
+    <h2 class="section-heading">🏆 Achievements <span class="ach-unlocked-count">${unlockedCount} / ${ACHIEVEMENTS.length} unlocked</span></h2>
+    <div class="achievement-grid">
+      ${ACHIEVEMENTS.map(a => {
+        const unlocked = a.check(achData);
+        const prog = a.progress ? a.progress(achData) : null;
+        return `<div class="achievement-card${unlocked ? ' achievement-card--unlocked' : ''}">
+          <span class="ach-emoji" aria-hidden="true">${a.emoji}</span>
+          <div class="ach-title">${a.title}</div>
+          <div class="ach-desc">${a.desc}</div>
+          ${unlocked
+            ? '<div class="ach-status ach-status--done">✓ Unlocked</div>'
+            : prog
+              ? `<div class="ach-status">🔒 ${prog.value} / ${prog.max}</div>`
+              : '<div class="ach-status">🔒 Locked</div>'
+          }
+        </div>`;
+      }).join('')}
+    </div>`;
+
   mainEl.innerHTML = `
     <div class="landing-hero">
       <h1>C# &amp; .NET,<br>explained through running code.</h1>
       <p class="lead">${totalTopics} concepts from fundamentals to design patterns &mdash; each with a short explanation,
-      a real code sample, and a console you can run to see the output. Pick a folder in Solution Explorer to start,
-      or jump into a category below.</p>
-      <a class="quiz-cta" href="#/quiz">&#9654; Test yourself &mdash; quick multiple-choice quiz</a>
+      a real code sample, and a console you can run to see the output.</p>
+
+      <div class="hero-actions">
+        <a class="hero-btn hero-btn--primary" href="#/variables-types">&#9654; Start Learning C#</a>
+        <a class="hero-btn" href="#/track/interview-prep">&#128196; Interview Prep</a>
+        <a class="hero-btn" href="#/track/aspnet-core-essentials">&#127760; ASP.NET Core</a>
+        <a class="hero-btn" href="#/quiz">&#128172; Take a Quiz</a>
+      </div>
+
+      ${streakHtml}
+
       ${totalLearned > 0 ? `
       <div class="progress-summary">
         <div class="progress-summary-label">${totalLearned} of ${totalTopics} topics marked as learned</div>
@@ -411,11 +601,19 @@ function renderLanding() {
         </a>
       </div>` : ''}
 
+      <h2 class="section-heading">Learning paths</h2>
+      <p class="section-subhead">Choose a goal and follow a curated sequence — same topics as below, deliberate order.</p>
+      <div class="track-grid" id="trackGrid"></div>
+
+      <h2 class="section-heading">Explore all ${totalTopics} concepts</h2>
       <div class="category-grid" id="categoryGrid"></div>
 
-      <h2 class="section-heading">Guided tracks</h2>
-      <p class="section-subhead">Prefer a path over browsing? These pull from the same topics above, just in a deliberate order for a specific goal.</p>
-      <div class="track-grid" id="trackGrid"></div>
+      <div class="random-topic-row">
+        <button class="random-btn" id="randomTopicBtn" type="button">&#127922; Random topic</button>
+        <span class="random-hint">or press <kbd>R</kbd></span>
+      </div>
+
+      ${achievementsHtml}
 
       ${recentDisplay.length ? `
       <h2 class="section-heading">Recently viewed</h2>
@@ -465,6 +663,8 @@ function renderLanding() {
     });
     trackGrid.appendChild(card);
   });
+
+  document.getElementById('randomTopicBtn')?.addEventListener('click', goToRandomTopic);
 
   document.getElementById('clearBookmarksBtn')?.addEventListener('click', () => {
     saveBookmarks(new Set());
@@ -552,18 +752,25 @@ async function renderTopic(topicId, myToken) {
     .filter(Boolean);
   const memberTracks = TRACKS_BY_TOPIC.get(topicId) || [];
 
-  // Difficulty: derived from category (no new per-topic field needed)
+  // Difficulty: per-topic field overrides category default
   const difficultyMap = {
-    fundamentals: { label: 'Beginner',      cls: 'diff-beginner' },
-    oop:          { label: 'Beginner',      cls: 'diff-beginner' },
-    intermediate: { label: 'Intermediate',  cls: 'diff-intermediate' },
-    async:        { label: 'Intermediate',  cls: 'diff-intermediate' },
-    patterns:     { label: 'Intermediate',  cls: 'diff-intermediate' },
+    fundamentals:    { label: 'Beginner',     cls: 'diff-beginner' },
+    oop:             { label: 'Beginner',     cls: 'diff-beginner' },
+    intermediate:    { label: 'Intermediate', cls: 'diff-intermediate' },
+    async:           { label: 'Intermediate', cls: 'diff-intermediate' },
+    patterns:        { label: 'Intermediate', cls: 'diff-intermediate' },
     'modern-dotnet': { label: 'Intermediate', cls: 'diff-intermediate' },
     'csharp-latest': { label: 'Intermediate', cls: 'diff-intermediate' },
-    aspnet:       { label: 'Advanced',      cls: 'diff-advanced' },
+    aspnet:          { label: 'Advanced',     cls: 'diff-advanced' },
   };
-  const diff = difficultyMap[category.id] || { label: 'Intermediate', cls: 'diff-intermediate' };
+  const DIFF_LABELS = {
+    beginner:     { label: 'Beginner',     cls: 'diff-beginner' },
+    intermediate: { label: 'Intermediate', cls: 'diff-intermediate' },
+    advanced:     { label: 'Advanced',     cls: 'diff-advanced' },
+  };
+  const diff = (topic.difficulty && DIFF_LABELS[topic.difficulty])
+    || difficultyMap[category.id]
+    || DIFF_LABELS.intermediate;
 
   // Reading time: ~200 words per minute, counting explanation + keyPoints text
   const wordCount = [topic.explanation, topic.tagline, ...(topic.keyPoints || [])]
@@ -586,12 +793,30 @@ async function renderTopic(topicId, myToken) {
     </div>
     <div class="topic-meta">
       <span class="difficulty-badge ${diff.cls}">${diff.label}</span>
+      ${topic.versionLabel ? `<span class="version-badge">${topic.versionLabel}</span>` : ''}
       <span class="reading-time">&#128337; ${readLabel}</span>
     </div>
     <div class="topic-tagline">${topic.tagline}</div>
     ${memberTracks.length ? `<div class="track-badges">${memberTracks.map(t => `<a class="track-badge" href="#/track/${t.id}">&#8227; Part of: ${t.title}</a>`).join('')}</div>` : ''}
 
+    ${topic.prerequisites && topic.prerequisites.length ? (() => {
+      const preqMetas = topic.prerequisites.map(id => TOPIC_INDEX[id]).filter(Boolean);
+      return preqMetas.length ? `
+    <div class="prerequisites-box">
+      <div class="kp-title">&#128279; Prerequisites</div>
+      <div class="prereq-chips">
+        ${preqMetas.map(p => `<a class="prereq-chip" href="#/${p.id}">${p.title}</a>`).join('')}
+      </div>
+    </div>` : '';
+    })() : ''}
+
     <div class="prose">${topic.explanation}</div>
+
+    ${topic.whyItMatters ? `
+    <div class="key-points why-matters-box">
+      <div class="kp-title kp-title--why">&#128161; Why it matters</div>
+      <p class="why-matters-text">${topic.whyItMatters}</p>
+    </div>` : ''}
 
     <div class="key-points">
       <div class="kp-title">Key points</div>
@@ -603,6 +828,15 @@ async function renderTopic(topicId, myToken) {
       <div class="kp-title kp-title--mistakes">&#9888; Common mistakes</div>
       <ul>${topic.mistakes.map(m => `<li>${m}</li>`).join('')}</ul>
     </div>` : ''}
+
+    ${topic.interviewQ ? `
+    <details class="interview-q-box">
+      <summary class="interview-q-summary">&#128196; Interview question</summary>
+      <div class="interview-q-body">
+        <p class="interview-question">${topic.interviewQ}</p>
+        ${topic.interviewA ? `<div class="interview-answer">${topic.interviewA}</div>` : ''}
+      </div>
+    </details>` : ''}
 
     <div class="quiz-box" id="quickCheck">
       <div class="kp-title">Quick check</div>
@@ -640,7 +874,7 @@ async function renderTopic(topicId, myToken) {
       ${prev ? navLink(prev, 'Previous', true) : '<span></span>'}
       ${next ? navLink(next, 'Next', false) : '<span></span>'}
     </div>
-    <div class="keyboard-hint">Tip: use &larr; &rarr; to move between topics, or press / to search.</div>
+    <div class="keyboard-hint">Tip: use &larr; &rarr; to move between topics &middot; / or Ctrl+K to search &middot; R for a random topic.</div>
   `;
 
   document.getElementById('runBtn').addEventListener('click', () => runSample(topic));
@@ -816,6 +1050,8 @@ function runSample(topic) {
       .replace(/>/g, '&gt;');
     body.innerHTML = `<span class="build-line">Build succeeded.</span>${escaped}`;
     btn.disabled = false;
+    incrementRunCount();
+    recordActivityToday();
   }, 450);
 }
 
@@ -953,6 +1189,7 @@ async function startQuizSession(poolMetas, scopeLabel) {
     box.innerHTML = '';
     renderQuizChoices(box, questions[index], (wasCorrect) => {
       results.push({ topicId: questions[index].topicId, topicTitle: questions[index].topicTitle, correct: wasCorrect });
+      if (wasCorrect) { incrementQuizCorrect(); recordActivityToday(); }
       const nextBtn = document.createElement('button');
       nextBtn.type = 'button';
       nextBtn.className = 'quiz-next-btn';
@@ -1108,6 +1345,21 @@ function isTypingTarget(el) {
 }
 
 document.addEventListener('keydown', (e) => {
+  // Ctrl+K / Cmd+K → focus search
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      e.preventDefault();
+      if (window.innerWidth <= 900 && !sidebarEl.classList.contains('open')) {
+        sidebarEl.classList.add('open');
+        backdropEl.classList.add('visible');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+      }
+      searchInput.focus();
+    }
+    return;
+  }
+
   if (e.metaKey || e.ctrlKey || e.altKey) return;
 
   if (e.key === '/' && !isTypingTarget(document.activeElement)) {
@@ -1121,6 +1373,12 @@ document.addEventListener('keydown', (e) => {
       }
       searchInput.focus();
     }
+    return;
+  }
+
+  if (e.key === 'r' && !isTypingTarget(document.activeElement)) {
+    e.preventDefault();
+    goToRandomTopic();
     return;
   }
 

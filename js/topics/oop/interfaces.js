@@ -24,9 +24,14 @@ IShape shape = new Circle { Radius = 2 };
 Console.WriteLine($"Area: {shape.Area():F2}");`,
   output: `Area: 12.57`,
   related: ["dependency-injection"],
+  prerequisites: ["classes-objects"],
   mistakes: [
       "Implementing an interface but making methods throw NotImplementedException \u2014 violates the Liskov principle",
       "Creating interfaces with too many members \u2014 prefer small, focused interfaces (Interface Segregation)",
       "Adding methods to a published interface and breaking all implementors \u2014 use default interface methods or a new interface"
-  ]
+  ],
+  interviewQ: `What is the difference between an interface and an abstract class in C#?`,
+  interviewA: `An interface defines a contract (what a type can do) with no implementation. An abstract class can mix abstract members with concrete ones and may hold state. A class can implement many interfaces but can only inherit from one class. Use interfaces to define capabilities (<code>IDisposable</code>, <code>IComparable</code>); use abstract classes when you need shared implementation alongside the contract.`,
+  whyItMatters: `Interfaces are the backbone of loose coupling in C#. Almost every major .NET API — DI containers, serialisers, EF Core — is built around interfaces, which is why understanding them unlocks the rest of the ecosystem.`,
+  difficulty: 'intermediate'
 };

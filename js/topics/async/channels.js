@@ -35,5 +35,13 @@ Received 3`,
       "Not completing the writer \u2014 ReadAllAsync waits forever if Complete() is never called",
       "Ignoring the return value of TryWrite on a bounded channel \u2014 it returns false when full, data is silently dropped",
       "Using an unbounded channel with a fast producer \u2014 memory grows without limit; prefer bounded with backpressure"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  whyItMatters: `Channels provide a safe, back-pressured queue between producers and consumers on separate threads. They replace the ad-hoc use of <code>ConcurrentQueue</code> + <code>SemaphoreSlim</code> + manual signalling with a clean, high-performance abstraction purpose-built for producer/consumer pipelines.`,
+
+  prerequisites: ["async-await","threading-basics"],
+  interviewQ: `When would you use <code>Channel&lt;T&gt;</code> instead of <code>ConcurrentQueue&lt;T&gt;</code>?`,
+  interviewA: `<code>ConcurrentQueue&lt;T&gt;</code> is a thread-safe queue with no built-in way to wait for items — you must poll with a loop or use a <code>SemaphoreSlim</code> to signal availability. <code>Channel&lt;T&gt;</code> (System.Threading.Channels) provides async-first producer/consumer semantics: <code>await channel.Reader.ReadAsync()</code> suspends without blocking a thread until an item is available. Channels also support bounded capacity (back-pressure) and can be marked complete when production is done, which propagates to the consumer as a clean shutdown signal. Use channels whenever you need async waiting — which is almost always in server code.`
 };

@@ -34,9 +34,14 @@ Console.WriteLine(processor.Length);`,
   output: `// _stream.Dispose() called automatically when 'using' block exits.
 // The FileStream (and its OS file handle) is released immediately.`,
   related: ["idisposable-using", "structs", "boxing-unboxing"],
+  prerequisites: ["classes-objects"],
   mistakes: [
       "Not disposing of IDisposable objects \u2014 relying on the GC to clean up unmanaged resources that the GC doesn't know about",
       "Holding large object graph references in static fields \u2014 prevents GC from collecting the entire subgraph",
       "Allocating in a hot path \u2014 even small, frequent allocations increase GC pressure over time"
-  ]
+  ],
+  interviewQ: `What is the difference between the stack and the heap in .NET?`,
+  interviewA: `The stack stores local variables and method call frames — it is fast, automatically managed, and limited in size. The heap stores reference type instances — it is larger but managed by the Garbage Collector (GC). Value types (structs, primitives) live on the stack unless they are fields of a class or boxed. Understanding this distinction helps you avoid excessive GC pressure, which can cause latency spikes.`,
+  whyItMatters: `Understanding memory management helps you write code that runs efficiently at scale. GC pauses, memory leaks from forgotten event handlers, and IDisposable misuse are all rooted in how .NET manages memory — knowing the model lets you reason about and fix them.`,
+  difficulty: 'advanced'
 };

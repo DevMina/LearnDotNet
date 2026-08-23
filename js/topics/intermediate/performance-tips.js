@@ -35,5 +35,15 @@ Console.WriteLine(FastJoin(new[] { "alpha", "beta", "gamma" }));`,
       "Optimising before profiling \u2014 the bottleneck is almost never where you think it is",
       "Blocking async code with .Result or .Wait() \u2014 deadlocks in ASP.NET and wastes a thread everywhere else",
       "Using string concatenation in a loop \u2014 use StringBuilder or string.Join; each + creates a new string object"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What tools would you use to diagnose a performance problem in a .NET application?`,
+
+  interviewA: `Start with <code>dotnet-counters</code> to see live GC, thread pool, and request rate metrics. Use <code>dotnet-trace</code> to capture a CPU trace and open it in SpeedScope or PerfView to find hot methods. For allocation-heavy issues, <code>dotnet-gcdump</code> or a memory profiler (JetBrains dotMemory, VS Diagnostic Tools) shows what is on the heap. For microbenchmarks, BenchmarkDotNet is the standard — it handles warmup, GC, and statistical analysis. Profiling before optimising is essential: the bottleneck is almost never where you expect.`,
+
+  whyItMatters: `Performance problems in production are hard to reproduce and expensive to diagnose. Knowing the right tools means you spend hours, not days, finding the root cause — and knowing the common pitfalls (LINQ materialisation in a loop, excessive allocations, sync-over-async) means you avoid them in the first place.`,
+
+  prerequisites: ["memory-management","async-await"],
 };

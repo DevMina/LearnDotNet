@@ -30,5 +30,12 @@ Console.WriteLine($"Balance: {acct.Balance:C}");`,
       "Exposing mutable collections as public properties \u2014 callers can modify the internal state directly",
       "Making fields public instead of using properties \u2014 bypasses validation and future-proofing",
       "Using public setters when init-only or constructor injection would enforce invariants"
-  ]
+  ],
+
+  whyItMatters: `Encapsulation limits the surface area of change — when implementation details are private, you can refactor them freely without breaking callers. It is the primary reason object-oriented code can scale: you reason about one object at a time, trusting its public contract.`,
+  difficulty: 'beginner',
+  interviewQ: `What is the difference between <code>private</code>, <code>protected</code>, <code>internal</code>, and <code>protected internal</code> in C#?`,
+  interviewA: `<code>private</code>: accessible only within the declaring type. <code>protected</code>: accessible within the type and any derived type, regardless of assembly. <code>internal</code>: accessible anywhere within the same assembly. <code>protected internal</code>: accessible from the same assembly OR from a derived type (union of both). <code>private protected</code> (C# 7.2): accessible within the same assembly AND only from derived types (intersection). The default for class members is <code>private</code>; for top-level types, <code>internal</code>.`,
+  related: ["classes-objects","static-members","interfaces"],
+  prerequisites: ["classes-objects"]
 };

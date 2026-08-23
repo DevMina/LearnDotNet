@@ -31,5 +31,12 @@ if (TryDivide(10, 2, out int quotient))
       "Forgetting that params creates an array \u2014 calling with no args passes an empty array, not null",
       "Overusing ref and out when simply returning a value or tuple is cleaner",
       "Optional parameters with default values are baked into the call site at compile time \u2014 changing them requires recompiling all callers"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `Understanding parameter passing semantics — especially ref, out, and in — prevents subtle aliasing bugs. Method signature design (named parameters, optional defaults, params) makes APIs cleaner and easier to call correctly.`,
+  interviewQ: `What is the difference between named and optional parameters, and when should you avoid them?`,
+  interviewA: `Optional parameters have a default value declared at the call site: <code>void Log(string msg, bool timestamp = true)</code>. Named parameters let callers specify which parameter they are providing: <code>Log(msg: "hi", timestamp: false)</code>. Avoid optional parameters in public library APIs: the default value is baked into every call site at compile time — changing it is a binary-breaking change. Prefer overloads for public APIs and reserve optional parameters for internal or private methods.`,
+  prerequisites: ["variables-types","control-flow"]
 };

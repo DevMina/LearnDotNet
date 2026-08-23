@@ -25,9 +25,9 @@ jobs:
       - name: Rebuild static pages and fail if the committed output is stale
         run: |
           node scripts/build-static.mjs
-          if ! git diff --quiet -- topics/ index.html sitemap.xml robots.txt; then
+          if ! git diff --quiet -- topics/ tracks/ index.html sitemap.xml robots.txt sw.js js/topics/search-index.js; then
             echo "::error::Generated output is stale. Run 'node scripts/build-static.mjs' locally and commit the result."
-            git diff --stat -- topics/ index.html sitemap.xml robots.txt
+            git diff --stat -- topics/ tracks/ index.html sitemap.xml robots.txt sw.js js/topics/search-index.js
             exit 1
           fi
 

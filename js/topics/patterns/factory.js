@@ -31,5 +31,16 @@ NotifierFactory.Create("sms").Send("Order shipped");`,
       "Returning concrete types from a factory instead of an interface \u2014 defeats the purpose of abstracting construction",
       "Overcomplicating a factory when a constructor with optional parameters would do",
       "Not handling the unknown type case \u2014 a factory switch with no default throws at runtime"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What is the difference between Factory Method and Abstract Factory?`,
+
+  interviewA: `Factory Method defines one method for creating one product type — subclasses override it to produce different concrete products. Abstract Factory defines a family of related factory methods — implementations produce a set of products that are designed to work together (e.g. a UI factory that produces matching Button + Checkbox + Dialog). Use Factory Method when you need to decouple a single object's creation. Use Abstract Factory when you need to ensure a set of created objects are compatible with each other.`,
+
+  whyItMatters: `Factory patterns decouple object creation from usage, enabling you to change which concrete type is created without touching the calling code. This is the foundation of plugin architectures and testability — swap the factory for a test factory that returns fakes.`,
+
+  prerequisites: ["classes-objects","interfaces"],
+  related: ["interfaces","classes-objects","dependency-injection","strategy"]
 };

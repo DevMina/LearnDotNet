@@ -26,5 +26,12 @@ Console.WriteLine(total);`,
       "Overloading == without also overloading != and overriding Equals/GetHashCode \u2014 breaking symmetry",
       "Making operator behaviour surprising \u2014 + should feel like addition, not concatenation on a numeric type",
       "Overloading operators on mutable types \u2014 leads to confusing aliasing bugs"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `Operator overloading makes domain types feel native. A <code>Money</code> type that supports <code>+</code> and <code>-</code> is far more readable than calling <code>Money.Add(a, b)</code>. Used sparingly and intuitively, it makes library APIs cleaner — used excessively, it makes code unreadable.`,
+  interviewQ: `Which operators must be overloaded in pairs in C#?`,
+  interviewA: `The comparison operators must be overloaded in pairs: <code>==</code> with <code>!=</code>, <code>&lt;</code> with <code>&gt;</code>, and <code>&lt;=</code> with <code>&gt;=</code>. The compiler enforces this. If you overload <code>==</code>, you should also override <code>Equals()</code> and <code>GetHashCode()</code> — the compiler warns if you do not. For arithmetic types, overloading <code>+</code> implicitly makes <code>+=</code> work without a separate overload.`,
+  prerequisites: ["classes-objects"]
 };

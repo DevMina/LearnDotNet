@@ -33,5 +33,15 @@ Console.WriteLine(jwt[..40] + "...");`,
       "Using a short, weak signing key \u2014 HMAC-SHA256 requires at least 256 bits (32 bytes) of key material",
       "Not validating the audience and issuer \u2014 accepting tokens from any issuer defeats token security",
       "Never refreshing tokens \u2014 long-lived JWTs are a security risk; use short expiry plus refresh tokens"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What are the three parts of a JWT and what does each contain?`,
+
+  interviewA: `A JWT has three Base64url-encoded parts separated by dots: the <strong>header</strong> (algorithm and token type, e.g. <code>{"alg":"HS256","typ":"JWT"}</code>), the <strong>payload</strong> (claims — sub, exp, iss, aud, and any custom claims like role), and the <strong>signature</strong> (the HMAC or RSA signature of header + payload, used to verify the token has not been tampered with). The payload is not encrypted — only signed. Never store sensitive data in a JWT payload. Validate <code>exp</code> (expiry), <code>iss</code> (issuer), and <code>aud</code> (audience) on every request.`,
+
+  whyItMatters: `JWTs are the most common authentication mechanism for modern APIs and SPAs. Understanding what is in a JWT — and what is not — prevents common security mistakes like trusting claims without signature validation or storing secrets in the payload.`,
+
+  prerequisites: ["middleware","authentication"],
 };

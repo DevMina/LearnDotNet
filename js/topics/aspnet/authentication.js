@@ -34,5 +34,15 @@ GET /admin   → 401 Unauthorized (unauthenticated)
       "Calling UseAuthorization before UseAuthentication \u2014 authentication must run first to populate the user",
       "Using [Authorize] without configuring an authentication scheme \u2014 results in a silent 401",
       "Storing sensitive claims in the JWT payload \u2014 it's signed, not encrypted; anyone can decode it"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What is the difference between authentication and authorisation?`,
+
+  interviewA: `Authentication answers "who are you?" — it verifies identity using credentials (password, JWT, cookie, API key). Authorisation answers "what are you allowed to do?" — it checks whether the authenticated identity has permission for a specific action. In ASP.NET Core, <code>UseAuthentication()</code> must come before <code>UseAuthorization()</code> in the middleware pipeline because authorisation needs a populated <code>ClaimsPrincipal</code> to evaluate policies. A request with a valid JWT but insufficient role claims fails authorisation, not authentication.`,
+
+  whyItMatters: `Getting authentication and authorisation wrong is a critical security vulnerability. Understanding the pipeline order, claims-based identity, and policy-based authorisation is mandatory for anyone building a public-facing API.`,
+
+  prerequisites: ["middleware","jwt"],
 };

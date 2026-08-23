@@ -18,9 +18,15 @@ export default {
 var result = await FetchGreetingAsync();
 Console.WriteLine(result);`,
   output: `Hello from the server`,
+  prerequisites: ["delegates-events","methods-parameters"],
   mistakes: [
       "async void \u2014 exceptions are unobservable and crash the process; always use async Task",
       "Blocking on async code with .Result or .Wait() \u2014 deadlocks in contexts with a synchronisation context",
       "Forgetting to await a Task \u2014 the call returns immediately and the error is silently swallowed"
-  ]
+  ],
+  interviewQ: `What is the difference between <code>Task</code> and <code>ValueTask</code>?`,
+  interviewA: `<code>Task</code> is a class (reference type) always allocated on the heap. <code>ValueTask</code> is a struct that avoids heap allocation when the result is already available synchronously (common in caching scenarios). Use <code>Task</code> by default; switch to <code>ValueTask</code> only when profiling shows allocation pressure in a hot path. Never <code>await</code> a <code>ValueTask</code> more than once — it is not safe to do so.`,
+  whyItMatters: `Async/await is essential for building responsive UIs, high-throughput web APIs, and I/O-bound services. Understanding how it works under the hood — state machines, context capture, ConfigureAwait — prevents the subtle bugs (deadlocks, context switching overhead) that trip up developers who treat it as magic.`,
+  related: ["cancellation-token","valuetask","tpl","threading-basics","async-streams"],
+  difficulty: 'intermediate'
 };

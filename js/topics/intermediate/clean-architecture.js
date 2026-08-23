@@ -37,5 +37,15 @@ public class GetProductQuery
       "Letting Domain entities reference Infrastructure types \u2014 breaks the dependency rule and makes the domain untestable",
       "Putting business logic in controllers or Minimal API handlers \u2014 those are delivery mechanisms, not a place for rules",
       "Over-engineering a small app with full Clean Architecture layers \u2014 the pattern earns its complexity at scale"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What is the dependency rule in Clean Architecture?`,
+
+  interviewA: `The dependency rule states that source code dependencies must point only inward — toward higher-level policy, never toward lower-level detail. This means your domain layer (entities, business rules) has no reference to infrastructure (database, HTTP clients, file I/O). Infrastructure depends on domain, not the reverse. This is enforced by defining interfaces in the domain layer and implementing them in the infrastructure layer — the Dependency Inversion Principle in practice.`,
+
+  whyItMatters: `Clean Architecture keeps the business rules — the most valuable part of the system — completely isolated from infrastructure concerns that change frequently (frameworks, databases, UIs). This makes the core logic testable without any infrastructure setup, and swappable when technology choices change.`,
+
+  prerequisites: ["solid-principles","dependency-injection","interfaces"],
 };

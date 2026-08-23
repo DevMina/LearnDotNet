@@ -35,5 +35,15 @@ Console.WriteLine(string.Join(", ", cart));`,
       "Commands that directly modify shared state without going through a queue or handler \u2014 loses the undo/replay benefit",
       "Making commands too coarse \u2014 one command per user action, not one command for a workflow",
       "Not handling command failure \u2014 what happens if Execute throws needs to be part of the design"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `How does the Command pattern relate to MediatR and CQRS?`,
+
+  interviewA: `MediatR is a library that implements the Mediator pattern, but its <code>IRequest</code>/<code>IRequestHandler</code> pair is essentially the Command pattern — each command is a class with its own handler, decoupled via MediatR from whatever sends the command. CQRS (Command Query Responsibility Segregation) takes this further by separating read models (queries) from write models (commands). The Command pattern is the building block: encapsulate a request as an object so it can be queued, logged, undone, or dispatched to different handlers.`,
+
+  whyItMatters: `The Command pattern enables undo/redo, queuing, audit logging, and transactional boundaries by treating operations as first-class objects. In modern C# backends, it is the backbone of the increasingly popular CQRS + MediatR architecture.`,
+
+  prerequisites: ["interfaces","delegates-events"],
 };

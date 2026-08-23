@@ -28,5 +28,16 @@ True`,
       "Forgetting to override GetHashCode when overriding Equals \u2014 objects used as dictionary keys will break",
       "Comparing reference types with == when you mean value equality \u2014 override == or use Equals explicitly",
       "Making Equals throw on null argument \u2014 it should return false, not throw"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What is the difference between == and <code>Equals()</code> in C#?`,
+
+  interviewA: `For reference types, <code>==</code> checks reference equality by default (same object on the heap) unless overloaded. <code>Equals()</code> also checks reference equality by default but is meant to be overridden for value-based equality. <code>string</code> overrides both to compare characters. For value types, both check structural equality. Records (C# 9) auto-generate value-based <code>==</code> and <code>Equals()</code>. Always implement <code>GetHashCode()</code> when you override <code>Equals()</code> — breaking the contract causes incorrect behaviour in dictionaries and hash sets.`,
+
+  whyItMatters: `Equality bugs are among the hardest to diagnose because everything appears to work until an object lands in a dictionary or LINQ <code>Distinct()</code>. Understanding the equality contract — and when to use records instead of manually implementing it — prevents an entire category of subtle bugs.`,
+
+  prerequisites: ["classes-objects"],
+  related: ["classes-objects","records","generics","interfaces"]
 };

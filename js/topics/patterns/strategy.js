@@ -25,5 +25,15 @@ Console.WriteLine(Checkout(200m, new TenPercentOff()));`,
       "Using Strategy when a simple if/else or switch covers all cases and never changes",
       "Making strategy objects stateful \u2014 strategies should be stateless and interchangeable",
       "Not injecting the strategy via DI \u2014 hardcoding it defeats the purpose of the pattern"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `How does the Strategy pattern relate to dependency injection?`,
+
+  interviewA: `They are natural partners. The Strategy pattern defines a family of algorithms behind a common interface and makes them interchangeable. DI injects the chosen strategy at runtime without the consumer knowing which one it got. For example, an <code>IShippingCalculator</code> interface with <code>UpsCalculator</code> and <code>FedExCalculator</code> implementations — the consumer receives one via DI based on configuration. This makes the algorithm switchable without changing calling code, and trivially testable by injecting a fake calculator.`,
+
+  whyItMatters: `The Strategy pattern is one of the most frequently used patterns in real codebases because it solves the everyday problem of "this algorithm should vary by configuration or context." Combined with DI, it makes business rules swappable without code changes.`,
+
+  prerequisites: ["interfaces","dependency-injection"],
 };

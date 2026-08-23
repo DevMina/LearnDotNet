@@ -28,5 +28,11 @@ Console.WriteLine($"{car.Model} ({car.Year})");`,
       "Forgetting to initialise fields \u2014 reference type fields default to null, not an empty object",
       "Making everything public \u2014 prefer private fields with properties to control access",
       "Creating very large classes \u2014 split responsibilities when a class has more than one reason to change"
-  ]
+  ],
+  interviewQ: `What is the difference between a class and a struct in C#?`,
+  interviewA: `A <code>class</code> is a reference type — variables hold a reference to the object on the heap, so assignment copies the reference. A <code>struct</code> is a value type — the data lives inline (often on the stack or inside another object), so assignment copies the entire value. Use structs for small, immutable, frequently-allocated data (like <code>Vector2</code> or <code>Point</code>); use classes for everything else.`,
+  whyItMatters: `Classes are the fundamental unit of object-oriented design in C#. Understanding the class-vs-struct distinction helps you write code that is both correct and efficient — choosing the wrong one can cause subtle aliasing bugs or unnecessary heap pressure.`,
+  related: ["inheritance","interfaces","structs","encapsulation","records"],
+  difficulty: 'beginner',
+  prerequisites: ["variables-types","methods-parameters"]
 };

@@ -24,9 +24,15 @@ finally
 }`,
   output: `Caught: Index was outside the bounds of the array.
 Cleanup ran`,
+  prerequisites: ["classes-objects"],
   mistakes: [
       "Catching Exception (or worse, catching and swallowing it) instead of a specific exception type",
       "Using exceptions for normal control flow \u2014 they're expensive and make code harder to read",
       "Re-throwing with throw ex instead of throw \u2014 throw ex resets the stack trace"
-  ]
+  ],
+  interviewQ: `What is the difference between <code>throw</code> and <code>throw ex</code> in a catch block?`,
+  interviewA: `<code>throw</code> (no argument) re-throws the caught exception while preserving the original stack trace — you can see exactly where the exception was first thrown. <code>throw ex</code> re-throws the exception but resets the stack trace to the current line, hiding where the error originated. Always prefer bare <code>throw</code> unless you are deliberately wrapping the exception in a new one with <code>throw new WrapperException("...", ex)</code>.`,
+  whyItMatters: `Correct exception handling is the difference between a system that fails gracefully with a useful error message and one that corrupts data silently. Understanding the throw semantics prevents common debugging nightmares.`,
+  related: ["classes-objects","async-await","idisposable-using","exception-handling"],
+  difficulty: 'intermediate'
 };

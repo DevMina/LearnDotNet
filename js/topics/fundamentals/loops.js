@@ -31,5 +31,13 @@ tick 1`,
       "Modifying a collection inside a foreach loop \u2014 throws InvalidOperationException at runtime",
       "Off-by-one errors with for loops: using < vs <= for the boundary condition",
       "Using while(true) without a guaranteed exit path, causing an infinite loop"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `Knowing when to prefer foreach over for, and when to reach for LINQ instead of any loop, separates readable C# from imperative spaghetti.`,
+  interviewQ: `When would you use a <code>for</code> loop instead of <code>foreach</code> in C#?`,
+  interviewA: `Use <code>for</code> when you need the index, need to iterate in reverse, need to skip elements non-sequentially, or need to modify the collection while iterating (over an array or list by index). Use <code>foreach</code> for all other cases — it works with any <code>IEnumerable&lt;T&gt;</code>, is harder to get wrong (no off-by-one errors), and is more idiomatic C#. Use <code>while</code> when the exit condition is not index-based (e.g. reading lines until EOF). LINQ is often preferable to both when the goal is filtering or transforming rather than iterating with side effects.`,
+  related: ["control-flow","arrays-collections","linq","iterators-yield"],
+  prerequisites: ["control-flow"]
 };

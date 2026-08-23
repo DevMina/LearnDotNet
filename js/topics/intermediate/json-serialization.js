@@ -26,5 +26,12 @@ Person { Name = Mina, Age = 29 }`,
       "Deserialising into a type with no public setters \u2014 the properties stay at their default values silently",
       "Forgetting that System.Text.Json is case-sensitive by default \u2014 JSON keys must match property names exactly",
       "Using JsonSerializer in a hot path without source generation \u2014 reflection-based serialisation has significant overhead"
-  ]
+  ],
+
+  whyItMatters: `JSON is the lingua franca of web APIs. Knowing how <code>System.Text.Json</code> handles null, naming policies, custom converters, and source generation lets you control exactly what goes over the wire without surprises.`,
+
+  prerequisites: ["classes-objects"],
+  difficulty: 'intermediate',
+  interviewQ: `What are the main differences between System.Text.Json and Newtonsoft.Json?`,
+  interviewA: `<code>System.Text.Json</code> (inbox since .NET Core 3.0) is faster, allocates less, and is AOT-compatible. It is more strict by default: it does not handle missing members by default, does not auto-convert strings to numbers, and uses camelCase property naming only when configured. <code>Newtonsoft.Json</code> (Json.NET) has more features — reference loop handling, extensive converters, case-insensitive matching by default — and a larger ecosystem of existing code. For new code targeting .NET 6+, prefer <code>System.Text.Json</code>; migrate only if you hit a specific missing feature.`
 };

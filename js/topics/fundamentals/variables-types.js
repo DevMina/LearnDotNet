@@ -23,5 +23,12 @@ Score has value: False`,
       "Using var and assuming it means dynamic \u2014 var is still statically typed at compile time",
       "Comparing strings with == on reference types from different sources \u2014 use string.Equals or == which is overloaded for string",
       "Forgetting that integer division truncates: 5 / 2 == 2, not 2.5"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `Static typing catches entire classes of bugs at compile time that dynamic languages only surface at runtime. Understanding value vs reference types is essential for reasoning about performance, copying semantics, and equality throughout your C# career.`,
+  related: ["operators","control-flow","nullable-value-types","boxing-unboxing"],
+  interviewQ: `What is the difference between a value type and a reference type in C#?`,
+  interviewA: `Value types (<code>int</code>, <code>bool</code>, <code>struct</code>) store their data directly — assigning one variable to another copies the value. Reference types (<code>class</code>, <code>string</code>, <code>array</code>) store a reference to heap memory — assigning copies the reference, not the data, so both variables point to the same object. Key implications: value types are typically stack-allocated (though they can live on the heap inside a class); reference types always live on the heap and are garbage collected; comparing value types with <code>==</code> compares content, while reference types compare identity by default unless overridden.`
 };

@@ -43,6 +43,12 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/boxing-unboxing/</loc>
   </url>
   <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/ref-out-in/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/const-readonly/</loc>
+  </url>
+  <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/classes-objects/</loc>
   </url>
   <url>
@@ -133,6 +139,18 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/performance-tips/</loc>
   </url>
   <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/span/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/expression-trees/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/source-generators/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/ienumerable-iqueryable/</loc>
+  </url>
+  <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/async-await/</loc>
   </url>
   <url>
@@ -152,6 +170,9 @@
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/channels/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/valuetask/</loc>
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/records/</loc>
@@ -256,7 +277,43 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/options-pattern/</loc>
   </url>
   <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/controllers/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/model-binding/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/model-validation/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/exception-handling/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/filters/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/cors/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/rate-limiting/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/openapi/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/ef-core/</loc>
+  </url>
+  <url>
     <loc>https://devmina.github.io/LearnDotNet/tracks/getting-started/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/csharp-fundamentals/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/oop-in-csharp/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/tracks/advanced-csharp/</loc>
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/tracks/async-deep-dive/</loc>

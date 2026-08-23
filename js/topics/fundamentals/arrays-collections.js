@@ -26,5 +26,15 @@ Grace is 34`,
       "Accessing an index that doesn't exist \u2014 always check Count/Length or use TryGetValue",
       "Confusing List<T> (resizable) with arrays (fixed size) \u2014 most code should prefer List<T>",
       "Adding to a collection while iterating over it \u2014 collect changes and apply after the loop"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  interviewQ: `What is the difference between an array and a List<T> in C#?`,
+
+  interviewA: `An array has a fixed size set at creation time and lives on the heap as a contiguous block. <code>List&lt;T&gt;</code> wraps an array internally and resizes automatically — it doubles capacity when full, so amortised addition is O(1). Arrays are faster for indexed reads and have less overhead; <code>List&lt;T&gt;</code> is more convenient when size is not known in advance. For read-only sequences, prefer <code>IReadOnlyList&lt;T&gt;</code> or <code>IEnumerable&lt;T&gt;</code> in your API surface.`,
+
+  whyItMatters: `Collections are the fundamental data structure of nearly every program. Choosing the right one — array, List, Dictionary, HashSet — has direct performance consequences and affects how clearly your intent reads.`,
+  related: ["linq","generics","loops","span"],
+  prerequisites: ["variables-types","loops"]
 };

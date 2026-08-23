@@ -33,5 +33,13 @@ app.Run();`,
       "Not handling exceptions inside ExecuteAsync \u2014 an unhandled exception stops the service silently",
       "Ignoring the CancellationToken \u2014 the service won't shut down cleanly when the host stops",
       "Resolving scoped services directly from the constructor \u2014 inject IServiceScopeFactory and create a scope per work item"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `Background services let you run long-running or periodic work inside the same process as your web API — without a separate scheduler or worker process. They are the .NET-native way to implement queued message processing, scheduled jobs, and health-check agents.`,
+
+  prerequisites: ["async-await","dependency-injection","cancellation-token"],
+  interviewQ: `What is the difference between <code>IHostedService</code> and <code>BackgroundService</code>?`,
+  interviewA: `<code>IHostedService</code> is the interface with two methods: <code>StartAsync</code> (called when the host starts) and <code>StopAsync</code> (called when the host is shutting down). <code>BackgroundService</code> is an abstract base class that implements <code>IHostedService</code> and provides the simpler <code>ExecuteAsync(CancellationToken)</code> override point — you write a loop that runs until the token is cancelled, and the base class handles starting/stopping. Use <code>BackgroundService</code> for long-running background loops; implement <code>IHostedService</code> directly when you only need startup/shutdown hooks without a persistent loop.`
 };

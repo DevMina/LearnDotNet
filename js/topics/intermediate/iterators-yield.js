@@ -25,5 +25,16 @@ Console.WriteLine(string.Join(", ", Fibonacci(8)));`,
       "Forgetting that yield return is lazy \u2014 code before the first yield doesn't run until enumeration starts",
       "Wrapping a yield method in try/catch around the yield \u2014 catch doesn't catch exceptions from the caller's enumeration",
       "Returning IEnumerable<T> and the caller enumerates it twice \u2014 if it's a live query, results may differ"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `How does <code>yield return</code> work under the hood?`,
+
+  interviewA: `The compiler transforms a method containing <code>yield return</code> into a state machine class implementing <code>IEnumerable&lt;T&gt;</code> and <code>IEnumerator&lt;T&gt;</code>. Each call to <code>MoveNext()</code> resumes execution from where <code>yield return</code> left off, preserving local variable state between calls. This means the method body runs lazily — only as much as the caller consumes. If the caller stops iterating early (e.g. via <code>Take(5)</code>), the rest of the method never executes.`,
+
+  whyItMatters: `Iterators enable lazy, on-demand sequences without materialising the entire collection in memory. Generating an infinite Fibonacci sequence, reading a CSV file line by line, or paging through API results all benefit from this pattern.`,
+
+  prerequisites: ["arrays-collections","delegates-events"],
+  related: ["arrays-collections","async-streams","linq","valuetask"]
 };

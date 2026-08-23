@@ -31,5 +31,16 @@ Cancelled`,
       "Not passing the CancellationToken to every async call in the chain \u2014 cancellation won't propagate",
       "Catching OperationCanceledException and treating it as an error \u2014 it's a normal, expected signal",
       "Creating a CancellationTokenSource but never cancelling or disposing it \u2014 leaks the timer if timeout was used"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What happens if you ignore a <code>CancellationToken</code> in an async method?`,
+
+  interviewA: `If you ignore the token, the operation continues running even after the caller requested cancellation — consuming CPU, I/O, or database connections unnecessarily. In ASP.NET Core, when a client disconnects, the request's <code>CancellationToken</code> is cancelled; ignoring it means your handler runs to completion for a client that is no longer waiting. Always propagate the token to every awaitable call (<code>httpClient.GetAsync(url, token)</code>) and check <code>token.ThrowIfCancellationRequested()</code> in CPU-bound loops.`,
+
+  whyItMatters: `Cancellation is the difference between a service that degrades gracefully under load and one that accumulates abandoned work items until it runs out of thread pool threads. Propagating CancellationToken everywhere is one of the most impactful reliability improvements you can make to an async service.`,
+
+  prerequisites: ["async-await"],
+  related: ["async-await","tpl","background-services","semaphore-slim"]
 };

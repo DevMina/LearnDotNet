@@ -22,5 +22,15 @@ Delivered`,
       "Casting an arbitrary integer to an enum \u2014 use Enum.IsDefined to validate first",
       "Using enums for bit flags without [Flags] and powers of two \u2014 bitwise operations won't work correctly",
       "Comparing enum values with == but forgetting they're integers underneath \u2014 string comparison won't work"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  interviewQ: `What is the difference between an enum and a set of const int values?`,
+
+  interviewA: `Both compile to integer constants, but enums provide a named type — the compiler enforces you pass a <code>Direction</code> where a <code>Direction</code> is expected, not any <code>int</code>. Enums also work with <code>switch</code> exhaustiveness checking in C# 9+ pattern matching. The <code>[Flags]</code> attribute lets you combine values with bitwise OR, useful for permission sets. The key weakness is that enums allow casting any integer to the enum type without error — always validate with <code>Enum.IsDefined</code> when processing external input.`,
+
+  whyItMatters: `Enums replace magic numbers with named, self-documenting constants. They make switch statements exhaustive and enable the compiler to warn when a new value is added but a switch arm is missed.`,
+  related: ["variables-types","pattern-matching","const-readonly"],
+  prerequisites: ["variables-types"]
 };

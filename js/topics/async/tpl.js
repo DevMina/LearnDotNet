@@ -25,5 +25,15 @@ Console.WriteLine(string.Join(", ", results));`,
       "Using Task.Run for I/O-bound work \u2014 it wastes a thread; use async/await instead",
       "Not handling exceptions from tasks \u2014 unobserved task exceptions used to crash the process (still can in some configs)",
       "Overusing Parallel.ForEach when the work is I/O-bound \u2014 parallelism helps CPU-bound work, not I/O"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `When should you use <code>Parallel.ForEach</code> vs <code>Task.WhenAll</code>?`,
+
+  interviewA: `<code>Parallel.ForEach</code> is for CPU-bound work — it partitions data across thread pool threads and runs them simultaneously. It blocks the calling thread until all partitions complete. <code>Task.WhenAll</code> is for I/O-bound concurrent work — it awaits multiple async operations concurrently without blocking any threads. Using <code>Parallel.ForEach</code> for I/O-bound work wastes thread pool threads. Using <code>Task.WhenAll</code> for pure CPU work inside an async context (e.g. with <code>Task.Run</code>) is correct but adds overhead. When in doubt: I/O → <code>Task.WhenAll</code>, CPU → <code>Parallel</code> or <code>Task.Run</code>.`,
+
+  whyItMatters: `Choosing the wrong concurrency primitive is one of the most common performance mistakes in .NET. CPU-bound work needs real thread parallelism; I/O-bound work needs async concurrency. Mixing them up produces code that is either slower than sequential (async CPU work) or starves the thread pool (sync I/O).`,
+
+  prerequisites: ["async-await","threading-basics"],
 };

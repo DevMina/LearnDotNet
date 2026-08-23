@@ -5,24 +5,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Interview Prep: Core Concepts — C# &amp; .NET Concepts</title>
-<meta name="description" content="The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, exception handling, and memory management — reviewed in a sensible order.">
+<meta name="description" content="The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, async, exception handling, and memory management — reviewed in a sensible order.">
 <link rel="canonical" href="https://devmina.github.io/LearnDotNet/tracks/interview-prep/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="C# &amp; .NET Concepts">
 <meta property="og:title" content="Interview Prep: Core Concepts — C# &amp; .NET Concepts">
-<meta property="og:description" content="The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, exception handling, and memory management — reviewed in a sensible order.">
+<meta property="og:description" content="The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, async, exception handling, and memory management — reviewed in a sensible order.">
 <meta property="og:url" content="https://devmina.github.io/LearnDotNet/tracks/interview-prep/">
 <meta property="og:image" content="https://devmina.github.io/LearnDotNet/icons/icon-512.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://devmina.github.io/LearnDotNet/icons/icon-512.png">
 <meta name="twitter:title" content="Interview Prep: Core Concepts — C# &amp; .NET Concepts">
-<meta name="twitter:description" content="The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, exception handling, and memory management — reviewed in a sensible order.">
+<meta name="twitter:description" content="The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, async, exception handling, and memory management — reviewed in a sensible order.">
 <meta name="theme-color" content="#0D1117">
 <link rel="manifest" href="../../manifest.json">
 <link rel="apple-touch-icon" href="../../icons/apple-touch-icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230D1117'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%23E8A33D' text-anchor='middle'%3EC%23%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../../css/style.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Interview Prep: Core Concepts","description":"The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, exception handling, and memory management — reviewed in a sensible order.","itemListElement":[{"@type":"ListItem","position":1,"name":"Classes & Objects","url":"https://devmina.github.io/LearnDotNet/topics/classes-objects/"},{"@type":"ListItem","position":2,"name":"Inheritance","url":"https://devmina.github.io/LearnDotNet/topics/inheritance/"},{"@type":"ListItem","position":3,"name":"Polymorphism","url":"https://devmina.github.io/LearnDotNet/topics/polymorphism/"},{"@type":"ListItem","position":4,"name":"Interfaces","url":"https://devmina.github.io/LearnDotNet/topics/interfaces/"},{"@type":"ListItem","position":5,"name":"Abstract Classes","url":"https://devmina.github.io/LearnDotNet/topics/abstract-classes/"},{"@type":"ListItem","position":6,"name":"Generics","url":"https://devmina.github.io/LearnDotNet/topics/generics/"},{"@type":"ListItem","position":7,"name":"LINQ","url":"https://devmina.github.io/LearnDotNet/topics/linq/"},{"@type":"ListItem","position":8,"name":"Exception Handling","url":"https://devmina.github.io/LearnDotNet/topics/exceptions/"},{"@type":"ListItem","position":9,"name":"Delegates & Events","url":"https://devmina.github.io/LearnDotNet/topics/delegates-events/"},{"@type":"ListItem","position":10,"name":"Memory Management","url":"https://devmina.github.io/LearnDotNet/topics/memory-management/"},{"@type":"ListItem","position":11,"name":"SOLID Principles","url":"https://devmina.github.io/LearnDotNet/topics/solid-principles/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Interview Prep: Core Concepts","description":"The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, async, exception handling, and memory management — reviewed in a sensible order.","itemListElement":[{"@type":"ListItem","position":1,"name":"Classes & Objects","url":"https://devmina.github.io/LearnDotNet/topics/classes-objects/"},{"@type":"ListItem","position":2,"name":"Inheritance","url":"https://devmina.github.io/LearnDotNet/topics/inheritance/"},{"@type":"ListItem","position":3,"name":"Polymorphism","url":"https://devmina.github.io/LearnDotNet/topics/polymorphism/"},{"@type":"ListItem","position":4,"name":"Interfaces","url":"https://devmina.github.io/LearnDotNet/topics/interfaces/"},{"@type":"ListItem","position":5,"name":"Abstract Classes","url":"https://devmina.github.io/LearnDotNet/topics/abstract-classes/"},{"@type":"ListItem","position":6,"name":"Generics","url":"https://devmina.github.io/LearnDotNet/topics/generics/"},{"@type":"ListItem","position":7,"name":"LINQ","url":"https://devmina.github.io/LearnDotNet/topics/linq/"},{"@type":"ListItem","position":8,"name":"IEnumerable vs IQueryable","url":"https://devmina.github.io/LearnDotNet/topics/ienumerable-iqueryable/"},{"@type":"ListItem","position":9,"name":"Exception Handling","url":"https://devmina.github.io/LearnDotNet/topics/exceptions/"},{"@type":"ListItem","position":10,"name":"Delegates & Events","url":"https://devmina.github.io/LearnDotNet/topics/delegates-events/"},{"@type":"ListItem","position":11,"name":"async / await","url":"https://devmina.github.io/LearnDotNet/topics/async-await/"},{"@type":"ListItem","position":12,"name":"ValueTask","url":"https://devmina.github.io/LearnDotNet/topics/valuetask/"},{"@type":"ListItem","position":13,"name":"Memory Management","url":"https://devmina.github.io/LearnDotNet/topics/memory-management/"},{"@type":"ListItem","position":14,"name":"SOLID Principles","url":"https://devmina.github.io/LearnDotNet/topics/solid-principles/"},{"@type":"ListItem","position":15,"name":"ref, out & in Parameters","url":"https://devmina.github.io/LearnDotNet/topics/ref-out-in/"},{"@type":"ListItem","position":16,"name":"Dependency Injection","url":"https://devmina.github.io/LearnDotNet/topics/dependency-injection/"}]}</script>
 </head>
 <body>
 
@@ -37,7 +37,7 @@
 </div>
 <div class="tree">
 <div class="tree-category">
-  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Fundamentals</span><span class="tree-category-progress">13 topics</span></div>
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Fundamentals</span><span class="tree-category-progress">15 topics</span></div>
   <div class="tree-items">
 <a class="tree-item" href="../../topics/variables-types/"><span class="file-icon">cs</span><span>Variables &amp; Types</span></a>
 <a class="tree-item" href="../../topics/operators/"><span class="file-icon">cs</span><span>Operators &amp; Expressions</span></a>
@@ -52,6 +52,8 @@
 <a class="tree-item" href="../../topics/string-interpolation/"><span class="file-icon">cs</span><span>String Interpolation &amp; Formatting</span></a>
 <a class="tree-item" href="../../topics/nullable-value-types/"><span class="file-icon">cs</span><span>Nullable Value Types</span></a>
 <a class="tree-item" href="../../topics/boxing-unboxing/"><span class="file-icon">cs</span><span>Boxing &amp; Unboxing</span></a>
+<a class="tree-item" href="../../topics/ref-out-in/"><span class="file-icon">cs</span><span>ref, out &amp; in Parameters</span></a>
+<a class="tree-item" href="../../topics/const-readonly/"><span class="file-icon">cs</span><span>const vs readonly</span></a>
   </div>
 </div>
 <div class="tree-category">
@@ -73,7 +75,7 @@
   </div>
 </div>
 <div class="tree-category">
-  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Intermediate</span><span class="tree-category-progress">17 topics</span></div>
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Intermediate</span><span class="tree-category-progress">21 topics</span></div>
   <div class="tree-items">
 <a class="tree-item" href="../../topics/generics/"><span class="file-icon">cs</span><span>Generics</span></a>
 <a class="tree-item" href="../../topics/delegates-events/"><span class="file-icon">cs</span><span>Delegates &amp; Events</span></a>
@@ -92,10 +94,14 @@
 <a class="tree-item" href="../../topics/clean-architecture/"><span class="file-icon">cs</span><span>Clean Architecture</span></a>
 <a class="tree-item" href="../../topics/memory-management/"><span class="file-icon">cs</span><span>Memory Management</span></a>
 <a class="tree-item" href="../../topics/performance-tips/"><span class="file-icon">cs</span><span>Performance Tips</span></a>
+<a class="tree-item" href="../../topics/span/"><span class="file-icon">cs</span><span>Span&lt;T&gt; &amp; Memory&lt;T&gt;</span></a>
+<a class="tree-item" href="../../topics/expression-trees/"><span class="file-icon">cs</span><span>Expression Trees</span></a>
+<a class="tree-item" href="../../topics/source-generators/"><span class="file-icon">cs</span><span>Source Generators</span></a>
+<a class="tree-item" href="../../topics/ienumerable-iqueryable/"><span class="file-icon">cs</span><span>IEnumerable vs IQueryable</span></a>
   </div>
 </div>
 <div class="tree-category">
-  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Async &amp; Concurrency</span><span class="tree-category-progress">7 topics</span></div>
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>Async &amp; Concurrency</span><span class="tree-category-progress">8 topics</span></div>
   <div class="tree-items">
 <a class="tree-item" href="../../topics/async-await/"><span class="file-icon">cs</span><span>async / await</span></a>
 <a class="tree-item" href="../../topics/tpl/"><span class="file-icon">cs</span><span>Task Parallel Library</span></a>
@@ -104,6 +110,7 @@
 <a class="tree-item" href="../../topics/async-streams/"><span class="file-icon">cs</span><span>IAsyncEnumerable &amp; Async Streams</span></a>
 <a class="tree-item" href="../../topics/semaphore-slim/"><span class="file-icon">cs</span><span>SemaphoreSlim</span></a>
 <a class="tree-item" href="../../topics/channels/"><span class="file-icon">cs</span><span>Channels</span></a>
+<a class="tree-item" href="../../topics/valuetask/"><span class="file-icon">cs</span><span>ValueTask</span></a>
   </div>
 </div>
 <div class="tree-category">
@@ -147,7 +154,7 @@
   </div>
 </div>
 <div class="tree-category">
-  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>ASP.NET Core</span><span class="tree-category-progress">9 topics</span></div>
+  <div class="tree-category-label static" aria-expanded="true"><span class="chevron">&#9662;</span><span>ASP.NET Core</span><span class="tree-category-progress">18 topics</span></div>
   <div class="tree-items">
 <a class="tree-item" href="../../topics/middleware/"><span class="file-icon">cs</span><span>Middleware Pipeline</span></a>
 <a class="tree-item" href="../../topics/minimal-apis/"><span class="file-icon">cs</span><span>Minimal APIs</span></a>
@@ -158,6 +165,15 @@
 <a class="tree-item" href="../../topics/logging/"><span class="file-icon">cs</span><span>Logging</span></a>
 <a class="tree-item" href="../../topics/configuration/"><span class="file-icon">cs</span><span>Configuration</span></a>
 <a class="tree-item" href="../../topics/options-pattern/"><span class="file-icon">cs</span><span>Options Pattern</span></a>
+<a class="tree-item" href="../../topics/controllers/"><span class="file-icon">cs</span><span>Controllers</span></a>
+<a class="tree-item" href="../../topics/model-binding/"><span class="file-icon">cs</span><span>Model Binding</span></a>
+<a class="tree-item" href="../../topics/model-validation/"><span class="file-icon">cs</span><span>Model Validation</span></a>
+<a class="tree-item" href="../../topics/exception-handling/"><span class="file-icon">cs</span><span>Exception Handling &amp; ProblemDetails</span></a>
+<a class="tree-item" href="../../topics/filters/"><span class="file-icon">cs</span><span>Filters</span></a>
+<a class="tree-item" href="../../topics/cors/"><span class="file-icon">cs</span><span>CORS</span></a>
+<a class="tree-item" href="../../topics/rate-limiting/"><span class="file-icon">cs</span><span>Rate Limiting</span></a>
+<a class="tree-item" href="../../topics/openapi/"><span class="file-icon">cs</span><span>OpenAPI / Scalar</span></a>
+<a class="tree-item" href="../../topics/ef-core/"><span class="file-icon">cs</span><span>EF Core</span></a>
   </div>
 </div>
 </div>
@@ -167,7 +183,7 @@
     <main class="main" id="main" tabindex="-1">
     <div class="crumb"><a href="../../">Home</a><span class="sep">/</span>Guided track</div>
     <h1 class="topic-title">Interview Prep: Core Concepts</h1>
-    <div class="topic-tagline">The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, exception handling, and memory management — reviewed in a sensible order.</div>
+    <div class="topic-tagline">The topics that come up most in C# interviews — OOP fundamentals, generics, LINQ, async, exception handling, and memory management — reviewed in a sensible order.</div>
 
     <a class="track-start-btn" href="../../topics/classes-objects/">
       <span class="play">&#9654;</span> Start track
@@ -209,24 +225,49 @@
       <span class="track-step-title">LINQ</span>
       <span class="track-step-cat">Intermediate</span>
     </a>
-      <a class="track-step" href="../../topics/exceptions/">
+      <a class="track-step" href="../../topics/ienumerable-iqueryable/">
       <span class="track-step-num">8</span>
+      <span class="track-step-title">IEnumerable vs IQueryable</span>
+      <span class="track-step-cat">Intermediate</span>
+    </a>
+      <a class="track-step" href="../../topics/exceptions/">
+      <span class="track-step-num">9</span>
       <span class="track-step-title">Exception Handling</span>
       <span class="track-step-cat">Intermediate</span>
     </a>
       <a class="track-step" href="../../topics/delegates-events/">
-      <span class="track-step-num">9</span>
+      <span class="track-step-num">10</span>
       <span class="track-step-title">Delegates &amp; Events</span>
       <span class="track-step-cat">Intermediate</span>
     </a>
+      <a class="track-step" href="../../topics/async-await/">
+      <span class="track-step-num">11</span>
+      <span class="track-step-title">async / await</span>
+      <span class="track-step-cat">Async &amp; Concurrency</span>
+    </a>
+      <a class="track-step" href="../../topics/valuetask/">
+      <span class="track-step-num">12</span>
+      <span class="track-step-title">ValueTask</span>
+      <span class="track-step-cat">Async &amp; Concurrency</span>
+    </a>
       <a class="track-step" href="../../topics/memory-management/">
-      <span class="track-step-num">10</span>
+      <span class="track-step-num">13</span>
       <span class="track-step-title">Memory Management</span>
       <span class="track-step-cat">Intermediate</span>
     </a>
       <a class="track-step" href="../../topics/solid-principles/">
-      <span class="track-step-num">11</span>
+      <span class="track-step-num">14</span>
       <span class="track-step-title">SOLID Principles</span>
+      <span class="track-step-cat">Intermediate</span>
+    </a>
+      <a class="track-step" href="../../topics/ref-out-in/">
+      <span class="track-step-num">15</span>
+      <span class="track-step-title">ref, out &amp; in Parameters</span>
+      <span class="track-step-cat">Fundamentals</span>
+    </a>
+      <a class="track-step" href="../../topics/dependency-injection/">
+      <span class="track-step-num">16</span>
+      <span class="track-step-title">Dependency Injection</span>
       <span class="track-step-cat">Intermediate</span>
     </a>
     </div>

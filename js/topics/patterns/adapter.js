@@ -34,5 +34,15 @@ logger.LogJson("{\\"event\\":\\"started\\"}");`,
       "Creating an adapter when you could change the original class \u2014 adapters add indirection; prefer direct changes when possible",
       "Making the adapter do more than translate the interface \u2014 additional logic belongs in a separate class",
       "Adapter over an adapter \u2014 indicates a design smell upstream"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `When would you use the Adapter pattern in a real .NET project?`,
+
+  interviewA: `Classic real-world uses: wrapping a third-party payment SDK behind your own <code>IPaymentGateway</code> interface so you can swap providers without touching business logic; adapting a legacy <code>DataSet</code>-based repository to a new <code>IRepository&lt;T&gt;</code> interface while migrating to EF Core; or creating a test double that adapts an in-memory list to an <code>IEmailSender</code> interface. The Adapter's job is to translate one interface into another — it is the seam that lets incompatible types work together.`,
+
+  whyItMatters: `Adapters are the most common pattern for integrating third-party libraries without coupling your codebase to them. Every time you wrap an external SDK in an interface, you are applying the Adapter pattern — and making your code testable and future-proof in the process.`,
+
+  prerequisites: ["interfaces","classes-objects"],
 };

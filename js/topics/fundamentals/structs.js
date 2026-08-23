@@ -26,5 +26,14 @@ Console.WriteLine($"a.X = {a.X}, b.X = {b.X}");`,
       "Mutating a struct through a readonly field or property \u2014 the compiler silently copies it first",
       "Making structs too large \u2014 structs are copied on assignment, so large structs hurt performance",
       "Forgetting that structs can't have parameterless constructors before C# 10, causing default values to be all-zero"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `When should you use a struct instead of a class in C#?`,
+
+  interviewA: `Use a struct when: the type is small (guideline: ≤16 bytes), it is logically a value (two instances with the same fields should be equal), it is short-lived or frequently allocated in hot loops (avoids GC pressure), and it will not be boxed frequently. Avoid structs for types with reference semantics, mutable state shared across references, or large fields. Classic examples: <code>Point</code>, <code>DateTime</code>, <code>Guid</code>, <code>Vector3</code>.`,
+
+  whyItMatters: `Structs allow performance-critical code to avoid heap allocation entirely. Used correctly (e.g. in game physics or financial calculations), they can eliminate millions of GC allocations per second.`,
+  prerequisites: ["classes-objects"]
 };

@@ -32,5 +32,13 @@ app.Run();`,
       "Injecting IConfiguration directly instead of IOptions<T> \u2014 skips validation and type safety",
       "Using IOptions<T> when you need live updates \u2014 it's a singleton; use IOptionsMonitor<T> for live reload",
       "Not calling ValidateOnStart \u2014 misconfiguration is only discovered when the option is first accessed, not at startup"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  whyItMatters: `The Options pattern gives you strongly-typed access to configuration sections — autocomplete, validation at startup, and no magic strings. It also supports reloading options at runtime without restarting the application, which is critical for feature flags and connection string rotation.`,
+
+  prerequisites: ["configuration","dependency-injection"],
+  interviewQ: `What is the difference between <code>IOptions&lt;T&gt;</code>, <code>IOptionsSnapshot&lt;T&gt;</code>, and <code>IOptionsMonitor&lt;T&gt;</code>?`,
+  interviewA: `<code>IOptions&lt;T&gt;</code>: singleton — reads configuration once at startup; does not reflect changes made to appsettings.json at runtime. <code>IOptionsSnapshot&lt;T&gt;</code>: scoped — re-reads configuration once per request; reflects changes between requests; cannot be injected into singletons. <code>IOptionsMonitor&lt;T&gt;</code>: singleton — always returns the current value and exposes an <code>OnChange</code> callback for reacting to live changes; the right choice for singletons that need live reload (e.g. a singleton cache whose TTL is configurable).`
 };

@@ -31,5 +31,15 @@ Length: 5`,
       "Using a hard cast (MyType)obj when it might fail \u2014 prefer as + null check or is pattern matching",
       "Confusing as (returns null on failure) with a direct cast (throws InvalidCastException)",
       "Casting numeric types and losing precision silently: assigning a double to an int truncates, not rounds"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  interviewQ: `What is the difference between a cast, <code>as</code>, and <code>is</code> in C#?`,
+
+  interviewA: `A direct cast <code>(Dog)animal</code> throws <code>InvalidCastException</code> at runtime if the type is wrong. <code>as</code> returns null instead of throwing — use it when failure is expected and you want to check. <code>is</code> checks the type and since C# 7, can declare a pattern variable in the same expression: <code>if (animal is Dog dog)</code>. In modern C#, pattern matching with <code>is</code> is the preferred approach for safe downcasting.`,
+
+  whyItMatters: `Type-safe code avoids entire categories of runtime errors. Knowing how to cast safely — and when pattern matching makes casts unnecessary — is essential for working with inheritance hierarchies, interfaces, and deserialized data.`,
+  related: ["inheritance","interfaces","pattern-matching","boxing-unboxing"],
+  prerequisites: ["variables-types","inheritance"]
 };

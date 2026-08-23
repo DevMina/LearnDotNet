@@ -1057,22 +1057,7 @@ pre.code-block {
   margin-top: 6px;
 }
 
-/* ---------- Guided tracks ---------- */
-.quiz-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 4px 0 22px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--violet);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 8px 16px;
-}
-
-.quiz-cta:hover { border-color: var(--violet); text-decoration: none; }
-
+/* ---------- Landing sections ---------- */
 .section-heading {
   font-family: var(--font-mono);
   font-size: 20px;
@@ -1233,6 +1218,7 @@ pre.code-block {
 .site-footer .sep { color: var(--border); }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--amber); }
+.footer-updated { color: var(--teal); font-size: 11px; }
 
 /* ---------- Contact form ---------- */
 .contact-form {
@@ -1614,3 +1600,420 @@ pre.code-block {
   }
 }
 
+
+/* =====================================================================
+   ENHANCEMENTS: Hero actions, version badge, prerequisites,
+   interview Q, why it matters, random topic button
+   ===================================================================== */
+
+/* ---------- Hero CTA buttons ---------- */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 28px;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hero-btn:hover {
+  border-color: var(--violet);
+  background: rgba(199,125,255,0.08);
+  color: var(--violet);
+  text-decoration: none;
+}
+
+.hero-btn--primary {
+  background: var(--violet);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.hero-btn--primary:hover {
+  background: #b06de0;
+  color: #fff;
+  border-color: transparent;
+}
+
+/* ---------- Version badge ---------- */
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  background: rgba(56,178,172,0.12);
+  color: var(--teal);
+  border: 1px solid rgba(56,178,172,0.3);
+}
+
+/* ---------- Prerequisites box ---------- */
+.prerequisites-box {
+  background: rgba(56,178,172,0.06);
+  border: 1px solid rgba(56,178,172,0.25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 14px 0 18px;
+}
+
+.prerequisites-box .kp-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.prereq-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.prereq-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--teal);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.prereq-chip:hover {
+  border-color: var(--teal);
+  text-decoration: none;
+}
+
+/* ---------- Why it matters ---------- */
+.why-matters-box {
+  background: rgba(232,163,61,0.06) !important;
+  border-color: rgba(232,163,61,0.3) !important;
+}
+
+.kp-title--why {
+  color: var(--amber) !important;
+}
+
+.why-matters-text {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* ---------- Interview question box ---------- */
+.interview-q-box {
+  border: 1px solid rgba(199,125,255,0.3);
+  border-radius: 8px;
+  background: rgba(199,125,255,0.06);
+  margin: 18px 0 0;
+  overflow: hidden;
+}
+
+.interview-q-summary {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--violet);
+  padding: 12px 16px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.interview-q-summary::-webkit-details-marker { display: none; }
+
+.interview-q-summary::after {
+  content: '▾';
+  margin-left: auto;
+  transition: transform 0.18s;
+}
+
+.interview-q-box[open] .interview-q-summary::after {
+  transform: rotate(-180deg);
+}
+
+.interview-q-body {
+  padding: 0 16px 14px;
+  border-top: 1px solid rgba(199,125,255,0.2);
+}
+
+.interview-question {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--heading);
+  margin: 12px 0 8px;
+}
+
+.interview-answer {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.interview-answer code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* ---------- Random topic button ---------- */
+.random-topic-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 4px;
+}
+
+.random-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.random-btn:hover {
+  border-color: var(--green);
+  background: rgba(63,185,80,0.08);
+  color: var(--green);
+}
+
+.random-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.random-hint kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 11px;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+}
+
+/* ---------- Responsive hero actions ---------- */
+@media (max-width: 600px) {
+  .hero-actions { flex-direction: column; }
+  .hero-btn { justify-content: center; }
+  .random-topic-row { flex-direction: column; align-items: flex-start; }
+}
+
+/* ---------- Print: hide new interactive elements ---------- */
+@media print {
+  .hero-actions, .random-topic-row, .interview-q-box,
+  .prerequisites-box, .why-matters-box { display: none !important; }
+  .version-badge { color: #2d6a4f !important; border-color: #2d6a4f !important; background: #f0fff4 !important; }
+}
+
+/* ---------- Streak bar ---------- */
+.streak-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 18px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(232,163,61,0.1);
+  border: 1px solid rgba(232,163,61,0.35);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.streak-bar--cold {
+  background: rgba(56,178,172,0.07);
+  border-color: rgba(56,178,172,0.28);
+}
+
+.streak-bar--day1 {
+  background: rgba(63,185,80,0.08);
+  border-color: rgba(63,185,80,0.3);
+}
+
+.streak-bar--day1 .streak-count { color: var(--green); }
+
+.streak-flame { font-size: 16px; line-height: 1; }
+
+.streak-count {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.streak-bar--cold .streak-count { color: var(--teal); }
+
+.streak-best {
+  color: var(--muted);
+  font-size: 11px;
+  padding-left: 4px;
+  border-left: 1px solid var(--border);
+  margin-left: 4px;
+}
+
+@media print { .streak-bar { display: none !important; } }
+
+/* ---------- Streak bar — narrow screens ---------- */
+@media (max-width: 600px) {
+  .streak-bar { flex-wrap: wrap; gap: 5px; }
+  .streak-best { border-left: none; margin-left: 0; padding-left: 0; }
+}
+
+/* =====================================================================
+   ACHIEVEMENTS & STREAK CALENDAR
+   ===================================================================== */
+
+/* ---------- Streak calendar ---------- */
+.streak-calendar {
+  display: flex;
+  gap: 6px;
+  margin-left: 12px;
+  align-items: center;
+}
+
+.streak-cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.streak-cal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  display: block;
+}
+
+.streak-cal-dot--active {
+  background: var(--amber);
+}
+
+.streak-bar--day1 .streak-cal-dot--active { background: var(--green); }
+.streak-bar--cold .streak-cal-dot--active { background: var(--teal); }
+
+.streak-cal-label {
+  font-size: 9px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+/* ---------- Achievement count next to heading ---------- */
+.ach-unlocked-count {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  font-family: var(--font-sans, system-ui);
+  margin-left: 6px;
+}
+
+/* ---------- Achievement grid ---------- */
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 12px 0 4px;
+}
+
+.achievement-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px 12px;
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+  opacity: 0.6;
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.achievement-card--unlocked {
+  opacity: 1;
+  border-color: var(--amber);
+  background: rgba(232,163,61,0.06);
+}
+
+.achievement-card--unlocked:hover { border-color: var(--amber); }
+
+.ach-emoji {
+  font-size: 26px;
+  line-height: 1;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.ach-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--heading);
+  line-height: 1.2;
+}
+
+.ach-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.ach-status {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.ach-status--done {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .streak-calendar { flex-wrap: wrap; margin-left: 8px; }
+  .achievement-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .achievement-grid, .streak-calendar { display: none !important; }
+}

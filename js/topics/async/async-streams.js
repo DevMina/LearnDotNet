@@ -28,5 +28,15 @@ await foreach (var n in GetNumbersAsync())
       "Forgetting await before foreach when consuming an IAsyncEnumerable \u2014 won't compile, but the error message is confusing",
       "Not passing CancellationToken to the async stream \u2014 use WithCancellation() on the foreach",
       "Materialising the entire async stream into a list before processing \u2014 defeats the purpose of streaming"
-  ]
+  ],
+
+  difficulty: 'advanced',
+
+  interviewQ: `What is the difference between <code>IAsyncEnumerable&lt;T&gt;</code> and returning a <code>Task&lt;IEnumerable&lt;T&gt;&gt;</code>?`,
+
+  interviewA: `<code>Task&lt;IEnumerable&lt;T&gt;&gt;</code> waits for all items to be produced before returning any — the entire sequence must be in memory at once. <code>IAsyncEnumerable&lt;T&gt;</code> streams items one at a time using <code>await foreach</code>, so the consumer can process each item as it arrives without waiting for the rest. This is critical for large result sets (database queries via EF Core, streaming AI responses, reading large files) where buffering everything would exhaust memory or add unnecessary latency.`,
+
+  whyItMatters: `Async streams combine the memory efficiency of lazy iteration with the correctness of async I/O. They are the idiomatic way to stream data from databases, files, or APIs without holding everything in memory simultaneously.`,
+
+  prerequisites: ["async-await","iterators-yield"],
 };

@@ -24,5 +24,14 @@ Console.WriteLine(unboxed);`,
       "Adding value types to non-generic collections (ArrayList, Hashtable) \u2014 each add boxes the value",
       "Unboxing to the wrong type \u2014 you must unbox to the exact original type or it throws InvalidCastException",
       "Using interfaces on structs \u2014 calling an interface method on a struct boxes it implicitly"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What is boxing and why is it a performance concern?`,
+
+  interviewA: `Boxing converts a value type (e.g. <code>int</code>) to a heap-allocated <code>object</code>. Unboxing extracts it back. Each boxing operation allocates a new heap object, which puts pressure on the GC. It happens silently in many situations: storing an <code>int</code> in a non-generic <code>ArrayList</code>, passing a struct to a method expecting <code>object</code>, or calling <code>ToString()</code> on a value type via an interface reference. Generics were introduced specifically to eliminate boxing in collections — always prefer <code>List&lt;int&gt;</code> over <code>ArrayList</code>.`,
+
+  whyItMatters: `Boxing is one of the most common hidden performance costs in C# code. In hot paths that process many value types, understanding when boxing occurs — and switching to generics or <code>Span&lt;T&gt;</code> to avoid it — can yield dramatic performance improvements.`,
+  prerequisites: ["variables-types","structs"]
 };

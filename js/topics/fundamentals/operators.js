@@ -25,5 +25,13 @@ record Person(string Name);`,
       "Confusing = (assignment) with == (equality check) inside conditions",
       "Expecting & and | to short-circuit \u2014 use && and || for short-circuit evaluation",
       "Forgetting operator precedence: use parentheses to make intent explicit"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `Operators are the vocabulary of expressions. Knowing precedence rules and the difference between == and ReferenceEquals prevents subtle bugs that are notoriously hard to track down in production.`,
+  related: ["variables-types","control-flow","type-casting"],
+  prerequisites: ["variables-types"],
+  interviewQ: `What is the difference between <code>==</code> and <code>is</code> when comparing to null?`,
+  interviewA: `<code>x == null</code> calls the overloaded <code>==</code> operator, which a type can override — a poorly written type could make <code>obj == null</code> return true even when the object is not null. <code>x is null</code> uses a constant pattern match which always checks identity and cannot be overridden. Prefer <code>is null</code> and <code>is not null</code> in C# 9+ for null checks — they are always correct and communicate intent more clearly than <code>!= null</code>.`
 };

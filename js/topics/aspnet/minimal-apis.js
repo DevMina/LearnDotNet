@@ -30,5 +30,15 @@ POST /users?name=Carol → 201 Created`,
       "Returning raw objects instead of Results.Ok/Results.NotFound \u2014 loses HTTP status code control",
       "Putting business logic directly in the lambda handler \u2014 keep handlers thin, delegate to services",
       "Forgetting to add required services (e.g. AddAuthentication) before using the related middleware"
-  ]
+  ],
+
+  difficulty: 'intermediate',
+
+  interviewQ: `What are the trade-offs between Minimal APIs and Controller-based APIs in ASP.NET Core?`,
+
+  interviewA: `Minimal APIs have less ceremony — no controller class, no <code>[HttpGet]</code> attributes, just <code>app.MapGet()</code> — which makes simple endpoints faster to write and the code smaller. They also have better performance at startup (no controller discovery). Trade-offs: complex endpoints with many dependencies become harder to organise in a single <code>Program.cs</code>; some MVC features (action filters, model binders) require more manual wiring; and teams familiar with MVC controllers may find them unfamiliar. Both approaches co-exist in one project — choose based on endpoint complexity and team preference.`,
+
+  whyItMatters: `Minimal APIs represent the direction ASP.NET Core is heading for new projects — the .NET team has invested heavily in features like typed results, route groups, and OpenAPI support for them. Understanding them is increasingly important for modern .NET backend work.`,
+
+  prerequisites: ["top-level-statements","dependency-injection"],
 };

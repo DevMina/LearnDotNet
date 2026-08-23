@@ -27,5 +27,14 @@ Age is 30`,
       "Accessing .Value without checking .HasValue first \u2014 throws InvalidOperationException if null",
       "Confusing Nullable<T> (value types) with nullable reference types (classes with ?) \u2014 they're different mechanisms",
       "Returning null from a method that callers expect to never be null \u2014 document and enforce the contract"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  interviewQ: `How does <code>int?</code> (Nullable<int>) work internally?`,
+
+  interviewA: `<code>int?</code> is syntactic sugar for <code>Nullable&lt;int&gt;</code>, a struct with two fields: <code>bool HasValue</code> and <code>int Value</code>. When <code>HasValue</code> is false, <code>Value</code> is undefined — accessing it throws <code>InvalidOperationException</code>. The <code>??</code> operator returns the right side when the left is null, and <code>?.Value</code> returns null instead of throwing. Crucially, <code>int?</code> is still a value type — it lives on the stack and is never null in the reference sense.`,
+
+  whyItMatters: `Nullable value types represent the absence of a value without resorting to sentinel values like -1 or 0. They are the correct way to model optional data in database rows, optional parameters, and domain concepts like "date of expiry not yet set".`,
+  prerequisites: ["variables-types"]
 };

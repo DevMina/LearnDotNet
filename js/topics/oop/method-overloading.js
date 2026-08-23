@@ -24,5 +24,12 @@ Console.WriteLine(Add(1, 2, 3));`,
       "Creating overloads that differ only in optionality \u2014 callers can't tell which one will be called",
       "Overloading with params and a fixed signature of the same arity \u2014 the compiler picks unexpectedly",
       "Changing the behaviour of an overload when callers expect them all to do the same thing, just with different inputs"
-  ]
+  ],
+
+  difficulty: 'beginner',
+
+  whyItMatters: `Overloading gives callers a natural API without forcing them to provide every parameter. It is how the .NET standard library provides both <code>Console.WriteLine(string)</code> and <code>Console.WriteLine(int)</code> without separate names.`,
+  interviewQ: `What rules does the C# compiler use to resolve an overloaded method call?`,
+  interviewA: `The compiler performs overload resolution: it builds a candidate set of all accessible methods with the right name, then eliminates candidates where the arguments cannot be converted to the parameter types, then picks the "best" match by preferring more specific types (e.g. <code>int</code> over <code>object</code>), exact matches over conversions, and fewer required conversions. If no candidate is best, or two are equally good, the call is ambiguous and is a compile error. Optional parameters and params arrays participate but with lower priority than explicit overloads.`,
+  prerequisites: ["methods-parameters","classes-objects"]
 };

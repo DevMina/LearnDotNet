@@ -1,7 +1,7 @@
 {
   "name": "C# & .NET Concepts — Interactive Guide",
-  "short_name": "C# Concepts",
-  "description": "An interactive tour of C# and .NET concepts, from fundamentals to design patterns, with runnable code samples.",
+  "short_name": "LearnDotNet",
+  "description": "100 interactive C# and .NET concepts — each with a runnable code example, quiz, guided tracks, and interview questions. From fundamentals to ASP.NET Core.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -32,6 +32,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "icons/apple-touch-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

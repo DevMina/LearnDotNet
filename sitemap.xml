@@ -109,16 +109,7 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/iterators-yield/</loc>
   </url>
   <url>
-    <loc>https://devmina.github.io/LearnDotNet/topics/attributes/</loc>
-  </url>
-  <url>
-    <loc>https://devmina.github.io/LearnDotNet/topics/reflection/</loc>
-  </url>
-  <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/dependency-injection/</loc>
-  </url>
-  <url>
-    <loc>https://devmina.github.io/LearnDotNet/topics/regular-expressions/</loc>
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/json-serialization/</loc>
@@ -130,10 +121,22 @@
     <loc>https://devmina.github.io/LearnDotNet/topics/solid-principles/</loc>
   </url>
   <url>
-    <loc>https://devmina.github.io/LearnDotNet/topics/clean-architecture/</loc>
+    <loc>https://devmina.github.io/LearnDotNet/topics/memory-management/</loc>
   </url>
   <url>
-    <loc>https://devmina.github.io/LearnDotNet/topics/memory-management/</loc>
+    <loc>https://devmina.github.io/LearnDotNet/topics/ienumerable-iqueryable/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/attributes/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/reflection/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/regular-expressions/</loc>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/LearnDotNet/topics/clean-architecture/</loc>
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/performance-tips/</loc>
@@ -146,9 +149,6 @@
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/source-generators/</loc>
-  </url>
-  <url>
-    <loc>https://devmina.github.io/LearnDotNet/topics/ienumerable-iqueryable/</loc>
   </url>
   <url>
     <loc>https://devmina.github.io/LearnDotNet/topics/async-await/</loc>

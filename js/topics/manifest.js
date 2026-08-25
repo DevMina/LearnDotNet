@@ -159,7 +159,7 @@ export const CATEGORIES = [
   },
   {
     "id": "intermediate",
-    "name": "Intermediate",
+    "name": "Intermediate C#",
     "topics": [
       {
         "id": "generics",
@@ -197,24 +197,9 @@ export const CATEGORIES = [
         "file": "./intermediate/iterators-yield.js"
       },
       {
-        "id": "attributes",
-        "title": "Attributes",
-        "file": "./intermediate/attributes.js"
-      },
-      {
-        "id": "reflection",
-        "title": "Reflection",
-        "file": "./intermediate/reflection.js"
-      },
-      {
         "id": "dependency-injection",
         "title": "Dependency Injection",
         "file": "./intermediate/dependency-injection.js"
-      },
-      {
-        "id": "regular-expressions",
-        "title": "Regular Expressions",
-        "file": "./intermediate/regular-expressions.js"
       },
       {
         "id": "json-serialization",
@@ -232,14 +217,40 @@ export const CATEGORIES = [
         "file": "./intermediate/solid-principles.js"
       },
       {
-        "id": "clean-architecture",
-        "title": "Clean Architecture",
-        "file": "./intermediate/clean-architecture.js"
-      },
-      {
         "id": "memory-management",
         "title": "Memory Management",
         "file": "./intermediate/memory-management.js"
+      },
+      {
+        "id": "ienumerable-iqueryable",
+        "title": "IEnumerable vs IQueryable",
+        "file": "./intermediate/ienumerable-iqueryable.js"
+      }
+    ]
+  },
+  {
+    "id": "advanced",
+    "name": "Advanced C#",
+    "topics": [
+      {
+        "id": "attributes",
+        "title": "Attributes",
+        "file": "./intermediate/attributes.js"
+      },
+      {
+        "id": "reflection",
+        "title": "Reflection",
+        "file": "./intermediate/reflection.js"
+      },
+      {
+        "id": "regular-expressions",
+        "title": "Regular Expressions",
+        "file": "./intermediate/regular-expressions.js"
+      },
+      {
+        "id": "clean-architecture",
+        "title": "Clean Architecture",
+        "file": "./intermediate/clean-architecture.js"
       },
       {
         "id": "performance-tips",
@@ -260,11 +271,6 @@ export const CATEGORIES = [
         "id": "source-generators",
         "title": "Source Generators",
         "file": "./intermediate/source-generators.js"
-      },
-      {
-        "id": "ienumerable-iqueryable",
-        "title": "IEnumerable vs IQueryable",
-        "file": "./intermediate/ienumerable-iqueryable.js"
       }
     ]
   },

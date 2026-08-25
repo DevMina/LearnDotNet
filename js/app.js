@@ -574,8 +574,7 @@ function renderLanding() {
   mainEl.innerHTML = `
     <div class="landing-hero">
       <h1>C# &amp; .NET,<br>explained through running code.</h1>
-      <p class="lead">${totalTopics} concepts from fundamentals to design patterns &mdash; each with a short explanation,
-      a real code sample, and a console you can run to see the output.</p>
+      <p class="lead">${totalTopics} interactive C# &amp; .NET concepts — runnable code, guided learning paths, quizzes, and interview prep, from fundamentals to ASP.NET Core.</p>
 
       <div class="hero-actions">
         <a class="hero-btn hero-btn--primary" href="#/variables-types">&#9654; Start Learning C#</a>
@@ -586,11 +585,10 @@ function renderLanding() {
 
       ${streakHtml}
 
-      ${totalLearned > 0 ? `
       <div class="progress-summary">
-        <div class="progress-summary-label">${totalLearned} of ${totalTopics} topics marked as learned</div>
+        <div class="progress-summary-label">${totalLearned} of ${totalTopics} concepts learned${totalLearned === 0 ? ' — mark topics as learned to track your progress' : ''}</div>
         <div class="progress-bar" role="progressbar" aria-valuenow="${totalLearned}" aria-valuemin="0" aria-valuemax="${totalTopics}" aria-label="Overall learning progress"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-      </div>` : ''}
+      </div>
 
       ${lastMeta ? `
       <div class="continue-bar">
@@ -757,6 +755,7 @@ async function renderTopic(topicId, myToken) {
     fundamentals:    { label: 'Beginner',     cls: 'diff-beginner' },
     oop:             { label: 'Beginner',     cls: 'diff-beginner' },
     intermediate:    { label: 'Intermediate', cls: 'diff-intermediate' },
+    advanced:        { label: 'Advanced',     cls: 'diff-advanced' },
     async:           { label: 'Intermediate', cls: 'diff-intermediate' },
     patterns:        { label: 'Intermediate', cls: 'diff-intermediate' },
     'modern-dotnet': { label: 'Intermediate', cls: 'diff-intermediate' },

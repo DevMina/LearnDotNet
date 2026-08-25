@@ -246,32 +246,11 @@ export const SEARCH_INDEX = [
     "keywords": "The yield return keyword lets you write a method that produces an IEnumerable&lt;T&gt; without building the whole collection up front. Each call to the enumerator's MoveNext() resumes the method exactly where it left off, with all local state preserved automatically. This makes it possible to lazily generate expensive or even infinite sequences, since only the items actually consumed are ever computed. yield return produces the next element and pauses the method until the next item is requested The method’s local variables and loop position are preserved between calls automatically Enables infinite sequences, since only the items actually consumed are ever computed Forgetting that yield return is lazy — code before the first yield doesn't run until enumeration starts Wrapping a yield metho"
   },
   {
-    "id": "attributes",
-    "title": "Attributes",
-    "category": "",
-    "tagline": "Attach declarative metadata that tools or the runtime can read.",
-    "keywords": "Attributes attach metadata to a type, method, or property without changing its behavior directly — [Obsolete] , [Serializable] , and validation attributes like [Required] are all built-in examples. The compiler understands some attributes directly; others are read by libraries or your own code via reflection. A custom attribute is simply a class that derives from System.Attribute . Attributes describe code; they don’t run unless something reads them via reflection Built-in attributes like [Obsolete] are understood directly by the compiler A custom attribute is just a class deriving from System.Attribute Applying attributes without understanding their actual effect — many require framework support to do anything Forgetting AttributeUsage — without it, the attribute can be applied anywhere, "
-  },
-  {
-    "id": "reflection",
-    "title": "Reflection",
-    "category": "",
-    "tagline": "Inspect and invoke types at runtime, not just compile time.",
-    "keywords": "Reflection (in the System.Reflection namespace) lets code examine assemblies, types, and members — and invoke methods or set properties — at runtime, even ones it didn't know about at compile time. It's the mechanism behind serializers, dependency injection containers, and ORMs like Entity Framework. It's powerful but comes with real costs: it's slower than direct calls, bypasses some compile-time safety, and can complicate trimming/AOT-compiled apps — so it's typically reached for in framework code, not everyday application logic. typeof(T) or obj.GetType() gets a Type object describing a type's shape GetProperties/GetMethods enumerate members; Invoke calls them dynamically Powers frameworks (DI, serializers, ORMs) but is slower than direct calls Using reflection in performance-sensitive "
-  },
-  {
     "id": "dependency-injection",
     "title": "Dependency Injection",
     "category": "",
     "tagline": "Ask for what you need instead of constructing it yourself.",
     "keywords": "Dependency injection (DI) is a technique where a class declares the services it depends on (usually via constructor parameters) instead of creating them internally with new . Something external — a DI container — is responsible for supplying the right implementation. This decouples code from concrete implementations, making it easy to swap a real service for a test double, and is built directly into ASP.NET Core via IServiceCollection , with common lifetimes of Singleton , Scoped , and Transient . Classes depend on abstractions (interfaces), not concrete implementations A container resolves and supplies dependencies, usually via the constructor ASP.NET Core has DI built in: AddSingleton, AddScoped, AddTransient Injecting a Scoped service into a Singleton — the scoped service is captured an"
-  },
-  {
-    "id": "regular-expressions",
-    "title": "Regular Expressions",
-    "category": "",
-    "tagline": "Pattern-match and extract text with the Regex class.",
-    "keywords": "The System.Text.RegularExpressions namespace exposes the Regex class for pattern matching: testing whether a string matches a pattern, extracting captured groups, or replacing matched text. Since .NET 7, the [GeneratedRegex] source generator can produce a compiled, AOT-friendly regex at build time instead of parsing the pattern at runtime — faster for patterns used repeatedly, such as validating input in a hot path. Regex.IsMatch tests, Match/Matches extract, Regex.Replace substitutes Named groups (?<year>\\d{4}) make extracted captures easier to read [GeneratedRegex] compiles the pattern at build time for better performance Using catastrophic backtracking patterns — nested quantifiers on overlapping character classes can hang the process Recompiling a Regex on every call — use a static [Ge"
   },
   {
     "id": "json-serialization",
@@ -295,18 +274,46 @@ export const SEARCH_INDEX = [
     "keywords": "SOLID is an acronym for five design principles: Single Responsibility (a class should have one reason to change), Open/Closed (open for extension, closed for modification), Liskov Substitution (subtypes must be substitutable for their base types), Interface Segregation (prefer small, focused interfaces), and Dependency Inversion (depend on abstractions, not concretions). They're not rules to follow mechanically, but heuristics that point toward the same underlying goal: loosely coupled, highly cohesive code that can be extended and tested without cascading changes. Violating one principle typically makes another harder to satisfy too — spotting that tension is often the clearest signal a refactor is needed. SRP: one reason to change — split classes when they serve two distinct purposes OCP"
   },
   {
-    "id": "clean-architecture",
-    "title": "Clean Architecture",
-    "category": "",
-    "tagline": "Organise code in layers where dependencies only point inward.",
-    "keywords": "Clean Architecture (Robert C. Martin) organises a codebase into concentric layers — Domain at the centre (entities, value objects, domain logic), Application around it (use cases, interfaces), Infrastructure outside (database, email, HTTP clients), and Presentation at the edge (API controllers, Razor pages). The dependency rule : nothing in an inner layer ever references an outer one. This means your domain and application logic — the code that actually matters — has zero dependency on ASP.NET Core, Entity Framework, or any other framework. It can be tested with plain unit tests, and the infrastructure can be swapped without touching business logic. In .NET this is typically implemented with separate projects: Domain , Application , Infrastructure , and API . Dependencies point inward — Do"
-  },
-  {
     "id": "memory-management",
     "title": "Memory Management",
     "category": "",
     "tagline": "Understand the GC, the stack vs heap, and how to avoid common leaks.",
     "keywords": ".NET uses a generational garbage collector that automatically reclaims heap memory. Objects are born in Generation 0 ; those that survive a collection are promoted to Gen 1, then Gen 2. Short-lived objects (most objects) are collected cheaply in Gen 0. Long-lived objects (caches, singletons) sit in Gen 2 and are collected rarely — if they grow unbounded, that's a memory leak even under GC. Value types (structs, primitives) live on the stack (or inline in an array) and require no GC at all — they're simply popped when the method returns. Span&lt;T&gt; and ArrayPool&lt;T&gt; are key tools for reducing heap allocations in hot paths. For anything that wraps an unmanaged resource (file handles, sockets), implement IDisposable and use a using statement — the GC does not call Dispose for you. GC "
+  },
+  {
+    "id": "ienumerable-iqueryable",
+    "title": "IEnumerable vs IQueryable",
+    "category": "",
+    "tagline": "IEnumerable filters data in memory; IQueryable translates LINQ to the data source.",
+    "keywords": "IEnumerable&lt;T&gt; is a pull-based sequence processed in memory. When you apply .Where() or .Select() on it, the data is already in the process — LINQ-to-Objects filters it with C# lambdas. All records must be fetched before any filtering happens. IQueryable&lt;T&gt; extends IEnumerable&lt;T&gt; with an Expression tree and a query provider. LINQ operators on an IQueryable build a query description rather than executing immediately. When you enumerate (via foreach , ToList() , etc.), the provider translates the expression tree to a native query — SQL for EF Core, OData for Azure, and so on — and executes it at the source. IEnumerable: processes data in C# memory after fetching it all IQueryable: builds an expression tree, translates to native query (e.g. SQL), filters at the source Callin"
+  },
+  {
+    "id": "attributes",
+    "title": "Attributes",
+    "category": "",
+    "tagline": "Attach declarative metadata that tools or the runtime can read.",
+    "keywords": "Attributes attach metadata to a type, method, or property without changing its behavior directly — [Obsolete] , [Serializable] , and validation attributes like [Required] are all built-in examples. The compiler understands some attributes directly; others are read by libraries or your own code via reflection. A custom attribute is simply a class that derives from System.Attribute . Attributes describe code; they don’t run unless something reads them via reflection Built-in attributes like [Obsolete] are understood directly by the compiler A custom attribute is just a class deriving from System.Attribute Applying attributes without understanding their actual effect — many require framework support to do anything Forgetting AttributeUsage — without it, the attribute can be applied anywhere, "
+  },
+  {
+    "id": "reflection",
+    "title": "Reflection",
+    "category": "",
+    "tagline": "Inspect and invoke types at runtime, not just compile time.",
+    "keywords": "Reflection (in the System.Reflection namespace) lets code examine assemblies, types, and members — and invoke methods or set properties — at runtime, even ones it didn't know about at compile time. It's the mechanism behind serializers, dependency injection containers, and ORMs like Entity Framework. It's powerful but comes with real costs: it's slower than direct calls, bypasses some compile-time safety, and can complicate trimming/AOT-compiled apps — so it's typically reached for in framework code, not everyday application logic. typeof(T) or obj.GetType() gets a Type object describing a type's shape GetProperties/GetMethods enumerate members; Invoke calls them dynamically Powers frameworks (DI, serializers, ORMs) but is slower than direct calls Using reflection in performance-sensitive "
+  },
+  {
+    "id": "regular-expressions",
+    "title": "Regular Expressions",
+    "category": "",
+    "tagline": "Pattern-match and extract text with the Regex class.",
+    "keywords": "The System.Text.RegularExpressions namespace exposes the Regex class for pattern matching: testing whether a string matches a pattern, extracting captured groups, or replacing matched text. Since .NET 7, the [GeneratedRegex] source generator can produce a compiled, AOT-friendly regex at build time instead of parsing the pattern at runtime — faster for patterns used repeatedly, such as validating input in a hot path. Regex.IsMatch tests, Match/Matches extract, Regex.Replace substitutes Named groups (?<year>\\d{4}) make extracted captures easier to read [GeneratedRegex] compiles the pattern at build time for better performance Using catastrophic backtracking patterns — nested quantifiers on overlapping character classes can hang the process Recompiling a Regex on every call — use a static [Ge"
+  },
+  {
+    "id": "clean-architecture",
+    "title": "Clean Architecture",
+    "category": "",
+    "tagline": "Organise code in layers where dependencies only point inward.",
+    "keywords": "Clean Architecture (Robert C. Martin) organises a codebase into concentric layers — Domain at the centre (entities, value objects, domain logic), Application around it (use cases, interfaces), Infrastructure outside (database, email, HTTP clients), and Presentation at the edge (API controllers, Razor pages). The dependency rule : nothing in an inner layer ever references an outer one. This means your domain and application logic — the code that actually matters — has zero dependency on ASP.NET Core, Entity Framework, or any other framework. It can be tested with plain unit tests, and the infrastructure can be swapped without touching business logic. In .NET this is typically implemented with separate projects: Domain , Application , Infrastructure , and API . Dependencies point inward — Do"
   },
   {
     "id": "performance-tips",
@@ -335,13 +342,6 @@ export const SEARCH_INDEX = [
     "category": "",
     "tagline": "Emit C# source code at compile time — replace runtime reflection with generated code.",
     "keywords": "Source generators are compiler extensions (implementing IIncrementalGenerator ) that run during the build. They receive the current compilation's syntax trees and symbols, and can add new source files to the compilation — files the compiler then compiles alongside your own code. The key benefit: generated code is compiled once, type-safe, and runs at full speed without any runtime reflection. System.Text.Json 's source generator produces a serialiser for your types at build time, making JSON ~2–4× faster than reflection-based serialisation. Microsoft.Extensions.Logging 's source generator produces strongly-typed log methods that avoid boxing arguments. Generators run at compile time — output is ordinary C# that is compiled with your project IIncrementalGenerator is the modern API (prefer o"
-  },
-  {
-    "id": "ienumerable-iqueryable",
-    "title": "IEnumerable vs IQueryable",
-    "category": "",
-    "tagline": "IEnumerable filters data in memory; IQueryable translates LINQ to the data source.",
-    "keywords": "IEnumerable&lt;T&gt; is a pull-based sequence processed in memory. When you apply .Where() or .Select() on it, the data is already in the process — LINQ-to-Objects filters it with C# lambdas. All records must be fetched before any filtering happens. IQueryable&lt;T&gt; extends IEnumerable&lt;T&gt; with an Expression tree and a query provider. LINQ operators on an IQueryable build a query description rather than executing immediately. When you enumerate (via foreach , ToList() , etc.), the provider translates the expression tree to a native query — SQL for EF Core, OData for Azure, and so on — and executes it at the source. IEnumerable: processes data in C# memory after fetching it all IQueryable: builds an expression tree, translates to native query (e.g. SQL), filters at the source Callin"
   },
   {
     "id": "async-await",

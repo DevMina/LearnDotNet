@@ -41,7 +41,7 @@ for (const track of TRACKS) {
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://devmina.github.io/LearnDotNet/';
 const SITE_NAME = 'C# & .NET Concepts';
-const SITE_DESCRIPTION = 'An interactive tour of C# and .NET concepts, from fundamentals to design patterns, with runnable code samples.';
+const SITE_DESCRIPTION = '100 interactive C# and .NET concepts with runnable code, 9 guided tracks, quizzes, and interview prep — from fundamentals to ASP.NET Core.';
 const OG_IMAGE = `${BASE_URL}icons/icon-512.png`;
 
 function escapeHtml(str) {
@@ -204,8 +204,7 @@ function buildLandingMainHTML() {
 
   return `<div class="landing-hero">
       <h1>C# &amp; .NET,<br>explained through running code.</h1>
-      <p class="lead">${totalTopics} concepts from fundamentals to design patterns &mdash; each with a short explanation,
-      a real code sample, and a console you can run to see the output.</p>
+      <p class="lead">${totalTopics} interactive C# &amp; .NET concepts — runnable code, guided learning paths, quizzes, and interview prep, from fundamentals to ASP.NET Core.</p>
 
       <div class="hero-actions">
         <a class="hero-btn hero-btn--primary" href="topics/variables-types/">&#9654; Start Learning C#</a>
@@ -513,7 +512,7 @@ async function buildServiceWorker() {
   const versionInput = [
     ...ALL_TOPICS_FLAT.map(t => t.id),
       ...TRACKS.map(t => t.id),
-    'v2'
+      'v3'
   ].join(',');
   const version = versionInput.split('').reduce((h, c) => (Math.imul(31, h) + c.charCodeAt(0)) | 0, 0)
     .toString(16).replace('-', '');

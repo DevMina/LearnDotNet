@@ -1,6 +1,6 @@
 # C# & .NET Concepts — Interactive Guide
 
-A static, dependency-free site (plain HTML/CSS/JS) covering **100 C#/.NET concepts** across 8 categories — fundamentals through ASP.NET Core, including a dedicated section on C# 12–14 features. Each topic has a short explanation, a syntax-highlighted code sample with a "Run" button that shows pre-captured output, and a collapsible interview question with a detailed answer.
+A static, dependency-free site (plain HTML/CSS/JS) covering **100 C#/.NET concepts** across 9 categories — fundamentals through ASP.NET Core, including a dedicated section on C# 12–14 features. Each topic has a short explanation, a syntax-highlighted code sample with a "Run" button that shows pre-captured output, and a collapsible interview question with a detailed answer.
 
 **Features:**
 - 9 guided learning tracks (Getting Started, C# Fundamentals, OOP, Async, Patterns, Modern C#, Advanced C#, Interview Prep, ASP.NET Core)

@@ -1340,22 +1340,45 @@ pre.code-block {
   .topic-nav { flex-direction: column; gap: 12px; }
   .topic-nav a { max-width: 100%; }
 
-  .topic-title-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .topic-actions { flex-wrap: wrap; }
+  /* Topic title + actions: stack cleanly with breathing room */
+  .topic-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .topic-actions { flex-wrap: wrap; gap: 8px; width: 100%; }
+
+  /* Ensure difficulty badge + reading time don't collide with actions */
+  .topic-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+  }
+
+  /* Workbench header: cap filename tab so it never shoves Copy/Run off-screen */
+  .workbench-tabs { gap: 4px; padding: 0 4px; }
+  .workbench-tab.file-tab {
+    max-width: 42vw;
+    min-width: 0;
+    font-size: 11px;
+  }
+  .copy-btn { padding: 6px 9px; font-size: 11px; margin-left: 4px; }
+  .run-btn  { padding: 7px 10px; font-size: 11.5px; margin: 4px; }
 
   /* Workbench toolbar: hide secondary actions (PDF + SharpLab) on mobile to
      prevent overflow — Copy and Run are the two actions mobile users need. */
   .print-btn { display: none; }
   .sharplab-btn { display: none; }
 
-  /* Related chips: allow horizontal scroll so long chip names never wrap */
+  /* Related chips: horizontal scroll with safe-area padding so last chip isn't clipped */
   .related-chips {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
+    padding-bottom: 6px;
+    padding-right: 16px;
     gap: 6px;
+    /* Hide scrollbar visually but keep it functional */
+    scrollbar-width: none;
   }
+  .related-chips::-webkit-scrollbar { display: none; }
 }
 
 /* No-JS mobile fallback: stack content above a full, plain, in-flow sidebar

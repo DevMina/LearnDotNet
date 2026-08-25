@@ -512,7 +512,7 @@ async function buildServiceWorker() {
   const versionInput = [
     ...ALL_TOPICS_FLAT.map(t => t.id),
       ...TRACKS.map(t => t.id),
-      'v3'
+      'v4'
   ].join(',');
   const version = versionInput.split('').reduce((h, c) => (Math.imul(31, h) + c.charCodeAt(0)) | 0, 0)
     .toString(16).replace('-', '');
@@ -618,9 +618,12 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(req)
       .then(res => {
-        // Cache a fresh copy on every successful network response.
+        // Clone synchronously before any async operation — once we enter
+        // caches.open()'s .then() the original response body may already
+        // be consumed by the browser, making res.clone() throw.
         if (res.ok) {
-          caches.open(CACHE_NAME).then(c => c.put(req, res.clone()));
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, resClone));
         }
         return res;
       })

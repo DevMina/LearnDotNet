@@ -18,7 +18,7 @@
 //               banner. The banner's "Reload" button sends SKIP_WAITING back,
 //               which triggers activate and a page reload.
 
-const CACHE_VERSION = 'v-106b3aa3';
+const CACHE_VERSION = 'v-106b3aa4';
 const CACHE_NAME = `csharp-concepts-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -295,9 +295,12 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(req)
       .then(res => {
-        // Cache a fresh copy on every successful network response.
+        // Clone synchronously before any async operation — once we enter
+        // caches.open()'s .then() the original response body may already
+        // be consumed by the browser, making res.clone() throw.
         if (res.ok) {
-          caches.open(CACHE_NAME).then(c => c.put(req, res.clone()));
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, resClone));
         }
         return res;
       })

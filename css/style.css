@@ -949,6 +949,8 @@ pre.code-block {
 /* ---------- Related topics ---------- */
 .related-topics {
   margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
 }
 
 .related-chips {
@@ -1340,40 +1342,47 @@ pre.code-block {
   .topic-nav { flex-direction: column; gap: 12px; }
   .topic-nav a { max-width: 100%; }
 
-  /* Topic title + actions: stack cleanly with breathing room */
+  /* ── Topic header ─────────────────────────────────────────────── */
+  /* Stack title + actions vertically */
   .topic-title-row { flex-direction: column; align-items: flex-start; gap: 12px; }
   .topic-actions { flex-wrap: wrap; gap: 8px; width: 100%; }
 
-  /* Ensure difficulty badge + reading time don't collide with actions */
+  /* Give the meta row (BEGINNER · 1 min read) proper breathing room
+     below the actions row — base CSS has no margin-top here */
   .topic-meta {
+    display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
-    margin-top: 4px;
+    margin-top: 16px;
     margin-bottom: 10px;
   }
 
-  /* Workbench header: two-row layout on mobile.
-     Row 1: filename tab (full width)
-     Row 2: Copy | PDF | SharpLab | Run (all visible, no hidden buttons) */
+  /* ── Workbench toolbar ─────────────────────────────────────────── */
+  /* Row 1: filename (full width)  Row 2: all action buttons */
   .workbench-tabs {
     flex-wrap: wrap;
-    gap: 0;
     padding: 0;
   }
   .workbench-tab.file-tab {
+    /* Full-width first row */
+    flex: 0 0 100%;
     width: 100%;
     max-width: 100%;
-    flex: 0 0 100%;
     font-size: 12px;
     padding: 8px 12px 6px;
-    border-bottom: 2px solid var(--amber);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    /* Keep amber underline on just this row */
+    border-bottom: 2px solid var(--amber);
+    box-sizing: border-box;
   }
-  /* Action buttons row */
+  /* Second row: buttons — reset auto margin so they start from the left */
   .copy-btn {
-    margin-left: 8px;
+    margin-left: 8px !important;
+    margin-top: 6px;
+    margin-bottom: 6px;
     flex-shrink: 0;
     padding: 6px 10px;
     font-size: 11.5px;

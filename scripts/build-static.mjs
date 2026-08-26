@@ -512,7 +512,7 @@ async function buildServiceWorker() {
   const versionInput = [
     ...ALL_TOPICS_FLAT.map(t => t.id),
       ...TRACKS.map(t => t.id),
-      'v6'
+      'v7'
   ].join(',');
   const version = versionInput.split('').reduce((h, c) => (Math.imul(31, h) + c.charCodeAt(0)) | 0, 0)
     .toString(16).replace('-', '');

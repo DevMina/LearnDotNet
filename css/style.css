@@ -520,7 +520,9 @@ h1.topic-title {
   margin: 24px 0;
 }
 
-.key-points .kp-title {
+/* Base kp-title — applied everywhere (related-topics, key-points,
+   prerequisites, interview-q, why-matters, etc.) */
+.kp-title {
   font-family: var(--font-mono);
   font-size: 11px;
   text-transform: uppercase;
@@ -529,6 +531,9 @@ h1.topic-title {
   margin-bottom: 10px;
   font-weight: 600;
 }
+
+/* key-points scoped rule kept for any future overrides */
+.key-points .kp-title { /* inherits .kp-title base */ }
 
 .key-points ul { margin: 0; padding-left: 18px; }
 .key-points li { margin-bottom: 6px; font-size: var(--fs-sm); }
